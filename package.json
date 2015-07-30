@@ -1,0 +1,25 @@
+{
+  "version": "0.0.0",
+  "description": "Lodash modularized builds without the hassle",
+  "repository": "megawac/babel-plugin-babel-lodash-modularize",
+  "author": "Graeme Yeates (github.com/megawac) <megawac@gmail.com>",
+  "main": "lib/index.js",
+  "devDependencies": {
+    "babel": "^5.6.0",
+    "mocha": "^2.2.5"
+  },
+  "scripts": {
+    "build": "babel-plugin build",
+    "push": "babel-plugin publish",
+    "test": "mocha --compilers js:babel/register"
+  },
+  "keywords": [
+    "lodash",
+    "modularize",
+    "babel-plugin"
+  ],
+  "dependencies": {
+    "lodash": "^3.10.0",
+    "lodash-modularize": "^1.3.2"
+  }
+}
