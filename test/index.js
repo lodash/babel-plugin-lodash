@@ -3,10 +3,7 @@ import fs from "fs";
 import assert from "assert";
 import {transformFileSync} from "babel";
 import plugin from "../src/index";
-
-function trim(str) {
-  return str.replace(/^\s+|\s+$/, "");
-}
+import {trim} from "lodash";
 
 describe("Lodash modularized builds without the hassle", () => {
   const fixturesDir = path.join(__dirname, "fixtures");
@@ -21,7 +18,6 @@ describe("Lodash modularized builds without the hassle", () => {
         plugins: [plugin]
       }).code;
       const expected = fs.readFileSync(expectedFile).toString();
-
       assert.equal(trim(actual), trim(expected));
     });
   });
