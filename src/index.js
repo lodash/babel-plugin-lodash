@@ -1,7 +1,6 @@
 import resolveModule from './lodash-modules';
 
 export default function({ Plugin, types: t }) {
-
   // Track the variables used to import lodash
   let lodashs = Object.create(null);
   let specified = Object.create(null);
@@ -24,7 +23,7 @@ export default function({ Plugin, types: t }) {
       ImportDeclaration(node, parent, scope) {
         if (node.source.value === 'lodash') {
           node.specifiers.forEach(spec => {
-            if (spec.type === 'ImportSpecifier') {
+            if (t.isImportSpecifier(spec)) {
               specified[spec.local.name] = spec.imported.name;
             } else {
               lodashs[spec.local.name] = true;
@@ -35,8 +34,8 @@ export default function({ Plugin, types: t }) {
       },
 
       CallExpression(node, parent, scope, file) {
-        let {name, type} = node.callee;
-        if (type !== 'Identifier') return;
+        let {name} = node.callee;
+        if (!t.isIdentifier(node.callee)) return;
         if (specified[name]) {
           node.callee = importMethod(name, file);
           return node;
@@ -55,12 +54,13 @@ export default function({ Plugin, types: t }) {
       },
 
       exit(node) {
-        if (node.type !== 'Program') return;
+        if (!t.isProgram(node)) return;
         // Clean up tracking variables
         lodashs = Object.create(null);
         specified = Object.create(null);
         selectedMethods = Object.create(null);
       }
     }
+
   });
 }

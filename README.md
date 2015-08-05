@@ -29,8 +29,6 @@ _map([1, 2, 3], function() {
 
 ###### Via `.babelrc` (Recommended)
 
-**.babelrc**
-
 ```json
 {
   "plugins": ["lodash"]
@@ -52,7 +50,7 @@ require("babel-core").transform("code", {
 ```
 
 
-#### Assumptions
+#### Limitations
 
 - You must be using ES6 imports to load lodash.
 
