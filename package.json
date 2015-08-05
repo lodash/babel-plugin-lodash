@@ -20,6 +20,9 @@
   ],
   "dependencies": {
     "lodash": "^3.10.0",
-    "lodash-modularize": "^1.3.2"
+    "lodash-cli": "^3.10.1"
+  },
+  "babel": {
+    "ignore": []
   }
 }

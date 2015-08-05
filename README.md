@@ -2,50 +2,8 @@
 
 Lodash modularized builds without the hassle
 
-## Example
+#### Assumptions
 
-**In**
+- You must be using ES6 imports to load lodash.
 
-```js
-// input code
-```
-
-**Out**
-
-```js
-"use strict";
-
-// output code
-```
-
-## Installation
-
-```sh
-$ npm install babel-plugin-babel-lodash-modularize
-```
-
-## Usage
-
-### Via `.babelrc` (Recommended)
-
-**.babelrc**
-
-```json
-{
-  "plugins": ["babel-lodash-modularize"]
-}
-```
-
-### Via CLI
-
-```sh
-$ babel --plugins babel-lodash-modularize script.js
-```
-
-### Via Node API
-
-```javascript
-require("babel-core").transform("code", {
-  plugins: ["babel-lodash-modularize"]
-});
-```
+- Imports are at top of file (we do the transform in one pass, if they are at the bottom of the file they may be missed)

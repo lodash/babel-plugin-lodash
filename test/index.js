@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import assert from "assert";
-import babel from "babel";
+import {transformFileSync} from "babel";
 import plugin from "../src/index";
 
 function trim(str) {
@@ -17,7 +17,7 @@ describe("Lodash modularized builds without the hassle", () => {
     const expectedFile = path.join(fixtureDir, "expected.js");
 
     it(`should ${caseName.split("-").join(" ")}`, () => {
-      const actual = babel.transformFileSync(actualFile, {
+      const actual = transformFileSync(actualFile, {
         plugins: [plugin]
       }).code;
       const expected = fs.readFileSync(expectedFile).toString();
