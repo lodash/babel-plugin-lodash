@@ -1,4 +1,4 @@
-# babel-plugin-babel-lodash-modularize
+# babel-plugin-lodash
 
 Lodash modularized builds without the hassle
 
