@@ -5,7 +5,7 @@ import {transformFileSync} from "babel";
 import plugin from "../src/index";
 import {trim} from "lodash";
 
-describe("Lodash modularized builds without the hassle", () => {
+describe("Lodash modularized builds", () => {
   const fixturesDir = path.join(__dirname, "fixtures");
 
   fs.readdirSync(fixturesDir).map(caseName => {
@@ -13,7 +13,7 @@ describe("Lodash modularized builds without the hassle", () => {
     const actualFile = path.join(fixtureDir, "actual.js");
     const expectedFile = path.join(fixtureDir, "expected.js");
 
-    it(`should ${caseName.split("-").join(" ")}`, () => {
+    it(`should work with ${caseName.split("-").join(" ")}`, () => {
       const actual = transformFileSync(actualFile, {
         plugins: [plugin]
       }).code;
