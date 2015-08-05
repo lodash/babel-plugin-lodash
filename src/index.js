@@ -1,16 +1,12 @@
 import resolveModule from './lodash-modules';
 
 export default function({ Plugin, types: t }) {
-  // function createImport(name, path) {
-  //   return t.importDeclaration(
-  //     [t.importDefaultSpecifier(name)],
-  //     t.literal(path)
-  //   );
-  // }
 
+  // Track the variables used to import lodash
   let lodashs = Object.create(null);
   let specified = Object.create(null);
 
+  // Track the methods that have already been used to prevent dupe imports
   let selectedMethods = Object.create(null);
 
   // Import a lodash method and return the computed import identifier
@@ -54,7 +50,6 @@ export default function({ Plugin, types: t }) {
       MemberExpression(node, parent, scope, file) {
         if (!lodashs[node.object.name]) return;
 
-        // replace member expression with identifier
         // _.foo() -> _foo()
         return importMethod(node.property.name, file);
       },

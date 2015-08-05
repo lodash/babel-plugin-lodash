@@ -28,7 +28,7 @@ export default function resolveModule(name) {
   
   for (var category in modules) {
     if (includes(modules[category], realName)) {
-      return path.join(_path, category, realName);
+      return path.join('lodash', category, realName);
     }
   }
 };
