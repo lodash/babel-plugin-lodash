@@ -37,7 +37,7 @@ export default function({ Plugin, types: t }) {
         let {name} = node.callee;
         if (!t.isIdentifier(node.callee)) return;
         if (specified[name]) {
-          node.callee = importMethod(name, file);
+          node.callee = importMethod(specified[name], file);
           return node;
         }
         // Detect chaining
