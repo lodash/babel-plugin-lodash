@@ -1,9 +1,9 @@
 'use strict';
 
-var _map2 = require('_map');
+var _lodashCollectionMap = require('lodash/collection/map');
 
-var _map3 = _interopRequireDefault(_map2);
+var _lodashCollectionMap2 = _interopRequireDefault(_lodashCollectionMap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var result = (0, _map3['default'])([1, 2, 3], function () {});
+var result = (0, _lodashCollectionMap2['default'])([1, 2, 3], function () {});

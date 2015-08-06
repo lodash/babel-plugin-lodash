@@ -1,18 +1,18 @@
 'use strict';
 
-var _map2 = require('_map');
+var _lodashCollectionMap = require('lodash/collection/map');
 
-var _map3 = _interopRequireDefault(_map2);
+var _lodashCollectionMap2 = _interopRequireDefault(_lodashCollectionMap);
 
-var _take2 = require('_take');
+var _lodashArrayTake = require('lodash/array/take');
 
-var _take3 = _interopRequireDefault(_take2);
+var _lodashArrayTake2 = _interopRequireDefault(_lodashArrayTake);
 
-var _reject2 = require('_reject');
+var _lodashCollectionReject = require('lodash/collection/reject');
 
-var _reject3 = _interopRequireDefault(_reject2);
+var _lodashCollectionReject2 = _interopRequireDefault(_lodashCollectionReject);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var result = (0, _map3['default'])([1, 2, 3], function () {});
-(0, _take3['default'])((0, _reject3['default'])(result), 1);
+var result = (0, _lodashCollectionMap2['default'])([1, 2, 3], function () {});
+(0, _lodashArrayTake2['default'])((0, _lodashCollectionReject2['default'])(result), 1);

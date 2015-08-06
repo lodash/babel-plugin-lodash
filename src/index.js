@@ -12,7 +12,7 @@ export default function({ Plugin, types: t }) {
   function importMethod(methodName, file) {
     if (!selectedMethods[methodName]) {
       let path = resolveModule(methodName);
-      selectedMethods[methodName] = file.addImport('_' + methodName, null, path);
+      selectedMethods[methodName] = file.addImport(path, '_' + methodName);
     }
     return selectedMethods[methodName];
   }

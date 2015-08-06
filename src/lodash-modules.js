@@ -25,7 +25,7 @@ export let modules = zipObject(m, funcs)
 
 export default function resolveModule(name) {
   let realName = result(aliasToReal, name, name);
-  
+
   for (var category in modules) {
     if (includes(modules[category], realName)) {
       return path.join('lodash', category, realName);

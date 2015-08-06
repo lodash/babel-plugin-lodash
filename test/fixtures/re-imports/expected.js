@@ -1,20 +1,18 @@
 'use strict';
 
-var _map12 = require('_map1');
+var _import = require(null);
 
-var _map13 = _interopRequireDefault(_map12);
+var _import2 = _interopRequireDefault(_import);
 
-var _map22 = require('_map2');
+var _import3 = _interopRequireDefault(_import);
 
-var _map23 = _interopRequireDefault(_map22);
+var _lodashCollectionMap = require('lodash/collection/map');
 
-var _map3 = require('_map');
-
-var _map4 = _interopRequireDefault(_map3);
+var _lodashCollectionMap2 = _interopRequireDefault(_lodashCollectionMap);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var result = (0, _map13['default'])([1, 2, 3], function () {});
-var result2 = (0, _map23['default'])([], function () {});
-var result3 = (0, _map4['default'])([], function () {});
-var result4 = (0, _map4['default'])([], function () {});
+var result = (0, _import2['default'])([1, 2, 3], function () {});
+var result2 = (0, _import3['default'])([], function () {});
+var result3 = (0, _lodashCollectionMap2['default'])([], function () {});
+var result4 = (0, _lodashCollectionMap2['default'])([], function () {});
