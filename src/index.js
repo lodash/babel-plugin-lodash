@@ -17,7 +17,7 @@ export default function({ Plugin, types: t }) {
     return selectedMethods[methodName];
   }
 
-  return new Plugin("babel-lodash-modularize", {
+  return new Plugin("lodash", {
 
     visitor: {
       ImportDeclaration(node, parent, scope) {
