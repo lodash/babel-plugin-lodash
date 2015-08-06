@@ -31,4 +31,7 @@ export default function resolveModule(name) {
       return path.join('lodash', category, realName);
     }
   }
+  throw new Error(`lodash method ${name} was not in known modules
+    Please file a bug if it's my fault https://github.com/megawac/babel-plugin-lodash/issues
+  `);
 };
