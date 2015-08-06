@@ -41,8 +41,8 @@ export default function({ Plugin, types: t }) {
           return node;
         }
         // Detect chaining
-        else if (lodashs[name]) {
-          throw new Error(`lodash chaining syntax is not yet supported`);
+        if (lodashs[name]) {
+          throw new Error('lodash chaining syntax is not yet supported');
         }
       },
 
