@@ -3,7 +3,7 @@ babel-plugin-lodash [![Build Status](https://travis-ci.org/megawac/babel-plugin-
 
 The goal of this package is to be an alternative/augmentation of [lodash-modularize](https://github.com/megawac/lodash-modularize) which is designed with slightly different goals.
 
-This is a simple transform to remove unused lodash code without being forced to cherry pick methods manually. This lets you write code as you expect without worrying about bundling parts of lodash you're not using.
+This plugin is a simple transform to remove unused lodash code, without forcing the user to cherry pick methods manually. This lets you use lodash naturally (aka as documented) without worrying about bundling parts you're not using.
 
 
 #### Example
