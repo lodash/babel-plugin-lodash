@@ -21,8 +21,7 @@
     "babel-plugin"
   ],
   "dependencies": {
-    "lodash": "^3.10.0",
-    "lodash-cli": "^3.10.1"
+    "lodash": "^3.10.0"
   },
   "babel": {
     "ignore": []
