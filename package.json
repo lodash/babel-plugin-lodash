@@ -5,7 +5,7 @@
   "repository": "megawac/babel-plugin-lodash",
   "author": "Graeme Yeates (github.com/megawac) <megawac@gmail.com>",
   "main": "lib/index.js",
-  "license": "wtfpl",
+  "license": "WTFPL",
   "devDependencies": {
     "babel": "^5.6.0",
     "mocha": "^2.2.5"

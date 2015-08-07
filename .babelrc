@@ -1,0 +1,4 @@
+{
+  // Run it on itself
+  "plugins": ["./lib/index"]
+}
