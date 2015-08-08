@@ -51,6 +51,7 @@ export default function({ Plugin, types: t }) {
           node.callee = importMethod(specified[name], file);
           return node;
         } else if (fpSpecified[name]) {
+          importMethod(fpSpecified[name], file);
           node.callee = t.memberExpression(lodashFpIdentifier, t.identifier(fpSpecified[name]));
         }
         // Detect chaining
@@ -90,6 +91,8 @@ export default function({ Plugin, types: t }) {
         lodashs = Object.create(null);
         specified = Object.create(null);
         selectedMethods = Object.create(null);
+        fps = Object.create(null);
+        fpSpecified = Object.create(null);
         lodashFpIdentifier = false;
 
         return node;
