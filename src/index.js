@@ -13,7 +13,7 @@ export default function({ Plugin, types: t }) {
   // Track the methods that have already been used to prevent dupe imports
   let selectedMethods = Object.create(null);
 
-  let lodashFpIdentifier = false;
+  let lodashFpIdentifier = null;
 
   // Import a lodash method and return the computed import identifier
   function importMethod(methodName, file) {
@@ -77,13 +77,14 @@ export default function({ Plugin, types: t }) {
         if (!t.isProgram(node)) return;
 
         if (lodashFpIdentifier) {
+          // Setup the lodash-fp instance with the selected methods.
           let id = file.addImport('lodash-fp/convert', '_fp');
           let fpSetup = t.callExpression(id, [
             t.objectExpression(_.map(selectedMethods, (identifier, name) => {
               return t.property('init', t.literal(name), identifier);
             }))
           ]);
-          // Inject it into the top of the program (after imports).
+          // Inject the setup into the top of the program (after imports).
           node.body.unshift(t.variableDeclaration('const', [
             t.variableDeclarator(lodashFpIdentifier, fpSetup)
           ]));
@@ -95,7 +96,7 @@ export default function({ Plugin, types: t }) {
         selectedMethods = Object.create(null);
         fpObjs = Object.create(null);
         fpSpecified = Object.create(null);
-        lodashFpIdentifier = false;
+        lodashFpIdentifier = null;
       }
     }
 
