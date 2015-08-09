@@ -1,30 +1,30 @@
 'use strict';
 
-var _lodashCollectionMap = require('lodash/collection/map');
+var _lodashCollectionMap2 = require('lodash/collection/map');
 
-var _lodashCollectionMap2 = _interopRequireDefault(_lodashCollectionMap);
+var _lodashCollectionMap3 = _interopRequireDefault(_lodashCollectionMap2);
 
-var _lodashMathAdd = require('lodash/math/add');
+var _lodashMathAdd2 = require('lodash/math/add');
 
-var _lodashMathAdd2 = _interopRequireDefault(_lodashMathAdd);
+var _lodashMathAdd3 = _interopRequireDefault(_lodashMathAdd2);
 
-var _lodashArrayTake = require('lodash/array/take');
+var _lodashArrayTake2 = require('lodash/array/take');
 
-var _lodashArrayTake2 = _interopRequireDefault(_lodashArrayTake);
+var _lodashArrayTake3 = _interopRequireDefault(_lodashArrayTake2);
 
-var _lodashCollectionReject = require('lodash/collection/reject');
+var _lodashCollectionReject2 = require('lodash/collection/reject');
 
-var _lodashCollectionReject2 = _interopRequireDefault(_lodashCollectionReject);
+var _lodashCollectionReject3 = _interopRequireDefault(_lodashCollectionReject2);
 
-var _lodashFpConvert = require('lodash-fp/convert');
+var _lodashFpConvert2 = require('lodash-fp/convert');
 
-var _lodashFpConvert2 = _interopRequireDefault(_lodashFpConvert);
+var _lodashFpConvert3 = _interopRequireDefault(_lodashFpConvert2);
 
-var _lodashFp = (0, _lodashFpConvert2['default'])({
-  'map': _lodashCollectionMap2['default'],
-  'add': _lodashMathAdd2['default'],
-  'take': _lodashArrayTake2['default'],
-  'reject': _lodashCollectionReject2['default']
+var _lodashFp = (0, _lodashFpConvert3['default'])({
+  'map': _lodashCollectionMap3['default'],
+  'add': _lodashMathAdd3['default'],
+  'take': _lodashArrayTake3['default'],
+  'reject': _lodashCollectionReject3['default']
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }

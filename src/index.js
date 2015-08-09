@@ -19,7 +19,7 @@ export default function({ Plugin, types: t }) {
   function importMethod(methodName, file) {
     if (!selectedMethods[methodName]) {
       let path = resolveModule(methodName);
-      selectedMethods[methodName] = file.addImport(path, '_' + methodName);
+      selectedMethods[methodName] = file.addImport(path);
     }
     return selectedMethods[methodName];
   }
@@ -78,7 +78,7 @@ export default function({ Plugin, types: t }) {
 
         if (lodashFpIdentifier) {
           // Setup the lodash-fp instance with the selected methods.
-          let id = file.addImport('lodash-fp/convert', '_fp');
+          let id = file.addImport('lodash-fp/convert');
           let fpSetup = t.callExpression(id, [
             t.objectExpression(_.map(selectedMethods, (identifier, name) => {
               return t.property('init', t.literal(name), identifier);
