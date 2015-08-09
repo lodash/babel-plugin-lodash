@@ -36,11 +36,13 @@ It will be implemented when plugins can support options ([babel/babel#1833](http
 
 For now use [lodash-modularize](https://github.com/megawac/lodash-modularize).
 
+> What about `lodash-fp`?
+
+We've got ya covered ([#3](https://github.com/megawac/babel-plugin-lodash/pull/3)).
+
 #### Limitations
 
 - You must be using ES6 imports to load lodash.
-
-- Imports are at top of file (we do the transform in one pass, if they are at the bottom of the file they may be missed)
 
 - Chaining syntax is not supported
 
