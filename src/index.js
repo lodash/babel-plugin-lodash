@@ -2,18 +2,11 @@ import resolveModule from './lodash-modules';
 import _ from 'lodash';
 
 export default function({ Plugin, types: t }) {
-  // Track the variables used to import lodash
-  let lodashObjs = Object.create(null);
-  let specified = Object.create(null);
-
-  // Trackers for lodash-fp support
-  let fpObjs = Object.create(null);
-  let fpSpecified = Object.create(null);
-
-  // Track the methods that have already been used to prevent dupe imports
-  let selectedMethods = Object.create(null);
-
-  let lodashFpIdentifier = null;
+  // Tracking variables build during the AST pass. We instantiate
+  // these in the `Program` visitor in order to support running the
+  // plugin in watch mode or on multiple files. 
+  let lodashObjs, specified, fpObjs, fpSpecified,
+      selectedMethods, lodashFpIdentifier;
 
   // Import a lodash method and return the computed import identifier
   function importMethod(methodName, file) {
@@ -24,9 +17,24 @@ export default function({ Plugin, types: t }) {
     return selectedMethods[methodName];
   }
 
-  return new Plugin("lodash", {
-
+  return new Plugin('lodash', {
     visitor: {
+
+      // Instantiate all the necessary tracking variables for this AST.
+      Program() {
+        // Track the variables used to import lodash
+        lodashObjs = Object.create(null);
+        specified = Object.create(null);
+
+        // Trackers for lodash-fp support
+        fpObjs = Object.create(null);
+        fpSpecified = Object.create(null);
+
+        // Track the methods that have already been used to prevent dupe imports
+        selectedMethods = Object.create(null);
+        lodashFpIdentifier = null;
+      },
+
       ImportDeclaration(node, parent, scope) {
         let {value} = node.source;
         let fp = value === 'lodash-fp';
@@ -89,14 +97,6 @@ export default function({ Plugin, types: t }) {
             t.variableDeclarator(lodashFpIdentifier, fpSetup)
           ]));
         }
-
-        // Clean up tracking variables
-        lodashObjs = Object.create(null);
-        specified = Object.create(null);
-        selectedMethods = Object.create(null);
-        fpObjs = Object.create(null);
-        fpSpecified = Object.create(null);
-        lodashFpIdentifier = null;
       }
     }
 
