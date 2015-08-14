@@ -14,17 +14,17 @@ Converts
 import lodash from 'lodash';
 
 lodash.map([1, 2, 3], function(x) {
-	// ...
+    // ...
 });
 ```
 
-to 
+(roughly) to 
 
 ```js
 import _map from 'lodash/collection/map';
 
 _map([1, 2, 3], function(x) {
-	// ...
+    // ...
 });
 ```
 
@@ -35,6 +35,10 @@ _map([1, 2, 3], function(x) {
 It will be implemented when plugins can support options ([babel/babel#1833](https://github.com/babel/babel/issues/1833)).
 
 For now use [lodash-modularize](https://github.com/megawac/lodash-modularize).
+
+> Do import specifiers work (`import {x} from 'lodash'`)
+
+[You know it!](https://github.com/megawac/babel-plugin-lodash/blob/master/test/fixtures/multi-mix-usage/actual.js) You can also use both specifiers and direct imports (`import _, {y} from 'lodash'`).
 
 > What about `lodash-fp`?
 
