@@ -24,7 +24,7 @@ describe("Lodash modularized builds", () => {
   });
 
   fs.readdirSync(errorFixturesDir).map(caseName => {
-    const fixtureDir = path.join(fixturesDir, caseName);
+    const fixtureDir = path.join(errorFixturesDir, caseName);
     const actualFile = path.join(fixtureDir, "actual.js");
 
     it(`should throw an error with ${caseName.split("-").join(" ")}`, () => {
