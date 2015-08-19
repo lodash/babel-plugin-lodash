@@ -17,6 +17,8 @@ export default function({ Plugin, types: t }) {
     return selectedMethods[methodName];
   }
 
+  const CHAIN_ERR = 'lodash chaining syntax is not yet supported';
+
   return new Plugin('lodash', {
     visitor: {
 
@@ -65,14 +67,17 @@ export default function({ Plugin, types: t }) {
           importMethod(fpSpecified[name], file);
           node.callee = t.memberExpression(lodashFpIdentifier, t.identifier(fpSpecified[name]));
         }
-        // Detect chaining
+        // Detect chaining via _(value)
         else if (lodashObjs[name]) {
-          throw new Error('lodash chaining syntax is not yet supported');
+          throw new Error(CHAIN_ERR);
         }
       },
 
       MemberExpression(node, parent, scope, file) {
-        if (lodashObjs[node.object.name]) {
+        if (lodashObjs[node.object.name] && node.property.name === 'chain') {
+          // Detect chaining via _.chain(value)
+          throw new Error(CHAIN_ERR);
+        } else if (lodashObjs[node.object.name]) {
           // _.foo() -> _foo()
           return importMethod(node.property.name, file);
         } else if (fpObjs[node.object.name]) {
