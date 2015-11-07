@@ -9,7 +9,6 @@
   "devDependencies": {
     "babel-cli": "^6.1.2",
     "babel-core": "^6.1.2",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.1.3",
     "babel-preset-es2015": "^6.1.2",
     "babel-preset-es2015-node4": "^1.0.0",
     "mocha": "^2.2.5"
@@ -32,9 +31,6 @@
     "presets": [
       "es2015",
       "es2015-node4"
-    ],
-    "plugins": [
-      "transform-es2015-modules-commonjs"
     ]
   }
 }
