@@ -47,7 +47,7 @@ export default function({ types: t }) {
               }))
             ]);
             // Inject the setup into the top of the program (after imports).
-            path.node.body.unshift(t.variableDeclaration('const', [
+            path.node.body.unshift(t.variableDeclaration('var', [
               t.variableDeclarator(lodashFpIdentifier, fpSetup)
             ]));
           }

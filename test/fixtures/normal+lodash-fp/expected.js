@@ -22,7 +22,7 @@ var _map2 = _interopRequireDefault(_map);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const _lodashFp = (0, _convert2.default)({
+var _lodashFp = (0, _convert2.default)({
   map: _map2.default,
   add: _add2.default,
   take: _take2.default,
