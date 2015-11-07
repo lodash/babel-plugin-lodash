@@ -1,11 +1,11 @@
 'use strict';
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var _convert = require('lodash-fp/convert');
 
-var _lodashFpConvert = require('lodash-fp/convert');
+var _convert2 = _interopRequireDefault(_convert);
 
-var _lodashFpConvert2 = _interopRequireDefault(_lodashFpConvert);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var fp = (0, _lodashFpConvert2['default'])({
+var fp = (0, _convert2.default)({
   map: map, filter: filter
 });

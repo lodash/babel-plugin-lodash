@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import assert from "assert";
-import {transformFileSync} from "babel";
+import {transformFileSync} from "babel-core";
 import plugin from "../src/index";
 import {trim} from "lodash";
 
