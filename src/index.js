@@ -37,7 +37,7 @@ export default function({ types: t }) {
           selectedMethods = Object.create(null);
           lodashFpIdentifier = null;
         },
-        exit(path, state) {
+        exit(path) {
           if (lodashFpIdentifier) {
             // Setup the lodash-fp instance with the selected methods.
             let id = path.hub.file.addImport('lodash-fp/convert', 'default');
@@ -54,7 +54,7 @@ export default function({ types: t }) {
         }
       },
 
-      ImportDeclaration(path, state) {
+      ImportDeclaration(path) {
         let {node, scope} = path;
         let {value} = node.source;
         let fp = value === 'lodash-fp';
@@ -74,7 +74,7 @@ export default function({ types: t }) {
         }
       },
 
-      CallExpression(path, state) {
+      CallExpression(path) {
         let {node} = path;
         let {name} = node.callee;
         let {file} = path.hub;
@@ -106,7 +106,7 @@ export default function({ types: t }) {
           importMethod(node.property.name, file);
           node.object = lodashFpIdentifier;
         }
-      },
+      }
 
     }
   };

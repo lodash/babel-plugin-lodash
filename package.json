@@ -15,7 +15,6 @@
   },
   "scripts": {
     "build": "rm -rf lib && babel src --out-dir lib",
-    "push": "babel-plugin publish",
     "test": "mocha --compilers js:babel-core/register"
   },
   "keywords": [
@@ -27,7 +26,6 @@
     "lodash": "^3.10.0"
   },
   "babel": {
-    "ignore": [],
     "presets": [
       "es2015",
       "es2015-node4"
