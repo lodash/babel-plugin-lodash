@@ -61,7 +61,7 @@ export default function({ types: t }) {
         if (fp || value === 'lodash') {
           node.specifiers.forEach(spec => {
             if (t.isImportSpecifier(spec)) {
-              (fp ? fpSpecified: specified)[spec.local.name] = spec.imported.name;
+              (fp ? fpSpecified : specified)[spec.local.name] = spec.imported.name;
             } else {
               (fp ? fpObjs : lodashObjs)[spec.local.name] = true;
             }
@@ -90,6 +90,17 @@ export default function({ types: t }) {
         // Detect chaining via _(value)
         else if (lodashObjs[name]) {
           throw new Error(CHAIN_ERR);
+        }
+
+        if (node.arguments) {
+          node.arguments = node.arguments.map((arg) => {
+            const {name} = arg;
+            if (specified[name]) {
+              return importMethod(specified[name], file);
+            } else {
+              return arg;
+            }
+          });
         }
       },
 
