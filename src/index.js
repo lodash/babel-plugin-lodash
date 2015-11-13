@@ -37,17 +37,17 @@ export default function({ types: t }) {
           selectedMethods = Object.create(null);
           lodashFpIdentifier = null;
         },
-        exit(path) {
+        exit({hub, node}) {
           if (lodashFpIdentifier) {
             // Setup the lodash-fp instance with the selected methods.
-            let id = path.hub.file.addImport('lodash-fp/convert', 'default');
+            let id = hub.file.addImport('lodash-fp/convert', 'default');
             let fpSetup = t.callExpression(id, [
               t.objectExpression(_.map(selectedMethods, (identifier, name) => {
                 return t.objectProperty(t.identifier(name), identifier);
               }))
             ]);
             // Inject the setup into the top of the program (after imports).
-            path.node.body.unshift(t.variableDeclaration('var', [
+            node.body.unshift(t.variableDeclaration('var', [
               t.variableDeclarator(lodashFpIdentifier, fpSetup)
             ]));
           }
@@ -93,7 +93,7 @@ export default function({ types: t }) {
         }
 
         if (node.arguments) {
-          node.arguments = node.arguments.map((arg) => {
+          node.arguments = node.arguments.map(arg => {
             const {name} = arg;
             if (specified[name]) {
               return importMethod(specified[name], file);
