@@ -12,20 +12,27 @@ Converts
 
 ```js
 import lodash from 'lodash';
+import {add} from 'lodash-fp';
 
-lodash.map([1, 2, 3], function(x) {
-    // ...
-});
+let add1 = add(1);
+
+lodash.map([1, 2, 3], add1);
 ```
 
 (roughly) to 
 
 ```js
 import _map from 'lodash/collection/map';
+import _add from 'lodash/math/add';
+import convert from 'lodash-fp/convert';
 
-_map([1, 2, 3], function(x) {
-    // ...
+const _fp = convert({
+    add: _add
 });
+
+let add1 = _fp.add(1);
+
+_map([1, 2, 3], add1);
 ```
 
 ### FAQ
@@ -42,7 +49,7 @@ For now use [lodash-modularize](https://github.com/megawac/lodash-modularize).
 
 > What about `lodash-fp`?
 
-We've got ya covered ([#3](https://github.com/megawac/babel-plugin-lodash/pull/3)).
+We've got ya covered ([#3](https://github.com/megawac/babel-plugin-lodash/pull/3)). **Note**: this requires you to have both `lodash` and `lodash-fp` installed in the `node_modules`.
 
 #### Limitations
 
