@@ -39,9 +39,14 @@ _map([1, 2, 3], add1);
 
 > Where's my npm module support?
 
-It will be implemented when plugins can support options ([babel/babel#1833](https://github.com/babel/babel/issues/1833)).
+It will be implemented when plugins can support options ([babel/babel#1833](https://github.com/babel/babel/issues/1833)). (Resolved in Babel 6, todo implement in the plugin)
 
 For now use [lodash-modularize](https://github.com/megawac/lodash-modularize).
+
+> I receive `TypeError: The plugin "lodash" didn't export a Plugin instance`
+> or, can I use with Babel v5
+
+The latest release is incompatible with Babel v5. [Use version 0.2 of this plugin](https://github.com/megawac/babel-plugin-lodash/tree/v0.2.0) (`npm install babel-plugin-lodash@0.2`).
 
 > Do import specifiers work (`import {x} from 'lodash'`)
 
