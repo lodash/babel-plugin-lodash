@@ -1,5 +1,6 @@
+import Module from 'module';
 import path from 'path';
-import {findKey, transform} from 'lodash';
+import {assign, findKey, transform} from 'lodash';
 import fs from 'fs';
 
 // Slow synchronous version of https://github.com/megawac/lodash-modularize/blob/master/src/lodashModules.js
@@ -10,12 +11,11 @@ function getDirectories(srcPath) {
     fs.statSync(path.join(srcPath, filePath)).isDirectory());
 }
 
-const expectedPath = './node_modules/lodash';
-const modularizePath = path.join(__dirname, '../node_modules/lodash');
+const lodashPath = path.dirname(Module._resolveFilename('lodash', assign(new Module, {
+  'paths': Module._nodeModulePaths(process.cwd())
+})));
 
-let lodashPath = fs.existsSync(expectedPath) ? expectedPath : modularizePath;
-
-let categoryMap = transform(getDirectories(lodashPath), (result, category) => {
+const categoryMap = transform(getDirectories(lodashPath), (result, category) => {
   result[category] = fs.readdirSync(path.join(lodashPath, category)).map(name => path.basename(name, '.js'));
 }, {});
 
