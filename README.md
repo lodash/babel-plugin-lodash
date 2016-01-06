@@ -39,7 +39,7 @@ _map([1, 2, 3], add1);
 
 > Where's my npm module support?
 
-It will be implemented when plugins can support options ([babel/babel#1833](https://github.com/babel/babel/issues/1833)). (Resolved in Babel 6, todo implement in the plugin)
+It will be implemented when plugins can support options ([babel/babel#1833](https://phabricator.babeljs.io/T1833)). (Resolved in Babel 6, todo implement in the plugin)
 
 For now use [lodash-modularize](https://github.com/megawac/lodash-modularize).
 
