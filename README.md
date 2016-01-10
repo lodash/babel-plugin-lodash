@@ -78,7 +78,7 @@ $ babel --plugins lodash script.js
 
 ###### Via Node API
 
-```javascript
+```js
 require('babel-core').transform('code', {
   'plugins': ['lodash']
 });
