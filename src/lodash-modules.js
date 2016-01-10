@@ -1,6 +1,6 @@
 import Module from 'module';
 import path from 'path';
-import {assign, findKey, transform} from 'lodash';
+import { assign, findKey, transform } from 'lodash';
 import fs from 'fs';
 
 function getDirectories(srcPath) {

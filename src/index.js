@@ -1,12 +1,16 @@
 import resolveModule from './lodash-modules';
 import _ from 'lodash';
 
-export default function({ types: t }) {
+export default function({ 'types': t }) {
   // Tracking variables build during the AST pass. We instantiate
   // these in the `Program` visitor in order to support running the
   // plugin in watch mode or on multiple files.
-  let lodashObjs, specified, fpObjs, fpSpecified,
-      selectedMethods, lodashFpIdentifier;
+  let lodashFpIdentifier,
+      lodashObjs,
+      fpObjs,
+      fpSpecified,
+      specified,
+      selectedMethods;
 
   const CHAIN_ERROR = 'lodash chaining syntax is not yet supported';
 
@@ -20,16 +24,16 @@ export default function({ types: t }) {
   }
 
   return {
-    visitor: {
+    'visitor': {
 
       // Instantiate all the necessary tracking variables for this AST.
-      Program: {
+      'Program': {
         enter() {
-          // Track the variables used to import lodash
+          // Track the variables used to import lodash.
           lodashObjs = Object.create(null);
           specified = Object.create(null);
 
-          // Trackers for lodash-fp support
+          // Trackers for lodash-fp support.
           fpObjs = Object.create(null);
           fpSpecified = Object.create(null);
 
@@ -37,7 +41,7 @@ export default function({ types: t }) {
           selectedMethods = Object.create(null);
           lodashFpIdentifier = null;
         },
-        exit({hub, node}) {
+        exit({ hub, node }) {
           if (lodashFpIdentifier) {
             // Setup the lodash-fp instance with the selected methods.
             let id = hub.file.addImport('lodash-fp/convert', 'default');
@@ -55,10 +59,11 @@ export default function({ types: t }) {
       },
 
       ImportDeclaration(path) {
-        let {node, scope} = path;
-        let {value} = node.source;
-        let fp = value === 'lodash-fp';
-        if (fp || value === 'lodash') {
+        let { node, scope } = path;
+        let { value } = node.source;
+        let fp = value == 'lodash-fp';
+
+        if (fp || value == 'lodash') {
           node.specifiers.forEach(spec => {
             if (t.isImportSpecifier(spec)) {
               (fp ? fpSpecified : specified)[spec.local.name] = spec.imported.name;
@@ -75,10 +80,13 @@ export default function({ types: t }) {
       },
 
       CallExpression(path) {
-        let {node} = path;
-        let {name} = node.callee;
-        let {file} = path.hub;
-        if (!t.isIdentifier(node.callee)) return;
+        let { node } = path;
+        let { name } = node.callee;
+        let { file } = path.hub;
+
+        if (!t.isIdentifier(node.callee)) {
+          return;
+        }
         if (specified[name]) {
           node.callee = importMethod(specified[name], file);
         }
@@ -91,34 +99,33 @@ export default function({ types: t }) {
         else if (lodashObjs[name]) {
           throw new Error(CHAIN_ERROR);
         }
-
         if (node.arguments) {
           node.arguments = node.arguments.map(arg => {
-            const {name} = arg;
-            if (specified[name]) {
-              return importMethod(specified[name], file);
-            } else {
-              return arg;
-            }
+            const { name } = arg;
+            return specified[name]
+              ? importMethod(specified[name], file)
+              : arg;
           });
         }
       },
 
       MemberExpression(path) {
-        let {node} = path;
-        let {file} = path.hub;
-        if (lodashObjs[node.object.name] && node.property.name === 'chain') {
+        let { node } = path;
+        let { file } = path.hub;
+
+        if (lodashObjs[node.object.name] && node.property.name == 'chain') {
           // Detect chaining via _.chain(value).
           throw new Error(CHAIN_ERROR);
-        } else if (lodashObjs[node.object.name]) {
+        }
+        else if (lodashObjs[node.object.name]) {
           // Transform _.foo() to _foo().
           path.replaceWith(importMethod(node.property.name, file));
-        } else if (fpObjs[node.object.name]) {
+        }
+        else if (fpObjs[node.object.name]) {
           importMethod(node.property.name, file);
           node.object = lodashFpIdentifier;
         }
       }
-
     }
   };
 }
