@@ -1,5 +1,5 @@
-import resolveModule from './lodash-modules';
 import _ from 'lodash';
+import resolveModule from './lodash-modules';
 
 export default function({ 'types': t }) {
   // Tracking variables build during the AST pass. We instantiate

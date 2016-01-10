@@ -1,7 +1,7 @@
+import fs from 'fs';
+import { assign, findKey, transform } from 'lodash';
 import Module from 'module';
 import path from 'path';
-import { assign, findKey, transform } from 'lodash';
-import fs from 'fs';
 
 function getDirectories(srcPath) {
   // Slow synchronous version of https://github.com/megawac/lodash-modularize/blob/master/src/lodashModules.js.

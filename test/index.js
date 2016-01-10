@@ -1,9 +1,8 @@
-import path from 'path';
-import fs from 'fs';
 import assert from 'assert';
 import { transformFileSync } from 'babel-core';
+import fs from 'fs';
+import path from 'path';
 import plugin from '../src/index';
-import { trim } from 'lodash';
 
 describe('Lodash modularized builds', () => {
   const fixturesDir = path.join(__dirname, 'fixtures');
@@ -19,7 +18,7 @@ describe('Lodash modularized builds', () => {
         'plugins': [plugin]
       }).code;
       const expected = fs.readFileSync(expectedFile, 'utf8');
-      assert.equal(trim(actual), trim(expected));
+      assert.equal(actual.trim(), expected.trim());
     });
   });
 
