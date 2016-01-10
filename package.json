@@ -28,5 +28,9 @@
     "presets": [
       "es2015"
     ]
-  }
+  },
+  "files": [
+    "lib/index.js",
+    "lib/lodash-modules.js"
+  ]
 }
