@@ -33,6 +33,30 @@ let add1 = _fp.add(1);
 _map([1, 2, 3], add1);
 ```
 
+## Usage
+
+###### Via `.babelrc` (Recommended)
+
+```json
+{
+  "plugins": ["lodash"]
+}
+```
+
+###### Via CLI
+
+```sh
+$ babel --plugins lodash script.js
+```
+
+###### Via Node API
+
+```js
+require('babel-core').transform('code', {
+  'plugins': ['lodash']
+});
+```
+
 ## FAQ
 
 > Where’s my npm module support?
@@ -62,27 +86,3 @@ We’ve got [you covered](https://github.com/lodash/babel-plugin-lodash/pull/3).
 * You must be using ES6 imports to load lodash.
 
 * Chaining syntax is not supported
-
-## Usage
-
-###### Via `.babelrc` (Recommended)
-
-```json
-{
-  "plugins": ["lodash"]
-}
-```
-
-###### Via CLI
-
-```sh
-$ babel --plugins lodash script.js
-```
-
-###### Via Node API
-
-```js
-require('babel-core').transform('code', {
-  'plugins': ['lodash']
-});
-```
