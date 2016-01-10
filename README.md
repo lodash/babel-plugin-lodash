@@ -19,8 +19,8 @@ lodash.map([1, 2, 3], add1);
 roughly to
 
 ```js
-import _map from 'lodash/collection/map';
 import _add from 'lodash/math/add';
+import _map from 'lodash/collection/map';
 import convert from 'lodash-fp/convert';
 
 const _fp = convert({
