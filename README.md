@@ -65,9 +65,9 @@ It will be implemented when plugins can support options ([babel/babel#1833](http
 For now use [lodash-modularize](https://github.com/megawac/lodash-modularize).
 
 > I receive `TypeError: The plugin "lodash" didn’t export a Plugin instance`
-> or, can I use with Babel v5
+> or, can I use this plugin with Babel v5
 
-The latest release is incompatible with Babel v5. Use [v0.2.0](https://github.com/lodash/babel-plugin-lodash/tree/v0.2.0) of this plugin (`npm install babel-plugin-lodash@0.2.0`).
+The latest release is incompatible with Babel v5. Use [v0.2.0](https://github.com/lodash/babel-plugin-lodash/tree/v0.2.0) for Babel v5 support (`npm install babel-plugin-lodash@0.2.0`).
 
 > Do import specifiers work (`import { x } from 'lodash'`)
 
