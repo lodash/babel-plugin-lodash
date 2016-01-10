@@ -2,7 +2,7 @@
 
 The goal of this package is to be an alternative/augmentation of [lodash-modularize](https://github.com/megawac/lodash-modularize) which is designed with slightly different goals.
 
-This plugin is a simple transform to remove unused lodash code, without forcing the user to cherry pick methods manually. This lets you use lodash naturally (aka as documented) without worrying about bundling parts you’re not using.
+This plugin is a simple transform to remove unused lodash code without manual cherry picking. This lets you use lodash naturally, as documented, without worrying about bundling parts you’re not using.
 
 ## Example
 
@@ -59,28 +59,24 @@ require('babel-core').transform('code', {
 
 > Where’s my npm module support?
 
-It will be implemented when plugins can support options ([babel/babel#1833](https://phabricator.babeljs.io/T1833)).<br>
-(Resolved in Babel 6, todo implement in the plugin)
+It’s coming soon. For now use [lodash-modularize](https://github.com/megawac/lodash-modularize).
 
-For now use [lodash-modularize](https://github.com/megawac/lodash-modularize).
-
-> I receive `TypeError: The plugin "lodash" didn’t export a Plugin instance`
+> I receive `TypeError: The plugin "lodash" didn’t export a Plugin instance`<br>
 > or, can I use this plugin with Babel v5?
 
 The latest release is incompatible with Babel v5. Use [v0.2.0](https://github.com/lodash/babel-plugin-lodash/tree/v0.2.0) for Babel v5 support.
 
-> Do import specifiers work (`import { x } from 'lodash'`)?
+> Do import specifiers, e.g. `import { x } from 'lodash'`, work?
 
-You [know it](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/multi-mix-usage/actual.js)!
+You [know it](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/multi-specifier/actual.js)!
 
 > What about `lodash-fp`?
 
-We’ve got [you covered](https://github.com/lodash/babel-plugin-lodash/pull/3).
+We’ve got [you covered](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/lodash-fp-specifiers/actual.js).
 
-**Note:** This requires you to have both `lodash` and `lodash-fp` installed in `node_modules`.
+**Note:** This requires both `lodash` & `lodash-fp` to be installed in `node_modules`.
 
 ## Limitations
 
-* You must be using ES6 imports to load lodash.
-
+* You must be using ES6 imports to load lodash
 * Chaining syntax is not supported
