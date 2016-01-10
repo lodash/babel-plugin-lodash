@@ -3,10 +3,9 @@ import path from 'path';
 import {assign, findKey, transform} from 'lodash';
 import fs from 'fs';
 
-// Slow synchronous version of https://github.com/megawac/lodash-modularize/blob/master/src/lodashModules.js
-// Using the paths lodash-cli provides is not an option as they may change version to version =(
-
 function getDirectories(srcPath) {
+  // Slow synchronous version of https://github.com/megawac/lodash-modularize/blob/master/src/lodashModules.js.
+  // Using the paths lodash-cli provides is not an option as they may change version to version =(
   return fs.readdirSync(srcPath).filter(filePath =>
     fs.statSync(path.join(srcPath, filePath)).isDirectory());
 }
@@ -24,7 +23,8 @@ export default function resolveModule(name) {
   if (category) {
     return path.join('lodash', category, name);
   }
-  throw new Error(`lodash method ${name} was not in known modules
-    Please file a bug if it's my fault https://github.com/megawac/babel-plugin-lodash/issues
-  `);
+  throw new Error([
+    `lodash method ${name} was not in known modules.`,
+    'Please report bugs to https://github.com/lodash/babel-plugin-lodash/issues.'
+  ].join('\n'));
 };

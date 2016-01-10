@@ -4,11 +4,13 @@ import _ from 'lodash';
 export default function({ types: t }) {
   // Tracking variables build during the AST pass. We instantiate
   // these in the `Program` visitor in order to support running the
-  // plugin in watch mode or on multiple files. 
+  // plugin in watch mode or on multiple files.
   let lodashObjs, specified, fpObjs, fpSpecified,
       selectedMethods, lodashFpIdentifier;
 
-  // Import a lodash method and return the computed import identifier
+  const CHAIN_ERROR = 'lodash chaining syntax is not yet supported';
+
+  // Import a lodash method and return the computed import identifier.
   function importMethod(methodName, file) {
     if (!selectedMethods[methodName]) {
       let path = resolveModule(methodName);
@@ -16,8 +18,6 @@ export default function({ types: t }) {
     }
     return selectedMethods[methodName];
   }
-
-  const CHAIN_ERR = 'lodash chaining syntax is not yet supported';
 
   return {
     visitor: {
@@ -33,7 +33,7 @@ export default function({ types: t }) {
           fpObjs = Object.create(null);
           fpSpecified = Object.create(null);
 
-          // Track the methods that have already been used to prevent dupe imports
+          // Track the methods that have already been used to prevent dupe imports.
           selectedMethods = Object.create(null);
           lodashFpIdentifier = null;
         },
@@ -83,13 +83,13 @@ export default function({ types: t }) {
           node.callee = importMethod(specified[name], file);
         }
         else if (fpSpecified[name]) {
-          // map() -> fp.map() in order to avoid destructuring fp
+          // Transform map() to fp.map() in order to avoid destructuring fp.
           importMethod(fpSpecified[name], file);
           node.callee = t.memberExpression(lodashFpIdentifier, t.identifier(fpSpecified[name]));
         }
-        // Detect chaining via _(value)
+        // Detect chaining via _(value).
         else if (lodashObjs[name]) {
-          throw new Error(CHAIN_ERR);
+          throw new Error(CHAIN_ERROR);
         }
 
         if (node.arguments) {
@@ -108,10 +108,10 @@ export default function({ types: t }) {
         let {node} = path;
         let {file} = path.hub;
         if (lodashObjs[node.object.name] && node.property.name === 'chain') {
-          // Detect chaining via _.chain(value)
-          throw new Error(CHAIN_ERR);
+          // Detect chaining via _.chain(value).
+          throw new Error(CHAIN_ERROR);
         } else if (lodashObjs[node.object.name]) {
-          // _.foo() -> _foo()
+          // Transform _.foo() to _foo().
           path.replaceWith(importMethod(node.property.name, file));
         } else if (fpObjs[node.object.name]) {
           importMethod(node.property.name, file);
