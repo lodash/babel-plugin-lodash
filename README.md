@@ -55,14 +55,14 @@ require('babel-core').transform('code', {
 
 ## FAQ
 
-> Where’s my npm module support?
+> Does this work the modularized lodash method packages?
 
-It’s coming soon. For now use [lodash-modularize](https://github.com/megawac/lodash-modularize).
+For [lodash method packages](https://www.npmjs.com/browse/keyword/lodash-modularized) use [lodash-modularize](https://github.com/megawac/lodash-modularize).
 
 > I receive `TypeError: The plugin "lodash" didn’t export a Plugin instance`<br>
 > or, can I use this plugin with Babel v5?
 
-The latest release is incompatible with Babel v5. Use [v0.2.0](https://github.com/lodash/babel-plugin-lodash/tree/v0.2.0) for Babel v5 support.
+Babel v5 is no longer supported. Use [v0.2.0](https://github.com/lodash/babel-plugin-lodash/tree/v0.2.0) for support.
 
 > Do import specifiers, e.g. `import { x } from 'lodash'`, work?
 
