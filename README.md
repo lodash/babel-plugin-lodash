@@ -13,7 +13,6 @@ import lodash from 'lodash';
 import { add } from 'lodash-fp';
 
 let add1 = add(1);
-
 lodash.map([1, 2, 3], add1);
 ```
 
@@ -29,7 +28,6 @@ const _fp = convert({
 });
 
 let add1 = _fp.add(1);
-
 _map([1, 2, 3], add1);
 ```
 
