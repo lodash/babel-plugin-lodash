@@ -26,4 +26,4 @@ var _lodashFp = (0, _convert2.default)({
 
 var c = _lodashFp.compose(_lodashFp.capitalize, _lodashFp.head);
 
-c(["a", 'b']);
+c(['a', 'b']);

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {map} from 'lodash';
+import { map } from 'lodash';
 
 let result = map([1, 2, 3], function() {});
 let result2 = _.map([], function() {});
