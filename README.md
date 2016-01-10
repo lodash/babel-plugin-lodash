@@ -4,7 +4,7 @@ The goal of this package is to be an alternative/augmentation of [lodash-modular
 
 This plugin is a simple transform to remove unused lodash code, without forcing the user to cherry pick methods manually. This lets you use lodash naturally (aka as documented) without worrying about bundling parts you’re not using.
 
-#### Example
+## Example
 
 Converts
 
@@ -17,7 +17,7 @@ let add1 = add(1);
 lodash.map([1, 2, 3], add1);
 ```
 
-(roughly) to
+roughly to
 
 ```js
 import _map from 'lodash/collection/map';
@@ -33,34 +33,37 @@ let add1 = _fp.add(1);
 _map([1, 2, 3], add1);
 ```
 
-### FAQ
+## FAQ
 
 > Where’s my npm module support?
 
-It will be implemented when plugins can support options ([babel/babel#1833](https://phabricator.babeljs.io/T1833)). (Resolved in Babel 6, todo implement in the plugin)
+It will be implemented when plugins can support options ([babel/babel#1833](https://phabricator.babeljs.io/T1833)).<br>
+(Resolved in Babel 6, todo implement in the plugin)
 
 For now use [lodash-modularize](https://github.com/megawac/lodash-modularize).
 
 > I receive `TypeError: The plugin "lodash" didn’t export a Plugin instance`
 > or, can I use with Babel v5
 
-The latest release is incompatible with Babel v5. [Use version 0.2 of this plugin](https://github.com/lodash/babel-plugin-lodash/tree/v0.2.0) (`npm install babel-plugin-lodash@0.2`).
+The latest release is incompatible with Babel v5. Use [v0.2.0](https://github.com/lodash/babel-plugin-lodash/tree/v0.2.0) of this plugin (`npm install babel-plugin-lodash@0.2.0`).
 
 > Do import specifiers work (`import { x } from 'lodash'`)
 
-[You know it!](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/multi-mix-usage/actual.js) You can also use both specifiers and direct imports (`import _, { y } from 'lodash'`).
+You [know it](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/multi-mix-usage/actual.js)! You can also use both specifiers and direct imports (`import _, { y } from 'lodash'`).
 
 > What about `lodash-fp`?
 
-We’ve got ya covered ([#3](https://github.com/lodash/babel-plugin-lodash/pull/3)). **Note**: this requires you to have both `lodash` and `lodash-fp` installed in the `node_modules`.
+We’ve got [you covered](https://github.com/lodash/babel-plugin-lodash/pull/3).
 
-#### Limitations
+**Note:** This requires you to have both `lodash` and `lodash-fp` installed in `node_modules`.
 
-- You must be using ES6 imports to load lodash.
+## Limitations
 
-- Chaining syntax is not supported
+* You must be using ES6 imports to load lodash.
 
-#### Usage
+* Chaining syntax is not supported
+
+## Usage
 
 ###### Via `.babelrc` (Recommended)
 
