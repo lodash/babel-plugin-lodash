@@ -10,7 +10,7 @@ Converts
 
 ```js
 import lodash from 'lodash';
-import {add} from 'lodash-fp';
+import { add } from 'lodash-fp';
 
 let add1 = add(1);
 
@@ -25,7 +25,7 @@ import _add from 'lodash/math/add';
 import convert from 'lodash-fp/convert';
 
 const _fp = convert({
-    add: _add
+  'add': _add
 });
 
 let add1 = _fp.add(1);
@@ -46,9 +46,9 @@ For now use [lodash-modularize](https://github.com/megawac/lodash-modularize).
 
 The latest release is incompatible with Babel v5. [Use version 0.2 of this plugin](https://github.com/megawac/babel-plugin-lodash/tree/v0.2.0) (`npm install babel-plugin-lodash@0.2`).
 
-> Do import specifiers work (`import {x} from 'lodash'`)
+> Do import specifiers work (`import { x } from 'lodash'`)
 
-[You know it!](https://github.com/megawac/babel-plugin-lodash/blob/master/test/fixtures/multi-mix-usage/actual.js) You can also use both specifiers and direct imports (`import _, {y} from 'lodash'`).
+[You know it!](https://github.com/megawac/babel-plugin-lodash/blob/master/test/fixtures/multi-mix-usage/actual.js) You can also use both specifiers and direct imports (`import _, { y } from 'lodash'`).
 
 > What about `lodash-fp`?
 
@@ -79,7 +79,7 @@ $ babel --plugins lodash script.js
 ###### Via Node API
 
 ```javascript
-require("babel-core").transform("code", {
-  plugins: ["lodash"]
+require('babel-core').transform('code', {
+  'plugins': ['lodash']
 });
 ```
