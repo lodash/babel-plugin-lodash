@@ -6,7 +6,7 @@ import path from 'path';
 function getDirectories(srcPath) {
   // Slow synchronous version of https://github.com/megawac/lodash-modularize/blob/master/src/lodashModules.js.
   // Using the paths lodash-cli provides is not an option as they may change version to version =(
-  return fs.readdirSync(srcPath).filter(filePath =>
+  return ['.'].concat(fs.readdirSync(srcPath)).filter(filePath =>
     fs.statSync(path.join(srcPath, filePath)).isDirectory());
 }
 
@@ -15,7 +15,7 @@ const lodashPath = path.dirname(Module._resolveFilename('lodash', assign(new Mod
 })));
 
 const categoryMap = transform(getDirectories(lodashPath), (result, category) => {
-  result[category] = fs.readdirSync(path.join(lodashPath, category)).map(name => path.basename(name, '.js'));
+  result[category] = fs.readdirSync(path.join(lodashPath, category)).filter(name => path.extname(name) == '.js').map(name => path.basename(name, '.js'));
 }, {});
 
 export default function resolveModule(name) {
