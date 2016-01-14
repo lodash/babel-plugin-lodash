@@ -1,10 +1,10 @@
 'use strict';
 
-var _capitalize = require('lodash/string/capitalize');
+var _capitalize = require('lodash/capitalize');
 
 var _capitalize2 = _interopRequireDefault(_capitalize);
 
-var _map = require('lodash/collection/map');
+var _map = require('lodash/map');
 
 var _map2 = _interopRequireDefault(_map);
 

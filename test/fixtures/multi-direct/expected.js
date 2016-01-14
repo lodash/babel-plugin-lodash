@@ -1,14 +1,14 @@
 'use strict';
 
-var _reject = require('lodash/collection/reject');
+var _reject = require('lodash/reject');
 
 var _reject2 = _interopRequireDefault(_reject);
 
-var _take = require('lodash/array/take');
+var _take = require('lodash/take');
 
 var _take2 = _interopRequireDefault(_take);
 
-var _map = require('lodash/collection/map');
+var _map = require('lodash/map');
 
 var _map2 = _interopRequireDefault(_map);
 

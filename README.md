@@ -8,7 +8,7 @@ Transforms
 
 ```js
 import lodash from 'lodash';
-import { add } from 'lodash-fp';
+import { add } from 'lodash/fp';
 
 let add1 = add(1);
 lodash.map([1, 2, 3], add1);

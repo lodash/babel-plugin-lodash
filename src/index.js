@@ -44,7 +44,7 @@ export default function({ 'types': t }) {
         exit({ hub, node }) {
           if (lodashFpIdentifier) {
             // Setup the lodash-fp instance with the selected methods.
-            let id = hub.file.addImport('lodash-fp/convert', 'default');
+            let id = hub.file.addImport('lodash/fp/convert', 'default');
             let fpSetup = t.callExpression(id, [
               t.objectExpression(_.map(selectedMethods, (identifier, name) => {
                 return t.objectProperty(t.identifier(name), identifier);
@@ -61,7 +61,7 @@ export default function({ 'types': t }) {
       ImportDeclaration(path) {
         let { node, scope } = path;
         let { value } = node.source;
-        let fp = value == 'lodash-fp';
+        let fp = value == 'lodash/fp';
 
         if (fp || value == 'lodash') {
           node.specifiers.forEach(spec => {

@@ -1,22 +1,22 @@
 'use strict';
 
-var _convert = require('lodash-fp/convert');
+var _convert = require('lodash/fp/convert');
 
 var _convert2 = _interopRequireDefault(_convert);
 
-var _reject = require('lodash/collection/reject');
+var _reject = require('lodash/reject');
 
 var _reject2 = _interopRequireDefault(_reject);
 
-var _take = require('lodash/array/take');
+var _take = require('lodash/take');
 
 var _take2 = _interopRequireDefault(_take);
 
-var _add = require('lodash/math/add');
+var _add = require('lodash/add');
 
 var _add2 = _interopRequireDefault(_add);
 
-var _map = require('lodash/collection/map');
+var _map = require('lodash/map');
 
 var _map2 = _interopRequireDefault(_map);
 
