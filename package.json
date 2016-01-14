@@ -22,7 +22,7 @@
     "babel-plugin"
   ],
   "dependencies": {
-    "lodash": "^3.10.0"
+    "lodash": "^4.0.0"
   },
   "babel": {
     "presets": [

@@ -15,7 +15,9 @@ const lodashPath = path.dirname(Module._resolveFilename('lodash', assign(new Mod
 })));
 
 const categoryMap = transform(getDirectories(lodashPath), (result, category) => {
-  result[category] = fs.readdirSync(path.join(lodashPath, category)).filter(name => path.extname(name) == '.js').map(name => path.basename(name, '.js'));
+  result[category] = fs.readdirSync(path.join(lodashPath, category))
+    .filter(name => path.extname(name) == '.js')
+    .map(name => path.basename(name, '.js'));
 }, {});
 
 export default function resolveModule(name) {
