@@ -64,6 +64,10 @@ For [lodash method packages](https://www.npmjs.com/browse/keyword/lodash-modular
 
 Babel v5 is no longer supported. Use [v0.2.0](https://github.com/lodash/babel-plugin-lodash/tree/0.2.0) for support.
 
+> Is Lodash version 3 supported by the plugin
+
+Yes, you can use [v1.1.0](https://github.com/lodash/babel-plugin-lodash/tree/1.1.0).
+
 > Do import specifiers, e.g. `import { x } from 'lodash'`, work?
 
 You [know it](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/multi-specifier/actual.js)!
