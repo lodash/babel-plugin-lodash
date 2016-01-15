@@ -1,4 +1,4 @@
-# babel-plugin-lodash v1.1.0
+# babel-plugin-lodash
 
 A simple transform to remove unused lodash code without manual cherry picking. Letting you use lodash as a monolithic library without worrying about bundling unused parts.
 
@@ -19,7 +19,7 @@ roughly to
 ```js
 import _add from 'lodash/math/add';
 import _map from 'lodash/collection/map';
-import convert from 'lodash-fp/convert';
+import convert from 'lodash/fp/convert';
 
 const _fp = convert({
   'add': _add
@@ -30,6 +30,8 @@ _map([1, 2, 3], add1);
 ```
 
 ## Usage
+
+The current version supports `lodash@4` and `babel@6`. Previous versions support earlier versions of `lodash` and `babel`.
 
 ###### Via `.babelrc` (Recommended)
 
@@ -64,10 +66,6 @@ For [lodash method packages](https://www.npmjs.com/browse/keyword/lodash-modular
 
 Babel v5 is no longer supported. Use [v0.2.0](https://github.com/lodash/babel-plugin-lodash/tree/0.2.0) for support.
 
-> Is Lodash version 3 supported by the plugin
-
-Yes, you can use [v1.1.0](https://github.com/lodash/babel-plugin-lodash/tree/1.1.0).
-
 > Do import specifiers, e.g. `import { x } from 'lodash'`, work?
 
 You [know it](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/multi-specifier/actual.js)!
@@ -75,8 +73,6 @@ You [know it](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fix
 > What about `lodash-fp`?
 
 We’ve got [you covered](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/lodash-fp-specifiers/actual.js).
-
-**Note:** This requires both `lodash` & `lodash-fp` to be installed in `node_modules`.
 
 ## Limitations
 
