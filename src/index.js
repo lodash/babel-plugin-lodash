@@ -125,7 +125,34 @@ export default function({ 'types': t }) {
           importMethod(node.property.name, file);
           node.object = lodashFpIdentifier;
         }
-      }
+      },
+
+      // Allow things like `var x = y || _.noop` (see #28)
+      LogicalExpression: buildExpressionHandler(['left', 'right']),
+
+      // Allow things like `var x = y ? _.identity : _.noop` (see #28)
+      ConditionalExpression: buildExpressionHandler(['test', 'consequent', 'alternate'])
     }
   };
+
+  function buildExpressionHandler(props) {
+    return function(path) {
+      let { node } = path;
+      let { file } = path.hub;
+
+      props.forEach(prop => {
+        let n = node[prop], name = n.name;
+        if (!t.isIdentifier(n)) return;
+
+        if (specified[name]) {
+          node[prop] = importMethod(specified[name], file);
+        }
+        else if (fpSpecified[name]) {
+          // Transform map() to fp.map() in order to avoid destructuring fp.
+          importMethod(fpSpecified[name], file);
+          node[prop] = t.memberExpression(lodashFpIdentifier, t.identifier(fpSpecified[name]));
+        }
+      });
+    };
+  }
 }
