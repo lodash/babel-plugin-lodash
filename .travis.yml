@@ -5,3 +5,13 @@ node_js:
   - "0.12"
   - "4"
   - "5"
+git:
+  depth: 10
+branches:
+  only:
+    - master
+before_install:
+  - "nvm use $TRAVIS_NODE_VERSION"
+  - "npm set loglevel error"
+  - "npm set progress false"
+  - "npm i -g npm@\"^2.0.0\""
