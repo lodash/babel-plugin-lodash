@@ -64,6 +64,10 @@ require('babel-core').transform('code', {
 For Lodash [method packages](https://www.npmjs.com/browse/keyword/lodash-modularized)
 use [lodash-modularize](https://github.com/megawac/lodash-modularize).
 
+> Can the plugin produce ES6 `import`s rather than CommonJS (`require`) imports?
+
+This plugin produces ES6 imports by default - [babel-plugin-transform-es2015-modules-commonjs](https://www.npmjs.com/package/babel-plugin-transform-es2015-modules-commonjs) is what transforms the ES6 `import` statements to CommonJS. Omit this plugin from your presets if you want ES6 style imports.
+
 > I receive `TypeError: The plugin "lodash" didn’t export a Plugin instance`<br>
 > or, can I use this plugin with Babel v5?
 
