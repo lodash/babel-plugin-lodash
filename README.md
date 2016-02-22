@@ -71,7 +71,7 @@ This plugin produces ES6 imports by default - [babel-plugin-transform-es2015-mod
 > I receive `TypeError: The plugin "lodash" didn’t export a Plugin instance`<br>
 > or, can I use this plugin with Babel v5?
 
-Babel v5 is no longer supported. Use [v0.2.0](https://github.com/lodash/babel-plugin-lodash/tree/0.2.0)
+Babel v5 is no longer supported. Use [v0.3.0](https://github.com/lodash/babel-plugin-lodash/tree/v0.3.0)
 for support.
 
 > Do import specifiers, e.g. `import { x } from 'lodash'`, work?
