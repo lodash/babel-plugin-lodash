@@ -35,7 +35,7 @@ _map([1, 2, 3], add1);
 
 This plugin supports `lodash@^4.0.0` & `babel@^6.0.0`.
 
-###### Via `.babelrc` (Recommended)
+###### .babelrc (Recommended)
 
 ```json
 {
@@ -43,13 +43,13 @@ This plugin supports `lodash@^4.0.0` & `babel@^6.0.0`.
 }
 ```
 
-###### Via CLI
+###### Babel CLI
 
 ```sh
 $ babel --plugins lodash script.js
 ```
 
-###### Via Node API
+###### Babel API
 
 ```js
 require('babel-core').transform('code', {
