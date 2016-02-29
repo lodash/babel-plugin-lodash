@@ -4,34 +4,34 @@ var _convert = require('lodash/fp/convert');
 
 var _convert2 = _interopRequireDefault(_convert);
 
-var _reject = require('lodash/reject');
+var _reject2 = require('lodash/reject');
 
-var _reject2 = _interopRequireDefault(_reject);
+var _reject3 = _interopRequireDefault(_reject2);
 
-var _take = require('lodash/take');
+var _add2 = require('lodash/add');
 
-var _take2 = _interopRequireDefault(_take);
+var _add3 = _interopRequireDefault(_add2);
 
-var _add = require('lodash/add');
+var _take2 = require('lodash/take');
 
-var _add2 = _interopRequireDefault(_add);
+var _take3 = _interopRequireDefault(_take2);
 
-var _map = require('lodash/map');
+var _map2 = require('lodash/map');
 
-var _map2 = _interopRequireDefault(_map);
+var _map3 = _interopRequireDefault(_map2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _lodashFp = (0, _convert2.default)({
-  map: _map2.default,
-  add: _add2.default,
-  take: _take2.default,
-  reject: _reject2.default
+  map: _map3.default,
+  take: _take3.default,
+  add: _add3.default,
+  reject: _reject3.default
 });
 
 var mapper = _lodashFp.map(_lodashFp.add(1));
 var result = mapper([1, 2, 3]);
 _lodashFp.take(1, _lodashFp.reject(Boolean, result));
 
-var result2 = (0, _map2.default)([1, 2, 3], function () {});
-(0, _take2.default)((0, _reject2.default)(result), 1);
+var result2 = (0, _map3.default)([1, 2, 3], function () {});
+(0, _take3.default)((0, _reject3.default)(result), 1);

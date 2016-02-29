@@ -1,3 +1,5 @@
+'use strict';
+
 import assert from 'assert';
 import { transformFileSync } from 'babel-core';
 import fs from 'fs';

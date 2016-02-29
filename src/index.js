@@ -1,3 +1,5 @@
+'use strict';
+
 import _ from 'lodash';
 import resolveModule from './lodash-modules';
 
@@ -15,10 +17,10 @@ export default function({ 'types': t }) {
   const CHAIN_ERROR = 'lodash chaining syntax is not yet supported';
 
   // Import a lodash method and return the computed import identifier.
-  function importMethod(methodName, file) {
+  function importMethod(methodName, file, importName=methodName) {
     if (!selectedMethods[methodName]) {
       let path = resolveModule(methodName);
-      selectedMethods[methodName] = file.addImport(path, 'default');
+      selectedMethods[methodName] = file.addImport(path, 'default', importName);
     }
     return selectedMethods[methodName];
   }
@@ -62,17 +64,20 @@ export default function({ 'types': t }) {
         let { node, scope } = path;
         let { value } = node.source;
         let fp = value == 'lodash/fp';
+        let { file } = path.hub;
 
         if (fp || value == 'lodash') {
+          // Remove the original import node, for replacement.
+          path.remove();
+
           node.specifiers.forEach(spec => {
             if (t.isImportSpecifier(spec)) {
               (fp ? fpSpecified : specified)[spec.local.name] = spec.imported.name;
+              importMethod(spec.imported.name, file, spec.local.name);
             } else {
               (fp ? fpObjs : lodashObjs)[spec.local.name] = true;
             }
           });
-          // Remove the original import node, for replacement.
-          path.remove();
         }
         if (fp && !lodashFpIdentifier) {
           lodashFpIdentifier = scope.generateUidIdentifier('lodashFp');
@@ -127,6 +132,10 @@ export default function({ 'types': t }) {
         }
       },
 
+      Property: buildDeclaratorHandler('value'),
+
+      VariableDeclarator: buildDeclaratorHandler('init'),
+
       // Allow things like `var x = y || _.noop` (see #28)
       LogicalExpression: buildExpressionHandler(['left', 'right']),
 
@@ -134,6 +143,23 @@ export default function({ 'types': t }) {
       ConditionalExpression: buildExpressionHandler(['test', 'consequent', 'alternate'])
     }
   };
+
+  function buildDeclaratorHandler(prop) {
+    return function(path) {
+      let { node } = path;
+      let { file } = path.hub;
+
+      let name = node[prop].name;
+      if (specified[name]) {
+        node[prop] = importMethod(specified[name], file);
+      }
+      else if (fpSpecified[name]) {
+        // Transform map() to fp.map() in order to avoid destructuring fp.
+        importMethod(fpSpecified[name], file);
+        node[prop] = t.memberExpression(lodashFpIdentifier, t.identifier(fpSpecified[name]));
+      }
+    }
+  }
 
   function buildExpressionHandler(props) {
     return function(path) {

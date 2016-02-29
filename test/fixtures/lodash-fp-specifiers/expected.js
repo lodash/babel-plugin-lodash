@@ -4,29 +4,29 @@ var _convert = require('lodash/fp/convert');
 
 var _convert2 = _interopRequireDefault(_convert);
 
-var _reject = require('lodash/reject');
+var _take2 = require('lodash/take');
 
-var _reject2 = _interopRequireDefault(_reject);
+var _take3 = _interopRequireDefault(_take2);
 
-var _take = require('lodash/take');
+var _reject2 = require('lodash/reject');
 
-var _take2 = _interopRequireDefault(_take);
+var _reject3 = _interopRequireDefault(_reject2);
 
-var _add = require('lodash/add');
+var _map2 = require('lodash/map');
 
-var _add2 = _interopRequireDefault(_add);
+var _map3 = _interopRequireDefault(_map2);
 
-var _map = require('lodash/map');
+var _add2 = require('lodash/add');
 
-var _map2 = _interopRequireDefault(_map);
+var _add3 = _interopRequireDefault(_add2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _lodashFp = (0, _convert2.default)({
-  map: _map2.default,
-  add: _add2.default,
-  take: _take2.default,
-  reject: _reject2.default
+  add: _add3.default,
+  map: _map3.default,
+  reject: _reject3.default,
+  take: _take3.default
 });
 
 var mapper = _lodashFp.map(_lodashFp.add(1));
