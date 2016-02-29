@@ -1,3 +1,5 @@
+'use strict';
+
 import fs from 'fs';
 import { assign, findKey, transform } from 'lodash';
 import Module from 'module';
@@ -20,8 +22,14 @@ const categoryMap = transform(getDirectories(lodashPath), (result, category) => 
     .map(name => path.basename(name, '.js'));
 }, {});
 
-export default function resolveModule(name) {
-  let category = findKey(categoryMap, funcs => funcs.indexOf(name) > -1);
+export default function resolveModule(name, base) {
+  let category;
+
+  if (base) {
+    category = categoryMap[base].indexOf(name) > -1 && base;
+  } else {
+    category = findKey(categoryMap, funcs => funcs.indexOf(name) > -1);    
+  }
   if (category) {
     return path.join('lodash', category, name);
   }
@@ -29,4 +37,4 @@ export default function resolveModule(name) {
     `lodash method ${name} was not in known modules.`,
     'Please report bugs to https://github.com/lodash/babel-plugin-lodash/issues.'
   ].join('\n'));
-};
+}

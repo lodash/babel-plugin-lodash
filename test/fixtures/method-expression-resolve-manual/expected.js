@@ -26,8 +26,8 @@ var _filter3 = _interopRequireDefault(_filter2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var method = _identity3.default || _noop3.default;
+var method =  || ;
 
-var method2 = _noop3.default ? _map3.default : _filter3.default;
+var method2 = ? : ;
 
-(something ? _pick3.default : _omit3.default)(obj, function () {});
+(something ? : )(obj, function () {});

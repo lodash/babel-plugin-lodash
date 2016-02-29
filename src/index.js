@@ -1,14 +1,12 @@
 'use strict';
 
-import _ from 'lodash';
 import resolveModule from './lodash-modules';
 
 export default function({ 'types': t }) {
   // Tracking variables build during the AST pass. We instantiate
   // these in the `Program` visitor in order to support running the
   // plugin in watch mode or on multiple files.
-  let lodashFpIdentifier,
-      lodashObjs,
+  let lodashObjs,
       fpObjs,
       fpSpecified,
       specified,
@@ -17,12 +15,13 @@ export default function({ 'types': t }) {
   const CHAIN_ERROR = 'lodash chaining syntax is not yet supported';
 
   // Import a lodash method and return the computed import identifier.
-  function importMethod(methodName, file, importName=methodName) {
-    if (!selectedMethods[methodName]) {
-      let path = resolveModule(methodName);
-      selectedMethods[methodName] = file.addImport(path, 'default', importName);
+  function importMethod(methodName, file, base, importName=methodName) {
+    var methodPath = `${base || '*'}/${methodName}`;
+    if (!selectedMethods[methodPath]) {
+      let importPath = resolveModule(methodName, base);
+      selectedMethods[methodPath] = file.addImport(importPath, 'default', importName);
     }
-    return selectedMethods[methodName];
+    return selectedMethods[methodPath];
   }
 
   return {
@@ -41,27 +40,11 @@ export default function({ 'types': t }) {
 
           // Track the methods that have already been used to prevent dupe imports.
           selectedMethods = Object.create(null);
-          lodashFpIdentifier = null;
-        },
-        exit({ hub, node }) {
-          if (lodashFpIdentifier) {
-            // Setup the lodash-fp instance with the selected methods.
-            let id = hub.file.addImport('lodash/fp/convert', 'default');
-            let fpSetup = t.callExpression(id, [
-              t.objectExpression(_.map(selectedMethods, (identifier, name) => {
-                return t.objectProperty(t.identifier(name), identifier);
-              }))
-            ]);
-            // Inject the setup into the top of the program (after imports).
-            node.body.unshift(t.variableDeclaration('var', [
-              t.variableDeclarator(lodashFpIdentifier, fpSetup)
-            ]));
-          }
         }
       },
 
       ImportDeclaration(path) {
-        let { node, scope } = path;
+        let { node } = path;
         let { value } = node.source;
         let fp = value == 'lodash/fp';
         let { file } = path.hub;
@@ -72,33 +55,29 @@ export default function({ 'types': t }) {
 
           node.specifiers.forEach(spec => {
             if (t.isImportSpecifier(spec)) {
-              (fp ? fpSpecified : specified)[spec.local.name] = spec.imported.name;
-              importMethod(spec.imported.name, file, spec.local.name);
+              let importBase = fp ? 'fp' : null;
+              (fp ? fpSpecified : specified)[spec.local.name] =
+                importMethod(spec.imported.name, file, importBase, spec.local.name);
             } else {
               (fp ? fpObjs : lodashObjs)[spec.local.name] = true;
             }
           });
-        }
-        if (fp && !lodashFpIdentifier) {
-          lodashFpIdentifier = scope.generateUidIdentifier('lodashFp');
         }
       },
 
       CallExpression(path) {
         let { node } = path;
         let { name } = node.callee;
-        let { file } = path.hub;
 
         if (!t.isIdentifier(node.callee)) {
           return;
         }
         if (specified[name]) {
-          node.callee = importMethod(specified[name], file);
+          node.callee = specified[name];
         }
         else if (fpSpecified[name]) {
           // Transform map() to fp.map() in order to avoid destructuring fp.
-          importMethod(fpSpecified[name], file);
-          node.callee = t.memberExpression(lodashFpIdentifier, t.identifier(fpSpecified[name]));
+          node.callee = fpSpecified[name];
         }
         // Detect chaining via _(value).
         else if (lodashObjs[name]) {
@@ -107,9 +86,7 @@ export default function({ 'types': t }) {
         if (node.arguments) {
           node.arguments = node.arguments.map(arg => {
             const { name } = arg;
-            return specified[name]
-              ? importMethod(specified[name], file)
-              : arg;
+            return specified[name] || arg;
           });
         }
       },
@@ -127,8 +104,7 @@ export default function({ 'types': t }) {
           path.replaceWith(importMethod(node.property.name, file));
         }
         else if (fpObjs[node.object.name]) {
-          importMethod(node.property.name, file);
-          node.object = lodashFpIdentifier;
+          path.replaceWith(importMethod(node.property.name, file, 'fp'));
         }
       },
 
@@ -147,36 +123,31 @@ export default function({ 'types': t }) {
   function buildDeclaratorHandler(prop) {
     return function(path) {
       let { node } = path;
-      let { file } = path.hub;
 
       let name = node[prop].name;
       if (specified[name]) {
-        node[prop] = importMethod(specified[name], file);
+        node[prop] = specified[name];
       }
       else if (fpSpecified[name]) {
-        // Transform map() to fp.map() in order to avoid destructuring fp.
-        importMethod(fpSpecified[name], file);
-        node[prop] = t.memberExpression(lodashFpIdentifier, t.identifier(fpSpecified[name]));
+        node[prop] = fpSpecified[name];
       }
-    }
+    };
   }
 
   function buildExpressionHandler(props) {
     return function(path) {
       let { node } = path;
-      let { file } = path.hub;
 
       props.forEach(prop => {
         let n = node[prop], name = n.name;
         if (!t.isIdentifier(n)) return;
 
         if (specified[name]) {
-          node[prop] = importMethod(specified[name], file);
+          node[prop] = specified[prop];
         }
         else if (fpSpecified[name]) {
           // Transform map() to fp.map() in order to avoid destructuring fp.
-          importMethod(fpSpecified[name], file);
-          node[prop] = t.memberExpression(lodashFpIdentifier, t.identifier(fpSpecified[name]));
+          node[prop] = fpSpecified[name];
         }
       });
     };
