@@ -12,7 +12,9 @@ export default function({ 'types': t }) {
       specified,
       selectedMethods;
 
-  const CHAIN_ERROR = 'lodash chaining syntax is not yet supported';
+  const CHAIN_ERROR = `lodash chaining syntax is not supported by babel-plugin-lodash.
+Consider substituting the chaining syntax with _.flow and _.flowRight composition patterns.
+See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba`;
 
   // Import a lodash method and return the computed import identifier.
   function importMethod(methodName, file, base, importName=methodName) {
