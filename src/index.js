@@ -17,7 +17,12 @@ Consider substituting the chaining syntax with _.flow and _.flowRight compositio
 See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba`;
 
   // Import a lodash method and return the computed import identifier.
+  // The goal of this function is to only import a method+base pair once
+  // per program. It is safe to reuse import identifiers.
   function importMethod(methodName, file, base, importName=methodName) {
+    // methodPath is used to create a unique identifier of a method+base pair
+    // in order to track the source of the import. This is useful, for example,
+    // if the program includes fp/map and lodash/map (fp/ is one base whereas */ is the other)
     var methodPath = `${base || '*'}/${methodName}`;
     if (!selectedMethods[methodPath]) {
       let importPath = resolveModule(methodName, base);
@@ -55,12 +60,16 @@ See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51b
           // Remove the original import node, for replacement.
           path.remove();
 
+          // Start tracking all the import specifiers and default instances
+          // of lodash imported in the program
           node.specifiers.forEach(spec => {
             if (t.isImportSpecifier(spec)) {
+              // handle import specifier (i.e. `import {map} from 'lodash'`)
               let importBase = fp ? 'fp' : null;
               (fp ? fpSpecified : specified)[spec.local.name] =
                 importMethod(spec.imported.name, file, importBase, spec.local.name);
             } else {
+              // handle default specifier (i.e. `import _ from 'lodash'`)
               (fp ? fpObjs : lodashObjs)[spec.local.name] = true;
             }
           });
@@ -74,11 +83,11 @@ See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51b
         if (!t.isIdentifier(node.callee)) {
           return;
         }
+        // Update the referenced import specifier if its marked for replacement
         if (specified[name]) {
           node.callee = specified[name];
         }
         else if (fpSpecified[name]) {
-          // Transform map() to fp.map() in order to avoid destructuring fp.
           node.callee = fpSpecified[name];
         }
         // Detect chaining via _(value).
@@ -110,8 +119,13 @@ See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51b
         }
       },
 
-      Property: buildDeclaratorHandler('value'),
+      // Various other (less common) ways to use a lodash specifier
+      // This code doesn't apply to uses on a lodash object
+      // only directly imported specifiers.
 
+      // See #34
+      Property: buildDeclaratorHandler('value'),
+      // See #34
       VariableDeclarator: buildDeclaratorHandler('init'),
 
       // Allow things like `var x = y || _.noop` (see #28)
