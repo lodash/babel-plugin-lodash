@@ -19,15 +19,10 @@ _.map([1, 2, 3], add1);
 roughly to
 
 ```js
-import _add from 'lodash/add';
+import _add from 'lodash/fp/add';
 import _map from 'lodash/map';
-import convert from 'lodash/fp/convert';
 
-const _fp = convert({
-  'add': _add
-});
-
-let add1 = _fp.add(1);
+let add1 = _add(1);
 _map([1, 2, 3], add1);
 ```
 
