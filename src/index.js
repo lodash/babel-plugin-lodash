@@ -80,9 +80,6 @@ See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51b
         let { node } = path;
         let { name } = node.callee;
 
-        if (!t.isIdentifier(node.callee)) {
-          return;
-        }
         // Update the referenced import specifier if its marked for replacement
         if (specified[name]) {
           node.callee = specified[name];
@@ -94,9 +91,16 @@ See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51b
         else if (lodashObjs[name]) {
           throw new Error(CHAIN_ERROR);
         }
+
+        // Support lodash methods used as call parameters (#11)
+        // e.g. _.flow(_.map, _.head)
         if (node.arguments) {
           node.arguments = node.arguments.map(arg => {
             const { name } = arg;
+            // Assume that is supposed to be a placeholder (#33)
+            if (lodashObjs[name] || fpObjs[name]) {
+              return t.memberExpression(node.callee, t.identifier('placeholder'));
+            }
             return specified[name] || arg;
           });
         }
