@@ -161,11 +161,11 @@ See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51b
       let { node } = path;
 
       props.forEach(prop => {
-        let n = node[prop], name = n.name;
-        if (!t.isIdentifier(n)) return;
+        let expressionNode = node[prop], name = expressionNode.name;
+        if (!t.isIdentifier(expressionNode)) return;
 
         if (specified[name]) {
-          node[prop] = specified[prop];
+          node[prop] = specified[name];
         }
         else if (fpSpecified[name]) {
           // Transform map() to fp.map() in order to avoid destructuring fp.
