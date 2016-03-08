@@ -9,6 +9,7 @@ import plugin from '../src/index';
 describe('Lodash modularized builds', () => {
   const fixturesDir = path.join(__dirname, 'fixtures');
   const errorFixturesDir = path.join(__dirname, 'error-fixtures');
+  const parsingFixturesDir = path.join(__dirname, 'parsing-fixtures');
 
   fs.readdirSync(fixturesDir).map(caseName => {
     const fixtureDir = path.join(fixturesDir, caseName);
@@ -34,6 +35,17 @@ describe('Lodash modularized builds', () => {
           'plugins': [plugin]
         }).code;
       });
+    });
+  });
+
+  fs.readdirSync(parsingFixturesDir).map(caseName => {
+    const fixtureDir = path.join(parsingFixturesDir, caseName);
+    const actualFile = path.join(fixtureDir, 'actual.js');
+
+    it(`should not error with ${caseName.split('-').join(' ')}`, () => {
+      const actual = transformFileSync(actualFile, {
+        'plugins': [plugin]
+      }).code;
     });
   });
 });

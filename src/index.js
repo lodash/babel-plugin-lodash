@@ -144,12 +144,14 @@ See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51b
     return function(path) {
       let { node } = path;
 
-      let name = node[prop].name;
-      if (specified[name]) {
-        node[prop] = specified[name];
-      }
-      else if (fpSpecified[name]) {
-        node[prop] = fpSpecified[name];
+      if (node[prop] != null) {
+        let name = node[prop].name;
+        if (specified[name]) {
+          node[prop] = specified[name];
+        }
+        else if (fpSpecified[name]) {
+          node[prop] = fpSpecified[name];
+        }
       }
     };
   }
