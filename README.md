@@ -80,4 +80,4 @@ We’ve got [you covered](https://github.com/lodash/babel-plugin-lodash/blob/mas
 ## Limitations
 
 * You must be using ES6 imports to load `lodash`
-* Chaining syntax is not supported
+* Chaining syntax is not supported. See [this blog post](https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba) for alternatives.
