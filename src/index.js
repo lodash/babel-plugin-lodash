@@ -101,7 +101,8 @@ See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51b
             if (lodashObjs[name] || fpObjs[name]) {
               return t.memberExpression(node.callee, t.identifier('placeholder'));
             }
-            return specified[name] || arg;
+            // Support fp methods as arguments (#40)
+            return specified[name] || fpSpecified[name] || arg;
           });
         }
       },
