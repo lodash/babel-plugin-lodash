@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-lodash",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "Lodash modularized builds without the hassle",
   "repository": "megawac/babel-plugin-lodash",
   "author": "Graeme Yeates (github.com/megawac) <megawac@gmail.com>",
