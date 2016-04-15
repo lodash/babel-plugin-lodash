@@ -124,6 +124,20 @@ See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51b
         }
       },
 
+      ExportNamedDeclaration(path) {
+        let { node } = path;
+        let { file } = path.hub;
+
+        if (!node.source) return;
+        var isFp = node.source.value === 'lodash/fp';
+        if (node.source.value === 'lodash' || isFp) {
+          node.specifiers.forEach(specifier => {
+            specifier.local = importMethod(specifier.local.name, file, isFp ? 'fp' : null);
+          });
+          node.source = null;
+        }
+      },
+
       // Various other (less common) ways to use a lodash specifier
       // This code doesn't apply to uses on a lodash object
       // only directly imported specifiers.
