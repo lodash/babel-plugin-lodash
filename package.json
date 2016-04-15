@@ -14,7 +14,8 @@
   },
   "scripts": {
     "build": "rm -rf lib && babel src --out-dir lib",
-    "test": "mocha --compilers js:babel-core/register"
+    "test": "mocha --compilers js:babel-core/register",
+    "prepublish": "npm run build"
   },
   "keywords": [
     "lodash",
