@@ -7,11 +7,10 @@ import Module from 'module';
 import path from 'path';
 
 const lodashPath = getModulePath('lodash') || getModulePath('lodash-es');
-
 if (!lodashPath) {
   throw new Error("Cannot find module 'lodash' or 'lodash-es'");
 }
-
+const lodashId = path.basename(lodashPath);
 const basePaths = [lodashPath].concat(glob.sync(path.join(lodashPath, '*/')));
 
 const moduleMap = _.transform(basePaths, (map, basePath) => {
@@ -38,7 +37,7 @@ function resolveModule(name, base='') {
     : _.nth(_.find(_.toArray(moduleMap), entry => _.includes(entry[1], name)), 0);
 
   if (base !== undefined) {
-    return path.join('lodash', base, name);
+    return path.join(lodashId, base, name);
   }
   throw new Error([
     `Lodash method ${name} is not a known module.`,
