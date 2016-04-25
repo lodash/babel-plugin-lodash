@@ -1,51 +1,58 @@
 'use strict';
 
+import _ from 'lodash';
 import assert from 'assert';
-import { transformFileSync } from 'babel-core';
 import fs from 'fs';
 import path from 'path';
 import plugin from '../src/index';
+import { transformFileSync } from 'babel-core';
 
 describe('Lodash modularized builds', () => {
-  const fixturesDir = path.join(__dirname, 'fixtures');
-  const errorFixturesDir = path.join(__dirname, 'error-fixtures');
-  const parsingFixturesDir = path.join(__dirname, 'parsing-fixtures');
+  const fixturesPath = path.join(__dirname, 'fixtures');
 
-  fs.readdirSync(fixturesDir).map(caseName => {
-    const fixtureDir = path.join(fixturesDir, caseName);
-    const actualFile = path.join(fixtureDir, 'actual.js');
-    const expectedFile = path.join(fixtureDir, 'expected.js');
+  fs.readdirSync(fixturesPath).map(testName => {
+    const fixturePath = path.join(fixturesPath, testName);
+    const actualPath = path.join(fixturePath, 'actual.js');
+    const expectedPath = path.join(fixturePath, 'expected.js');
 
-    it(`should work with ${ caseName.split('-').join(' ') }`, () => {
-      const expected = fs.readFileSync(expectedFile, 'utf8');
+    it(`should work with ${ _.lowerCase(testName) }`, () => {
+      const expected = fs.readFileSync(expectedPath, 'utf8');
 
-      const actual = transformFileSync(actualFile, {
+      const actual = transformFileSync(actualPath, {
         'plugins': [plugin]
       }).code;
 
-      assert.equal(actual.trim(), expected.trim());
+      assert.equal(_.trim(actual), _.trim(expected));
     });
   });
 
-  fs.readdirSync(errorFixturesDir).map(caseName => {
-    const fixtureDir = path.join(errorFixturesDir, caseName);
-    const actualFile = path.join(fixtureDir, 'actual.js');
+  /*--------------------------------------------------------------------------*/
 
-    it(`should throw an error with ${ caseName.split('-').join(' ') }`, () => {
+  const errorFixturesPath = path.join(__dirname, 'error-fixtures');
+
+  fs.readdirSync(errorFixturesPath).map(testName => {
+    const fixturePath = path.join(errorFixturesPath, testName);
+    const actualPath = path.join(fixturePath, 'actual.js');
+
+    it(`should throw an error with ${ _.lowerCase(testName) }`, () => {
       assert.throws(function() {
-        transformFileSync(actualFile, {
+        transformFileSync(actualPath, {
           'plugins': [plugin]
         }).code;
       });
     });
   });
 
-  fs.readdirSync(parsingFixturesDir).map(caseName => {
-    const fixtureDir = path.join(parsingFixturesDir, caseName);
-    const actualFile = path.join(fixtureDir, 'actual.js');
+  /*--------------------------------------------------------------------------*/
 
-    it(`should not error with ${ caseName.split('-').join(' ') }`, () => {
-      transformFileSync(actualFile, {
+  const parsingFixturesPath = path.join(__dirname, 'parsing-fixtures');
+
+  fs.readdirSync(parsingFixturesPath).map(testName => {
+    const fixturePath = path.join(parsingFixturesPath, testName);
+    const actualPath = path.join(fixturePath, 'actual.js');
+
+    it(`should not error with ${ _.lowerCase(testName) }`, () => {
+      transformFileSync(actualPath, {
         'plugins': [plugin]
       }).code;
     });
