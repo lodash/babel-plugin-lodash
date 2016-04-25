@@ -9,7 +9,7 @@ const moduleMap = mapping.moduleMap;
 /*----------------------------------------------------------------------------*/
 
 function resolveModule(name, base='') {
-  if (!_.includes(moduleMap.get(base), name)) {
+  if (!moduleMap.get(base).has(name)) {
     throw new Error([
       `Lodash method ${ name } is not a known module.`,
       'Please report bugs to https://github.com/lodash/babel-plugin-lodash/issues.'

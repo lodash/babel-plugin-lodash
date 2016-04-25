@@ -13,7 +13,7 @@ const moduleMap = _.transform(basePaths, (map, basePath) => {
   const filenames = glob.sync(path.join(basePath, '*.js'));
   const base = path.relative(lodashPath, basePath);
   const names = filenames.map(filename => path.basename(filename, '.js'));
-  map.set(base, names);
+  map.set(base, new Set(names));
 }, new Map);
 
 /*----------------------------------------------------------------------------*/
