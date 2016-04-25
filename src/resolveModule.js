@@ -6,15 +6,6 @@ import glob from 'glob';
 import Module from 'module';
 import path from 'path';
 
-function getModulePath(id, from=process.cwd()) {
-  try {
-    return path.dirname(Module._resolveFilename(id, _.assign(new Module, {
-      'paths': Module._nodeModulePaths(from)
-    })));
-  } catch (e) {}
-  return '';
-}
-
 const lodashPath = getModulePath('lodash') || getModulePath('lodash-es');
 
 if (!lodashPath) {
@@ -30,7 +21,18 @@ const moduleMap = _.transform(basePaths, (map, basePath) => {
   map.set(base, names);
 }, new Map);
 
-export default function resolveModule(name, base='') {
+/*----------------------------------------------------------------------------*/
+
+function getModulePath(id, from=process.cwd()) {
+  try {
+    return path.dirname(Module._resolveFilename(id, _.assign(new Module, {
+      'paths': Module._nodeModulePaths(from)
+    })));
+  } catch (e) {}
+  return '';
+}
+
+function resolveModule(name, base='') {
   base = base
     ? (_.includes(moduleMap.get(base), name) && base)
     : _.nth(_.find(_.toArray(moduleMap), entry => _.includes(entry[1], name)), 0);
@@ -43,3 +45,7 @@ export default function resolveModule(name, base='') {
     'Please report bugs to https://github.com/lodash/babel-plugin-lodash/issues.'
   ].join('\n'));
 }
+
+export default _.memoize(resolveModule, function(name, base) {
+  return (base ? (base + '/') : '') + name;
+});
