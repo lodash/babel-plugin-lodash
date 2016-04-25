@@ -1,139 +1,259 @@
 'use strict';
 
+import _ from 'lodash';
 import resolveModule from './lodash-modules';
 
-export default function({ 'types': t }) {
-  // Tracking variables build during the AST pass. We instantiate
-  // these in the `Program` visitor in order to support running the
-  // plugin in watch mode or on multiple files.
-  let lodashObjs,
-      fpObjs,
-      fpSpecified,
-      specified,
-      selectedMethods;
+/** The error message used when chain sequences are detected. */
+const CHAIN_ERROR = [
+  'Lodash chain sequences are not supported by babel-plugin-lodash.',
+  'Consider substituting chain sequences with _.flow composition patterns.',
+  'See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba'
+].join('\n');
 
-  const CHAIN_ERROR = `lodash chaining syntax is not supported by babel-plugin-lodash.
-Consider substituting the chaining syntax with _.flow and _.flowRight composition patterns.
-See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba`;
+/*----------------------------------------------------------------------------*/
 
-  // Import a lodash method and return the computed import identifier.
-  // The goal of this function is to only import a method+base pair once
-  // per program. It is safe to reuse import identifiers.
-  function importMethod(methodName, file, base, importName=methodName) {
-    // methodPath is used to create a unique identifier of a method+base pair
-    // in order to track the source of the import. This is useful, for example,
-    // if the program includes fp/map and lodash/map (fp/ is one base whereas */ is the other)
-    var methodPath = `${base || '*'}/${methodName}`;
-    if (!selectedMethods[methodPath]) {
-      let importPath = resolveModule(methodName, base);
-      selectedMethods[methodPath] = file.addImport(importPath, 'default', importName);
-    }
-    return selectedMethods[methodPath];
+class PackageStore {
+  constructor(id) {
+    this.id = id;
+    this.__data__ = {
+      'default': new Map,
+      'module': new Map
+    };
   }
+
+  clear() {
+    _.invokeMap(this.__data__, 'clear');
+  }
+
+  get(type) {
+    return this.__data__[type];
+  }
+
+  set(type, map) {
+    this.__data__[type] = map;
+    return this;
+  }
+
+  get [Symbol.iterator]() {
+    this.__data__[Symbol.iterator]();
+  }
+}
+
+class Store {
+  constructor(ids) {
+    const map = this.__data__ = new Map;
+    _.reduce(ids, (map, id) => map.set(id, new PackageStore(id)), map);
+  }
+
+  clear() {
+    _.invokeMap(_.toArray(this.__data__), '[1].clear');
+  }
+
+  get(id) {
+    return this.__data__.get(id);
+  }
+
+  getStoreBy(type, key) {
+    return _.nth(_.find(_.toArray(this.__data__), entry => {
+      const map = entry[1].get(type);
+      if (map) {
+        return map.has(key);
+      }
+    }), 1);
+  }
+
+  getMapBy(type, key) {
+    const store = this.getStoreBy(type, key);
+    if (store) {
+      return store.get(type);
+    }
+  }
+
+  getValueBy(type, key) {
+    const map = this.getMapBy(type, key);
+    if (map) {
+      return map.get(key);
+    }
+  }
+
+  get [Symbol.iterator]() {
+    this.__data__[Symbol.iterator]();
+  }
+}
+
+/*----------------------------------------------------------------------------*/
+
+export default function({ 'types': types }) {
+
+  const pathToIdentifer = new Map;
+
+  /**
+   * Tracking variables built during the AST pass. We instantiate these in the
+   * `Program` visitor in order to support running the plugin in watch mode or
+   * on multiple files.
+   */
+  const store = new Store([
+    'lodash',
+    'lodash/fp',
+    'lodash-es'
+  ]);
+
+  function buildDeclaratorHandler(prop) {
+    return function(path) {
+      const { node } = path;
+      if (node[prop]) {
+        const identifier = store.getValueBy('module', node[prop].name);
+        if (identifier) {
+          node[prop] = identifier;
+        }
+      }
+    };
+  }
+
+  function buildExpressionHandler(props) {
+    return function(path) {
+      const { node } = path;
+      props.forEach(prop => {
+        const expressionNode = node[prop];
+        if (!types.isIdentifier(expressionNode)) {
+          return;
+        }
+        const identifier = store.getValueBy('module', expressionNode.name);
+        if (identifier) {
+          node[prop] = identifier;
+        }
+      });
+    };
+  }
+
+  function importModule(methodName, file, base, importName=methodName) {
+    const path = `${ (base || '*') }/${ methodName }`;
+
+    let result = pathToIdentifer.get(path);
+    if (result === undefined) {
+      const importPath = resolveModule(methodName, base);
+      result = file.addImport(importPath, 'default', importName);
+      pathToIdentifer.set(path, result);
+    }
+    return result;
+  }
+
+  function isDefaultImport(name) {
+    return !!store.getStoreBy('default', name);
+  }
+
+  /*--------------------------------------------------------------------------*/
 
   return {
     'visitor': {
 
-      // Instantiate all the necessary tracking variables for this AST.
+      /**
+       * Instantiate all the necessary tracking variables for this AST.
+       */
       'Program': {
         enter() {
-          // Track the variables used to import lodash.
-          lodashObjs = Object.create(null);
-          specified = Object.create(null);
-
-          // Trackers for lodash-fp support.
-          fpObjs = Object.create(null);
-          fpSpecified = Object.create(null);
-
-          // Track the methods that have already been used to prevent dupe imports.
-          selectedMethods = Object.create(null);
+          // Clear tracked variables used to import Lodash and tracked method imports.
+          pathToIdentifer.clear();
+          store.clear();
         }
       },
 
       ImportDeclaration(path) {
-        let { node } = path;
-        let { value } = node.source;
-        let fp = value == 'lodash/fp';
-        let { file } = path.hub;
+        const { file } = path.hub;
+        const { node } = path;
+        const { value } = node.source;
 
-        if (fp || value == 'lodash') {
-          // Remove the original import node, for replacement.
-          path.remove();
-
-          // Start tracking all the import specifiers and default instances
-          // of lodash imported in the program
-          node.specifiers.forEach(spec => {
-            if (t.isImportSpecifier(spec)) {
-              // handle import specifier (i.e. `import {map} from 'lodash'`)
-              let importBase = fp ? 'fp' : null;
-              (fp ? fpSpecified : specified)[spec.local.name] =
-                importMethod(spec.imported.name, file, importBase, spec.local.name);
-            } else {
-              // handle default specifier (i.e. `import _ from 'lodash'`)
-              (fp ? fpObjs : lodashObjs)[spec.local.name] = true;
-            }
-          });
+        const pkgStore = store.get(value);
+        if (!pkgStore) {
+          return;
         }
+        const isFp = value == 'lodash/fp';
+        const importBase = isFp ? 'fp' : undefined;
+
+        const defaultMap = pkgStore.get('default');
+        const moduleMap = pkgStore.get('module');
+
+        // Remove the original import node to be replaced.
+        path.remove();
+
+        // Track all the Lodash default and specifier imports in the source.
+        node.specifiers.forEach(spec => {
+          const localName = spec.local.name;
+
+          if (types.isImportSpecifier(spec)) {
+            // Handle import specifier (i.e. `import {map} from 'lodash'`).
+            const identifier = importModule(spec.imported.name, file, importBase, localName);
+            moduleMap.set(localName, identifier);
+          }
+          else {
+            // Handle default specifier (i.e. `import _ from 'lodash'`).
+            defaultMap.set(localName, true);
+          }
+        });
       },
 
       CallExpression(path) {
-        let { node } = path;
-        let { name } = node.callee;
+        const { node } = path;
+        const { name } = node.callee;
 
-        // Update the referenced import specifier if its marked for replacement
-        if (specified[name]) {
-          node.callee = specified[name];
+        // Update the referenced import specifier if it's marked for replacement.
+        const callee = store.getValueBy('module', name);
+        if (callee) {
+          node.callee = callee;
         }
-        else if (fpSpecified[name]) {
-          node.callee = fpSpecified[name];
-        }
-        // Detect chaining via _(value).
-        else if (lodashObjs[name]) {
+        // Detect chain sequences via _(value).
+        else if (isDefaultImport(name)) {
           throw new Error(CHAIN_ERROR);
         }
-
-        // Support lodash methods used as call parameters (#11)
-        // e.g. _.flow(_.map, _.head)
+        // Support lodash methods used as call parameters (#11),
+        // e.g. _.flow(_.map, _.head).
         if (node.arguments) {
           node.arguments = node.arguments.map(arg => {
             const { name } = arg;
-            // Assume that is supposed to be a placeholder (#33)
-            if (lodashObjs[name] || fpObjs[name]) {
-              return t.memberExpression(node.callee, t.identifier('placeholder'));
-            }
-            return specified[name] || arg;
+            const identifier = store.getValueBy('module', name);
+
+            // Assume that is supposed to be a placeholder (#33).
+            return isDefaultImport(name)
+              ? types.memberExpression(node.callee, types.identifier('placeholder'))
+              : (identifier || arg);
           });
         }
       },
 
       MemberExpression(path) {
-        let { node } = path;
-        let { file } = path.hub;
+        const { node } = path;
+        const { file } = path.hub;
 
-        if (lodashObjs[node.object.name] && node.property.name == 'chain') {
+        const pkgStore = store.getStoreBy('default', node.object.name);
+        const isFp = _.get(pkgStore, 'id') == 'lodash/fp';
+
+        if (pkgStore && node.property.name == 'chain') {
           // Detect chaining via _.chain(value).
           throw new Error(CHAIN_ERROR);
         }
-        else if (lodashObjs[node.object.name]) {
+        if (pkgStore) {
           // Transform _.foo() to _foo().
-          path.replaceWith(importMethod(node.property.name, file));
-        }
-        else if (fpObjs[node.object.name]) {
-          path.replaceWith(importMethod(node.property.name, file, 'fp'));
+          const importBase = isFp ? 'fp' : undefined;
+          path.replaceWith(importModule(node.property.name, file, importBase));
         }
       },
 
       ExportNamedDeclaration(path) {
-        let { node } = path;
-        let { file } = path.hub;
+        const { node } = path;
+        const { file } = path.hub;
 
-        if (!node.source) return;
-        var isFp = node.source.value === 'lodash/fp';
-        if (node.source.value === 'lodash' || isFp) {
+        if (!node.source) {
+          return;
+        }
+        const isFp = node.source.value === 'lodash/fp';
+        const importBase = isFp ? 'fp' : undefined;
+        const pkgStore = store.get(node.source.value);
+
+        if (pkgStore) {
+          node.source = undefined;
           node.specifiers.forEach(specifier => {
-            specifier.local = importMethod(specifier.local.name, file, isFp ? 'fp' : null);
+            specifier.local = importModule(specifier.local.name, file, importBase);
           });
-          node.source = null;
         }
       },
 
@@ -143,7 +263,6 @@ See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51b
 
       // See #34
       Property: buildDeclaratorHandler('value'),
-      // See #34
       VariableDeclarator: buildDeclaratorHandler('init'),
 
       // Allow things like `var x = y || _.noop` (see #28)
@@ -153,39 +272,4 @@ See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51b
       ConditionalExpression: buildExpressionHandler(['test', 'consequent', 'alternate'])
     }
   };
-
-  function buildDeclaratorHandler(prop) {
-    return function(path) {
-      let { node } = path;
-
-      if (node[prop] != null) {
-        let name = node[prop].name;
-        if (specified[name]) {
-          node[prop] = specified[name];
-        }
-        else if (fpSpecified[name]) {
-          node[prop] = fpSpecified[name];
-        }
-      }
-    };
-  }
-
-  function buildExpressionHandler(props) {
-    return function(path) {
-      let { node } = path;
-
-      props.forEach(prop => {
-        let expressionNode = node[prop], name = expressionNode.name;
-        if (!t.isIdentifier(expressionNode)) return;
-
-        if (specified[name]) {
-          node[prop] = specified[name];
-        }
-        else if (fpSpecified[name]) {
-          // Transform map() to fp.map() in order to avoid destructuring fp.
-          node[prop] = fpSpecified[name];
-        }
-      });
-    };
-  }
 }
