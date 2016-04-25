@@ -132,7 +132,7 @@ export default function({ 'types': types }) {
     };
   }
 
-  function importModule(methodName, file, base, importName=methodName) {
+  function importModule(methodName, file, base='', importName=methodName) {
     const path = `${ (base || '*') }/${ methodName }`;
 
     let result = pathToIdentifer.get(path);
