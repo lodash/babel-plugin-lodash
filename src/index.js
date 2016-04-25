@@ -174,7 +174,7 @@ export default function({ 'types': types }) {
           return;
         }
         const isFp = pkgId == 'lodash/fp';
-        const importBase = isFp ? 'fp' : undefined;
+        const importBase = isFp ? 'fp' : '';
 
         const defaultSet = pkgStore.get('default');
         const moduleMap = pkgStore.get('module');
@@ -237,7 +237,7 @@ export default function({ 'types': types }) {
         }
         if (pkgStore) {
           const isFp = pkgStore.id == 'lodash/fp';
-          const importBase = isFp ? 'fp' : undefined;
+          const importBase = isFp ? 'fp' : '';
 
           // Transform `_.foo()` to `_foo()`.
           path.replaceWith(importModule(node.property.name, file, importBase));
@@ -256,7 +256,7 @@ export default function({ 'types': types }) {
 
         if (pkgStore) {
           const isFp = pkgId === 'lodash/fp';
-          const importBase = isFp ? 'fp' : undefined;
+          const importBase = isFp ? 'fp' : '';
 
           node.source = undefined;
           node.specifiers.forEach(specifier => {
