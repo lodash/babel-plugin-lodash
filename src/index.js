@@ -1,7 +1,13 @@
 'use strict';
 
 import _ from 'lodash';
+import mapping from './mapping';
 import resolveModule from './resolveModule';
+
+const lodashId = mapping.lodashId;
+if (!lodashId) {
+  throw new Error('Cannot find Lodash module');
+}
 
 /** The error message used when chain sequences are detected. */
 const CHAIN_ERROR = [
@@ -92,11 +98,11 @@ export default function({ 'types': types }) {
    * `Program` visitor in order to support running the plugin in watch mode or
    * on multiple files.
    */
-  const store = new Store([
-    'lodash',
-    'lodash/fp',
-    'lodash-es'
-  ]);
+  const store = new Store(
+    lodashId == 'lodash'
+      ? [lodashId, 'lodash/fp']
+      : [lodashId]
+  );
 
   function buildDeclaratorHandler(prop) {
     return function(path) {
