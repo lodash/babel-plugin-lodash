@@ -14,8 +14,8 @@ export default class Store {
     const map = this.__data__ = new Map;
     _.reduce(ids, (map, id) => map.set(id, new PackageStore(id)), map);
 
-    this.getMapBy = _.memoize(this.getMapBy, getByResolver);
     this.getStoreBy = _.memoize(this.getStoreBy, getByResolver);
+    this.getMapBy = _.memoize(this.getMapBy, getByResolver);
     this.getValueBy = _.memoize(this.getValueBy, getByResolver);
   }
 
@@ -29,13 +29,6 @@ export default class Store {
     return this.__data__.get(id);
   }
 
-  getMapBy(type, key) {
-    const store = this.getStoreBy(type, key);
-    if (store) {
-      return store.get(type);
-    }
-  }
-
   getStoreBy(type, key) {
     return _.nth(_.find(_.toArray(this.__data__), entry => {
       const map = entry[1].get(type);
@@ -43,6 +36,13 @@ export default class Store {
         return map.has(key);
       }
     }), 1);
+  }
+
+  getMapBy(type, key) {
+    const store = this.getStoreBy(type, key);
+    if (store) {
+      return store.get(type);
+    }
   }
 
   getValueBy(type, key) {
