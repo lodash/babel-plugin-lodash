@@ -6,9 +6,20 @@ import glob from 'glob';
 import Module from 'module';
 import path from 'path';
 
-const lodashPath = path.dirname(Module._resolveFilename('lodash', _.assign(new Module, {
-  'paths': Module._nodeModulePaths(process.cwd())
-})));
+function getModulePath(id, from=process.cwd()) {
+  try {
+    return path.dirname(Module._resolveFilename(id, _.assign(new Module, {
+      'paths': Module._nodeModulePaths(from)
+    })));
+  } catch (e) {}
+  return '';
+}
+
+const lodashPath = getModulePath('lodash') || getModulePath('lodash-es');
+
+if (!lodashPath) {
+  throw new Error("Cannot find module 'lodash' or 'lodash-es'");
+}
 
 const basePaths = [lodashPath].concat(glob.sync(path.join(lodashPath, '*/')));
 
