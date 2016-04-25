@@ -54,19 +54,6 @@ require('babel-core').transform('code', {
 
 ## FAQ
 
-> Does the plugin work the modularized Lodash method packages?
-
-The plugin doesn’t support [method packages](https://www.npmjs.com/browse/keyword/lodash-modularized).
-
-> Can the plugin produce ES6 `import`s rather than CommonJS (`require`) imports?
-
-The plugin produces ES6 imports by default – [babel-plugin-transform-es2015-modules-commonjs](https://www.npmjs.com/package/babel-plugin-transform-es2015-modules-commonjs) is what transforms the ES6 `import` statements to CommonJS. Omit this plugin from your presets if you want ES6 style imports.
-
-> I receive `TypeError: The plugin "lodash" didn’t export a Plugin instance`<br>
-> or, can I use this plugin with Babel v5?
-
-Babel < 6 isn’t supported.
-
 > Do import specifiers, e.g. `import { x } from 'lodash'`, work?
 
 You [know it](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/multi-specifier/actual.js)!
@@ -75,7 +62,16 @@ You [know it](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fix
 
 We’ve got [you covered](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/lodash-fp-specifiers/actual.js).
 
+> Can this plugin produce ES6 imports rather than CommonJS imports?
+
+This plugin produces ES6 imports by default. The
+[babel-plugin-transform-es2015-modules-commonjs](https://www.npmjs.com/package/babel-plugin-transform-es2015-modules-commonjs)
+plugin transforms the ES6 `import` statements to CommonJS. Omit it from your
+presets if you want ES6 style imports.
+
 ## Limitations
 
-* You must be using ES6 imports to load `lodash`
-* Chaining syntax is not supported. See [this blog post](https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba) for alternatives.
+* You must use ES6 imports to load `lodash`
+* Babel < 6 isn’t supported
+* Chain sequences aren’t supported. See [this blog post](https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba) for alternatives.
+* Modularized [method packages](https://www.npmjs.com/browse/keyword/lodash-modularized) aren’t supported
