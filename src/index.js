@@ -158,7 +158,7 @@ export default function({ 'types': types }) {
        */
       'Program': {
         enter() {
-          // Clear tracked variables used to import Lodash and tracked method imports.
+          // Clear tracked method imports and tracked variables used to import Lodash.
           pathToIdentifer.clear();
           store.clear();
         }
