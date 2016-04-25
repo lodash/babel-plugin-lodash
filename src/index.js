@@ -2,7 +2,9 @@
 
 import _ from 'lodash';
 import mapping from './mapping';
+import PackageStore from './PackageStore';
 import resolveModule from './resolveModule';
+import Store from './Store';
 
 const lodashId = mapping.lodashId;
 if (!lodashId) {
@@ -15,77 +17,6 @@ const CHAIN_ERROR = [
   'Consider substituting chain sequences with _.flow composition patterns.',
   'See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba'
 ].join('\n');
-
-/*----------------------------------------------------------------------------*/
-
-class PackageStore {
-  constructor(id) {
-    this.id = id;
-    this.__data__ = {
-      'default': new Set,
-      'module': new Map
-    };
-  }
-
-  clear() {
-    _.invokeMap(this.__data__, 'clear');
-  }
-
-  get(type) {
-    return this.__data__[type];
-  }
-
-  set(type, map) {
-    this.__data__[type] = map;
-    return this;
-  }
-
-  get [Symbol.iterator]() {
-    this.__data__[Symbol.iterator]();
-  }
-}
-
-class Store {
-  constructor(ids) {
-    const map = this.__data__ = new Map;
-    _.reduce(ids, (map, id) => map.set(id, new PackageStore(id)), map);
-  }
-
-  clear() {
-    _.invokeMap(_.toArray(this.__data__), '[1].clear');
-  }
-
-  get(id) {
-    return this.__data__.get(id);
-  }
-
-  getStoreBy(type, key) {
-    return _.nth(_.find(_.toArray(this.__data__), entry => {
-      const map = entry[1].get(type);
-      if (map) {
-        return map.has(key);
-      }
-    }), 1);
-  }
-
-  getMapBy(type, key) {
-    const store = this.getStoreBy(type, key);
-    if (store) {
-      return store.get(type);
-    }
-  }
-
-  getValueBy(type, key) {
-    const map = this.getMapBy(type, key);
-    if (map) {
-      return map.get(key);
-    }
-  }
-
-  get [Symbol.iterator]() {
-    this.__data__[Symbol.iterator]();
-  }
-}
 
 /*----------------------------------------------------------------------------*/
 
