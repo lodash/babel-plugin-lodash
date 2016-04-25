@@ -265,9 +265,8 @@ export default function({ 'types': types }) {
         }
       },
 
-      // Various other (less common) ways to use a lodash specifier
-      // This code doesn't apply to uses on a lodash object
-      // only directly imported specifiers.
+      // Various other (less common) ways to use a lodash specifier. This code
+      // doesn't apply to uses on a lodash object only directly imported specifiers.
 
       // See #34.
       'Property': buildDeclaratorHandler('value'),
