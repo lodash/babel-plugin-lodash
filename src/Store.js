@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import PackageStore from './PackageStore';
 
-function storeResolver(type, key) {
+function getByResolver(type, key) {
   return type + '/' +key;
 }
 
@@ -14,9 +14,9 @@ export default class Store {
     const map = this.__data__ = new Map;
     _.reduce(ids, (map, id) => map.set(id, new PackageStore(id)), map);
 
-    this.getMapBy = _.memoize(this.getMapBy, storeResolver);
-    this.getStoreBy = _.memoize(this.getStoreBy, storeResolver);
-    this.getValueBy = _.memoize(this.getValueBy, storeResolver);
+    this.getMapBy = _.memoize(this.getMapBy, getByResolver);
+    this.getStoreBy = _.memoize(this.getStoreBy, getByResolver);
+    this.getValueBy = _.memoize(this.getValueBy, getByResolver);
   }
 
   clear() {
