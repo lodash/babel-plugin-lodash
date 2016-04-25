@@ -167,13 +167,13 @@ export default function({ 'types': types }) {
       ImportDeclaration(path) {
         const { file } = path.hub;
         const { node } = path;
-        const { value } = node.source;
+        const { value: pkgId } = node.source;
 
-        const pkgStore = store.get(value);
+        const pkgStore = store.get(pkgId);
         if (!pkgStore) {
           return;
         }
-        const isFp = value == 'lodash/fp';
+        const isFp = pkgId == 'lodash/fp';
         const importBase = isFp ? 'fp' : undefined;
 
         const defaultSet = pkgStore.get('default');
@@ -229,17 +229,17 @@ export default function({ 'types': types }) {
       MemberExpression(path) {
         const { node } = path;
         const { file } = path.hub;
-
         const pkgStore = store.getStoreBy('default', node.object.name);
-        const isFp = _.get(pkgStore, 'id') == 'lodash/fp';
 
         if (pkgStore && node.property.name == 'chain') {
           // Detect chaining via `_.chain(value)`.
           throw new Error(CHAIN_ERROR);
         }
         if (pkgStore) {
-          // Transform `_.foo()` to `_foo()`.
+          const isFp = pkgStore.id == 'lodash/fp';
           const importBase = isFp ? 'fp' : undefined;
+
+          // Transform `_.foo()` to `_foo()`.
           path.replaceWith(importModule(node.property.name, file, importBase));
         }
       },
@@ -251,11 +251,13 @@ export default function({ 'types': types }) {
         if (!node.source) {
           return;
         }
-        const isFp = node.source.value === 'lodash/fp';
-        const importBase = isFp ? 'fp' : undefined;
-        const pkgStore = store.get(node.source.value);
+        const pkgId = node.source.value;
+        const pkgStore = store.get(pkgId);
 
         if (pkgStore) {
+          const isFp = pkgId === 'lodash/fp';
+          const importBase = isFp ? 'fp' : undefined;
+
           node.source = undefined;
           node.specifiers.forEach(specifier => {
             specifier.local = importModule(specifier.local.name, file, importBase);
@@ -268,14 +270,14 @@ export default function({ 'types': types }) {
       // only directly imported specifiers.
 
       // See #34.
-      Property: buildDeclaratorHandler('value'),
-      VariableDeclarator: buildDeclaratorHandler('init'),
+      'Property': buildDeclaratorHandler('value'),
+      'VariableDeclarator': buildDeclaratorHandler('init'),
 
       // Allow things like `var x = y || _.noop`. See #28.
-      LogicalExpression: buildExpressionHandler(['left', 'right']),
+      'LogicalExpression': buildExpressionHandler(['left', 'right']),
 
       // Allow things like `var x = y ? _.identity : _.noop`. See #28.
-      ConditionalExpression: buildExpressionHandler(['test', 'consequent', 'alternate'])
+      'ConditionalExpression': buildExpressionHandler(['test', 'consequent', 'alternate'])
     }
   };
-}
+};
