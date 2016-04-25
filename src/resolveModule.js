@@ -27,7 +27,7 @@ const moduleMap = _.transform(basePaths, (map, basePath) => {
   const filenames = glob.sync(path.join(basePath, '*.js'));
   const base = path.relative(lodashPath, basePath);
   const names = filenames.map(filename => path.basename(filename, '.js'));
-  return map.set(base, names);
+  map.set(base, names);
 }, new Map);
 
 export default function resolveModule(name, base='') {
