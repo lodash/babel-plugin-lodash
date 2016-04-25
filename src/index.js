@@ -147,12 +147,11 @@ export default function({ 'types': types }) {
         if (node.arguments) {
           node.arguments = node.arguments.map(arg => {
             const { name } = arg;
-            const identifier = store.getValueBy('module', name);
 
             // Assume that is supposed to be a placeholder (#33).
             return isDefaultImport(name)
               ? types.memberExpression(node.callee, types.identifier('placeholder'))
-              : (identifier || arg);
+              : (store.getValueBy('module', name) || arg);
           });
         }
       },
@@ -162,11 +161,11 @@ export default function({ 'types': types }) {
         const { file } = path.hub;
         const pkgStore = store.getStoreBy('default', node.object.name);
 
-        if (pkgStore && node.property.name == 'chain') {
-          // Detect chaining via `_.chain(value)`.
-          throw new Error(CHAIN_ERROR);
-        }
         if (pkgStore) {
+          if (node.property.name == 'chain') {
+            // Detect chaining via `_.chain(value)`.
+            throw new Error(CHAIN_ERROR);
+          }
           const isFp = pkgStore.id == 'lodash/fp';
           const importBase = isFp ? 'fp' : '';
 
