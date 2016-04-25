@@ -18,6 +18,11 @@ function resolveModule(name, base='') {
   return lodashId + (base ? '/' + base : '') + '/' + name;
 }
 
-export default _.memoize(resolveModule, function(name, base) {
+function importModule(name, file, base='', importName=name) {
+  const importPath = resolveModule(name, base);
+  return file.addImport(importPath, 'default', importName);
+}
+
+export default _.memoize(importModule, function(name, file, base) {
   return (base ? base + '/' : '') + name;
 });

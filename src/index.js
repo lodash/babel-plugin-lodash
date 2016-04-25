@@ -1,9 +1,9 @@
 'use strict';
 
 import _ from 'lodash';
+import importModule from './importModule';
 import mapping from './mapping';
 import PackageStore from './PackageStore';
-import resolveModule from './resolveModule';
 import Store from './Store';
 
 const lodashId = mapping.lodashId;
@@ -21,8 +21,6 @@ const CHAIN_ERROR = [
 /*----------------------------------------------------------------------------*/
 
 export default function({ 'types': types }) {
-
-  const pathToIdentifer = new Map;
 
   /**
    * Tracking variables built during the AST pass. We instantiate these in the
@@ -63,18 +61,6 @@ export default function({ 'types': types }) {
     };
   }
 
-  function importModule(methodName, file, base='', importName=methodName) {
-    const path = `${ (base || '*') }/${ methodName }`;
-
-    let result = pathToIdentifer.get(path);
-    if (result === undefined) {
-      const importPath = resolveModule(methodName, base);
-      result = file.addImport(importPath, 'default', importName);
-      pathToIdentifer.set(path, result);
-    }
-    return result;
-  }
-
   function isDefaultImport(name) {
     return !!store.getStoreBy('default', name);
   }
@@ -90,7 +76,7 @@ export default function({ 'types': types }) {
       'Program': {
         enter() {
           // Clear tracked method imports and tracked variables used to import Lodash.
-          pathToIdentifer.clear();
+          importModule.cache.clear();
           store.clear();
         }
       },
