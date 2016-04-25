@@ -3,9 +3,21 @@
 import _ from 'lodash';
 import PackageStore from './PackageStore';
 
+function clear(store) {
+  _.invokeMap(store, 'cache.clear');
+  toArray.cache.clear();
+}
+
+function clearDeep(store) {
+  _.invokeMap(toArray(store.__data__), '[1].clear');
+  clear(store);
+}
+
 function getByResolver(type, key) {
   return type + '/' +key;
 }
+
+var toArray = _.memoize(_.toArray);
 
 /*----------------------------------------------------------------------------*/
 
@@ -20,8 +32,7 @@ export default class Store {
   }
 
   clear() {
-    _.invokeMap(this, 'cache.clear');
-    _.invokeMap(_.toArray(this.__data__), '[1].clear');
+    clearDeep(this);
     return this;
   }
 
@@ -30,7 +41,7 @@ export default class Store {
   }
 
   getStoreBy(type, key) {
-    return _.nth(_.find(_.toArray(this.__data__), entry => {
+    return _.nth(_.find(toArray(this.__data__), entry => {
       const map = entry[1].get(type);
       if (map) {
         return map.has(key);
@@ -53,7 +64,7 @@ export default class Store {
   }
 
   set(id, packageStore) {
-    _.invokeMap(this, 'cache.clear');
+    clear(this);
     this.__data__.set(id, packageStore);
     return this;
   }
