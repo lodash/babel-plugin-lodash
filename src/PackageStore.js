@@ -15,6 +15,7 @@ export default class PackageStore {
 
   clear() {
     _.invokeMap(this.__data__, 'clear');
+    return this;
   }
 
   get(type) {

@@ -22,6 +22,7 @@ export default class Store {
   clear() {
     _.invokeMap(this, 'cache.clear');
     _.invokeMap(_.toArray(this.__data__), '[1].clear');
+    return this;
   }
 
   get(id) {
