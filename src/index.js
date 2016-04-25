@@ -133,22 +133,22 @@ export default function({ 'types': types }) {
         const { node } = path;
         const { name } = node.callee;
 
-        // Update the referenced import specifier if it's marked for replacement.
         const callee = store.getValueBy('module', name);
         if (callee) {
+          // Update the import specifier if it's marked for replacement.
           node.callee = callee;
         }
-        // Detect chain sequences via _(value).
         else if (isDefaultImport(name)) {
+          // Detect chain sequences via _(value).
           throw new Error(CHAIN_ERROR);
         }
-        // Support lodash methods used as call parameters (#11),
-        // e.g. `_.flow(_.map, _.head)`.
         if (node.arguments) {
+          // Support lodash methods used as parameters (#11),
+          // e.g. `_.flow(_.map, _.head)`.
           node.arguments = node.arguments.map(arg => {
             const { name } = arg;
 
-            // Assume that is supposed to be a placeholder (#33).
+            // Assume that it's a placeholder (#33).
             return isDefaultImport(name)
               ? types.memberExpression(node.callee, types.identifier('placeholder'))
               : (store.getValueBy('module', name) || arg);
@@ -162,8 +162,8 @@ export default function({ 'types': types }) {
         const pkgStore = store.getStoreBy('default', node.object.name);
 
         if (pkgStore) {
+          // Detect chaining via `_.chain(value)`.
           if (node.property.name == 'chain') {
-            // Detect chaining via `_.chain(value)`.
             throw new Error(CHAIN_ERROR);
           }
           const isFp = pkgStore.id == 'lodash/fp';
