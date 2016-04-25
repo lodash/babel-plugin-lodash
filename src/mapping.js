@@ -7,7 +7,7 @@ import path from 'path';
 
 const lodashPath = getModulePath('lodash') || getModulePath('lodash-es');
 const lodashId = path.basename(lodashPath);
-const basePaths = _.compact([lodashPath].concat(glob.sync(path.join(lodashPath, '*/'))));
+const basePaths = lodashId ? [lodashPath].concat(glob.sync(path.join(lodashPath, '*/'))) : [];
 
 const moduleMap = _.transform(basePaths, (map, basePath) => {
   const filenames = glob.sync(path.join(basePath, '*.js'));
