@@ -52,6 +52,6 @@ export default class Store {
   }
 
   get [Symbol.iterator]() {
-    this.__data__[Symbol.iterator]();
+    return this.__data__[Symbol.iterator]();
   }
 };
