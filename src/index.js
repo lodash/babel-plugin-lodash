@@ -186,7 +186,7 @@ export default function({ 'types': types }) {
         const pkgStore = store.get(pkgId);
 
         if (pkgStore) {
-          const isFp = pkgId === 'lodash/fp';
+          const isFp = pkgId == 'lodash/fp';
           const importBase = isFp ? 'fp' : '';
 
           node.source = undefined;
