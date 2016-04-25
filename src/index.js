@@ -206,7 +206,7 @@ export default function({ 'types': types }) {
           throw new Error(CHAIN_ERROR);
         }
         // Support lodash methods used as call parameters (#11),
-        // e.g. _.flow(_.map, _.head).
+        // e.g. `_.flow(_.map, _.head)`.
         if (node.arguments) {
           node.arguments = node.arguments.map(arg => {
             const { name } = arg;
@@ -228,11 +228,11 @@ export default function({ 'types': types }) {
         const isFp = _.get(pkgStore, 'id') == 'lodash/fp';
 
         if (pkgStore && node.property.name == 'chain') {
-          // Detect chaining via _.chain(value).
+          // Detect chaining via `_.chain(value)`.
           throw new Error(CHAIN_ERROR);
         }
         if (pkgStore) {
-          // Transform _.foo() to _foo().
+          // Transform `_.foo()` to `_foo()`.
           const importBase = isFp ? 'fp' : undefined;
           path.replaceWith(importModule(node.property.name, file, importBase));
         }
@@ -261,14 +261,14 @@ export default function({ 'types': types }) {
       // This code doesn't apply to uses on a lodash object
       // only directly imported specifiers.
 
-      // See #34
+      // See #34.
       Property: buildDeclaratorHandler('value'),
       VariableDeclarator: buildDeclaratorHandler('init'),
 
-      // Allow things like `var x = y || _.noop` (see #28)
+      // Allow things like `var x = y || _.noop`. See #28.
       LogicalExpression: buildExpressionHandler(['left', 'right']),
 
-      // Allow things like `var x = y ? _.identity : _.noop` (see #28)
+      // Allow things like `var x = y ? _.identity : _.noop`. See #28.
       ConditionalExpression: buildExpressionHandler(['test', 'consequent', 'alternate'])
     }
   };
