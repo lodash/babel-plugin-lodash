@@ -14,7 +14,7 @@ function clearDeep(store) {
 }
 
 function getByResolver(type, key) {
-  return type + '/' +key;
+  return type + '/' + key;
 }
 
 var toArray = _.memoize(_.toArray);
