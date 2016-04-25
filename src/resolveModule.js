@@ -11,7 +11,7 @@ const moduleMap = mapping.moduleMap;
 function resolveModule(name, base='') {
   if (!_.includes(moduleMap.get(base), name)) {
     throw new Error([
-      `Lodash method ${name} is not a known module.`,
+      `Lodash method ${ name } is not a known module.`,
       'Please report bugs to https://github.com/lodash/babel-plugin-lodash/issues.'
     ].join('\n'));
   }
