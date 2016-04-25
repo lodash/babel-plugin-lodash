@@ -34,7 +34,7 @@ function getModulePath(id, from=process.cwd()) {
 
 function resolveModule(name, base='') {
   base = base
-    ? (_.includes(moduleMap.get(base), name) && base)
+    ? (_.includes(moduleMap.get(base), name) ? base : undefined)
     : _.nth(_.find(_.toArray(moduleMap), entry => _.includes(entry[1], name)), 0);
 
   if (base !== undefined) {
