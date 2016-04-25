@@ -1,7 +1,7 @@
 'use strict';
 
 import _ from 'lodash';
-import resolveModule from './lodash-modules';
+import resolveModule from './resolveModule';
 
 /** The error message used when chain sequences are detected. */
 const CHAIN_ERROR = [
