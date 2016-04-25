@@ -16,11 +16,13 @@ describe('Lodash modularized builds', () => {
     const actualFile = path.join(fixtureDir, 'actual.js');
     const expectedFile = path.join(fixtureDir, 'expected.js');
 
-    it(`should work with ${caseName.split('-').join(' ')}`, () => {
+    it(`should work with ${ caseName.split('-').join(' ') }`, () => {
+      const expected = fs.readFileSync(expectedFile, 'utf8');
+
       const actual = transformFileSync(actualFile, {
         'plugins': [plugin]
       }).code;
-      const expected = fs.readFileSync(expectedFile, 'utf8');
+
       assert.equal(actual.trim(), expected.trim());
     });
   });
@@ -29,9 +31,9 @@ describe('Lodash modularized builds', () => {
     const fixtureDir = path.join(errorFixturesDir, caseName);
     const actualFile = path.join(fixtureDir, 'actual.js');
 
-    it(`should throw an error with ${caseName.split('-').join(' ')}`, () => {
+    it(`should throw an error with ${ caseName.split('-').join(' ') }`, () => {
       assert.throws(function() {
-        const actual = transformFileSync(actualFile, {
+        transformFileSync(actualFile, {
           'plugins': [plugin]
         }).code;
       });
@@ -42,8 +44,8 @@ describe('Lodash modularized builds', () => {
     const fixtureDir = path.join(parsingFixturesDir, caseName);
     const actualFile = path.join(fixtureDir, 'actual.js');
 
-    it(`should not error with ${caseName.split('-').join(' ')}`, () => {
-      const actual = transformFileSync(actualFile, {
+    it(`should not error with ${ caseName.split('-').join(' ') }`, () => {
+      transformFileSync(actualFile, {
         'plugins': [plugin]
       }).code;
     });
