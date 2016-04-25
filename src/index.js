@@ -99,7 +99,7 @@ export default function({ 'types': types }) {
    * on multiple files.
    */
   const store = new Store(
-    lodashId == 'lodash'
+    mapping.moduleMap.has('fp')
       ? [lodashId, 'lodash/fp']
       : [lodashId]
   );
