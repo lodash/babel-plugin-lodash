@@ -16,7 +16,7 @@ class PackageStore {
   constructor(id) {
     this.id = id;
     this.__data__ = {
-      'default': new Map,
+      'default': new Set,
       'module': new Map
     };
   }
@@ -170,7 +170,7 @@ export default function({ 'types': types }) {
         const isFp = value == 'lodash/fp';
         const importBase = isFp ? 'fp' : undefined;
 
-        const defaultMap = pkgStore.get('default');
+        const defaultSet = pkgStore.get('default');
         const moduleMap = pkgStore.get('module');
 
         // Remove the original import node to be replaced.
@@ -187,7 +187,7 @@ export default function({ 'types': types }) {
           }
           else {
             // Handle default specifier (i.e. `import _ from 'lodash'`).
-            defaultMap.set(localName, true);
+            defaultSet.add(localName);
           }
         });
       },
