@@ -22,8 +22,8 @@ export default class PackageStore {
     return this.__data__[type];
   }
 
-  set(type, map) {
-    this.__data__[type] = map;
+  set(type, collection) {
+    this.__data__[type] = collection;
     return this;
   }
 

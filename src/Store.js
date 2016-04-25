@@ -52,6 +52,12 @@ export default class Store {
     }
   }
 
+  set(id, packageStore) {
+    _.invokeMap(this, 'cache.clear');
+    this.__data__.set(id, packageStore);
+    return this;
+  }
+
   get [Symbol.iterator]() {
     return this.__data__[Symbol.iterator]();
   }
