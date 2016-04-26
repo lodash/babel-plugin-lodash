@@ -25,7 +25,7 @@ export default function({ 'types': types }) {
    *
    * @type Store
    */
-  let store = new Store(
+  const store = new Store(
     mapping.moduleMap.has('fp')
       ? [mapping.lodashId, 'lodash/fp']
       : [mapping.lodashId]
@@ -73,18 +73,12 @@ export default function({ 'types': types }) {
        */
       'Program': {
         enter(path, state) {
-          const oldId = mapping.lodashId;
           const { lodashId, moduleMap } = _.assign(mapping, config(state.opts.id));
-
           if (!lodashId) {
             throw new Error('Cannot find Lodash module');
           }
-          if (lodashId != oldId) {
-            store = new Store(
-              mapping.moduleMap.has('fp')
-                ? [mapping.lodashId, 'lodash/fp']
-                : [mapping.lodashId]
-            );
+          if (!store.has(lodashId)) {
+            store.set(lodashId);
           }
           // Clear tracked method imports and tracked variables used to import Lodash.
           importModule.cache.clear();
