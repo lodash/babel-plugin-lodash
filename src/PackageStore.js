@@ -18,8 +18,16 @@ export default class PackageStore {
     return this;
   }
 
+  ['delete'](type) {
+    return delete this.__data__[type];
+  }
+
   get(type) {
     return this.__data__[type];
+  }
+
+  has(id) {
+    return _.has(this.__data__, id);
   }
 
   set(type, collection) {

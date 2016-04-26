@@ -36,6 +36,10 @@ export default class Store {
     return this;
   }
 
+  ['delete'](id) {
+    return this.__data__['delete'](id);
+  }
+
   get(id) {
     return this.__data__.get(id);
   }
@@ -63,9 +67,13 @@ export default class Store {
     }
   }
 
-  set(id, packageStore) {
+  has(id) {
+    return this.__data__.has(id);
+  }
+
+  set(id, pkgStore=new PackageStore(id)) {
     clear(this);
-    this.__data__.set(id, packageStore);
+    this.__data__.set(id, pkgStore);
     return this;
   }
 
