@@ -18,7 +18,7 @@ export default class PackageStore {
     return this;
   }
 
-  ['delete'](type) {
+  delete(type) {
     return delete this.__data__[type];
   }
 

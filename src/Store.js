@@ -36,8 +36,8 @@ export default class Store {
     return this;
   }
 
-  ['delete'](id) {
-    return this.__data__['delete'](id);
+  delete(id) {
+    return this.__data__.delete(id);
   }
 
   get(id) {
