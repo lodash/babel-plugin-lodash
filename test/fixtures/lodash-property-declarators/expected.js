@@ -20,7 +20,7 @@ var _kebabCase3 = _interopRequireDefault(_kebabCase2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var nameFormatters = exports.nameFormatters = {
-  kebabCase: _kebabCase3.default,
   camelCase: _camelCase3.default,
+  kebabCase: _kebabCase3.default,
   some: _some3.default
 };

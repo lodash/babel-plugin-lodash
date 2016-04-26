@@ -1,4 +1,4 @@
 import _, { kebabCase } from 'lodash';
 
-export const scss = kebabCase;
-export const any = _.some;
+export const dashCase = kebabCase;
+export const some = _.some;

@@ -1,4 +1,4 @@
 import fp, { kebabCase } from 'lodash/fp';
 
-export const scss = kebabCase;
-export const any = fp.some;
+export const dashCase = kebabCase;
+export const some = fp.some;
