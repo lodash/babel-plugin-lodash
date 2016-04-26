@@ -3,21 +3,20 @@
 import _ from 'lodash';
 import assert from 'assert';
 import fs from 'fs';
+import glob from 'glob';
 import path from 'path';
 import plugin from '../src/index';
 import { transformFileSync } from 'babel-core';
 
 describe('Lodash modularized builds', () => {
-  const fixturesPath = path.join(__dirname, 'fixtures');
 
-  _.each(fs.readdirSync(fixturesPath), testName => {
-    const fixturePath = path.join(fixturesPath, testName);
-    const actualPath = path.join(fixturePath, 'actual.js');
-    const expectedPath = path.join(fixturePath, 'expected.js');
+  _.each(glob.sync(path.join(__dirname, 'fixtures/*/')), testPath => {
+    const testName = _.lowerCase(path.basename(testPath));
+    const actualPath = path.join(testPath, 'actual.js');
+    const expectedPath = path.join(testPath, 'expected.js');
 
-    it(`should work with ${ _.lowerCase(testName) }`, () => {
+    it(`should work with ${ testName }`, () => {
       const expected = fs.readFileSync(expectedPath, 'utf8');
-
       const actual = transformFileSync(actualPath, {
         'plugins': [plugin]
       }).code;
@@ -28,13 +27,11 @@ describe('Lodash modularized builds', () => {
 
   /*--------------------------------------------------------------------------*/
 
-  const errorFixturesPath = path.join(__dirname, 'error-fixtures');
+  _.each(glob.sync(path.join(__dirname, 'error-fixtures/*/')), testPath => {
+    const testName = _.lowerCase(path.basename(testPath));
+    const actualPath = path.join(testPath, 'actual.js');
 
-  _.each(fs.readdirSync(errorFixturesPath), testName => {
-    const fixturePath = path.join(errorFixturesPath, testName);
-    const actualPath = path.join(fixturePath, 'actual.js');
-
-    it(`should throw an error with ${ _.lowerCase(testName) }`, () => {
+    it(`should throw an error with ${ testName }`, () => {
       assert.throws(function() {
         transformFileSync(actualPath, {
           'plugins': [plugin]
@@ -45,13 +42,11 @@ describe('Lodash modularized builds', () => {
 
   /*--------------------------------------------------------------------------*/
 
-  const parsingFixturesPath = path.join(__dirname, 'parsing-fixtures');
+  _.each(glob.sync(path.join(__dirname, 'parsing-fixtures/*/')), testPath => {
+    const testName = _.lowerCase(path.basename(testPath));
+    const actualPath = path.join(testPath, 'actual.js');
 
-  _.each(fs.readdirSync(parsingFixturesPath), testName => {
-    const fixturePath = path.join(parsingFixturesPath, testName);
-    const actualPath = path.join(fixturePath, 'actual.js');
-
-    it(`should not error with ${ _.lowerCase(testName) }`, () => {
+    it(`should not error with ${ testName }`, () => {
       transformFileSync(actualPath, {
         'plugins': [plugin]
       }).code;
