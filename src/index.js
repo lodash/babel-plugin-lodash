@@ -4,7 +4,6 @@ import _ from 'lodash';
 import config from './config';
 import importModule from './importModule';
 import mapping from './mapping';
-import PackageStore from './PackageStore';
 import Store from './Store';
 
 /** The error message used when chain sequences are detected. */
