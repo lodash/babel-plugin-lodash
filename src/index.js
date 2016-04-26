@@ -73,7 +73,7 @@ export default function({ 'types': types }) {
        */
       'Program': {
         enter(path, state) {
-          const { lodashId, moduleMap } = _.assign(mapping, config(state.opts.id));
+          const { lodashId } = _.assign(mapping, config(state.opts.id));
           if (!lodashId) {
             throw new Error('Cannot find Lodash module');
           }
