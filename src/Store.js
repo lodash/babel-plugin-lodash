@@ -23,8 +23,8 @@ var toArray = _.memoize(_.toArray);
 
 export default class Store {
   constructor(ids) {
-    const map = this.__data__ = new Map;
-    _.each(ids, id => map.set(id, new PackageStore(id)));
+    this.__data__ = new Map;
+    _.each(ids, id => this.set(id));
 
     this.getStoreBy = _.memoize(this.getStoreBy, getByResolver);
     this.getMapBy = _.memoize(this.getMapBy, getByResolver);
