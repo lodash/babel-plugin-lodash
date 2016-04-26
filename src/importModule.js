@@ -3,19 +3,16 @@
 import _ from 'lodash';
 import mapping from './mapping';
 
-const lodashId = mapping.lodashId;
-const moduleMap = mapping.moduleMap;
-
 /*----------------------------------------------------------------------------*/
 
 function resolveModule(name, base='') {
-  if (!moduleMap.get(base).has(name)) {
+  if (!mapping.moduleMap.get(base).has(name)) {
     throw new Error([
       `Lodash method ${ name } is not a known module.`,
       'Please report bugs to https://github.com/lodash/babel-plugin-lodash/issues.'
     ].join('\n'));
   }
-  return lodashId + (base ? '/' + base : '') + '/' + name;
+  return mapping.lodashId + (base ? '/' + base : '') + '/' + name;
 }
 
 function importModule(name, file, base='', importName=name) {

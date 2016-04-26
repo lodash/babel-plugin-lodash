@@ -1,15 +1,11 @@
 'use strict';
 
 import _ from 'lodash';
+import config from './config';
 import importModule from './importModule';
 import mapping from './mapping';
 import PackageStore from './PackageStore';
 import Store from './Store';
-
-const lodashId = mapping.lodashId;
-if (!lodashId) {
-  throw new Error('Cannot find Lodash module');
-}
 
 /** The error message used when chain sequences are detected. */
 const CHAIN_ERROR = [
@@ -23,14 +19,16 @@ const CHAIN_ERROR = [
 export default function({ 'types': types }) {
 
   /**
-   * Tracking variables built during the AST pass. We instantiate these in the
-   * `Program` visitor in order to support running the plugin in watch mode or
-   * on multiple files.
+   * Used to track variables built during the AST pass. We instantiate these in
+   * the `Program` visitor in order to support running the plugin in watch mode
+   * or on multiple files.
+   *
+   * @type Store
    */
-  const store = new Store(
+  let store = new Store(
     mapping.moduleMap.has('fp')
-      ? [lodashId, 'lodash/fp']
-      : [lodashId]
+      ? [mapping.lodashId, 'lodash/fp']
+      : [mapping.lodashId]
   );
 
   function buildDeclaratorHandler(prop) {
@@ -74,7 +72,20 @@ export default function({ 'types': types }) {
        * Instantiate all the necessary tracking variables for this AST.
        */
       'Program': {
-        enter() {
+        enter(path, state) {
+          const oldId = mapping.lodashId;
+          const { lodashId, moduleMap } = _.assign(mapping, config(state.opts.id));
+
+          if (!lodashId) {
+            throw new Error('Cannot find Lodash module');
+          }
+          if (lodashId != oldId) {
+            store = new Store(
+              mapping.moduleMap.has('fp')
+                ? [mapping.lodashId, 'lodash/fp']
+                : [mapping.lodashId]
+            );
+          }
           // Clear tracked method imports and tracked variables used to import Lodash.
           importModule.cache.clear();
           store.clear();
