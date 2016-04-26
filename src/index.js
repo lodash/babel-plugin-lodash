@@ -48,7 +48,7 @@ export default function({ 'types': types }) {
   function buildExpressionHandler(props) {
     return function(path) {
       const { node } = path;
-      props.forEach(prop => {
+      _.each(props, prop => {
         const expressionNode = node[prop];
         if (!types.isIdentifier(expressionNode)) {
           return;
@@ -100,7 +100,7 @@ export default function({ 'types': types }) {
         path.remove();
 
         // Track all the Lodash default and specifier imports in the source.
-        node.specifiers.forEach(spec => {
+        _.each(node.specifiers, spec => {
           const localName = spec.local.name;
 
           if (types.isImportSpecifier(spec)) {
@@ -128,18 +128,16 @@ export default function({ 'types': types }) {
           // Detect chain sequences via _(value).
           throw new Error(CHAIN_ERROR);
         }
-        if (node.arguments) {
-          // Support lodash methods used as parameters (#11),
-          // e.g. `_.flow(_.map, _.head)`.
-          node.arguments = node.arguments.map(arg => {
-            const { name } = arg;
+        // Support lodash methods used as parameters (#11),
+        // e.g. `_.flow(_.map, _.head)`.
+        _.each(node.arguments, (arg, index, args) => {
+          const { name } = arg;
 
-            // Assume that it's a placeholder (#33).
-            return isDefaultImport(name)
-              ? types.memberExpression(node.callee, types.identifier('placeholder'))
-              : (store.getValueBy('module', name) || arg);
-          });
-        }
+          // Assume that it's a placeholder (#33).
+          args[index] = isDefaultImport(name)
+            ? types.memberExpression(node.callee, types.identifier('placeholder'))
+            : (store.getValueBy('module', name) || arg);
+        });
       },
 
       MemberExpression(path) {
@@ -175,7 +173,7 @@ export default function({ 'types': types }) {
           const importBase = isFp ? 'fp' : '';
 
           node.source = undefined;
-          node.specifiers.forEach(specifier => {
+          _.each(node.specifiers, specifier => {
             specifier.local = importModule(specifier.local.name, file, importBase);
           });
         }

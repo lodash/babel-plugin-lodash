@@ -10,7 +10,7 @@ import { transformFileSync } from 'babel-core';
 describe('Lodash modularized builds', () => {
   const fixturesPath = path.join(__dirname, 'fixtures');
 
-  fs.readdirSync(fixturesPath).map(testName => {
+  _.each(fs.readdirSync(fixturesPath), testName => {
     const fixturePath = path.join(fixturesPath, testName);
     const actualPath = path.join(fixturePath, 'actual.js');
     const expectedPath = path.join(fixturePath, 'expected.js');
@@ -30,7 +30,7 @@ describe('Lodash modularized builds', () => {
 
   const errorFixturesPath = path.join(__dirname, 'error-fixtures');
 
-  fs.readdirSync(errorFixturesPath).map(testName => {
+  _.each(fs.readdirSync(errorFixturesPath), testName => {
     const fixturePath = path.join(errorFixturesPath, testName);
     const actualPath = path.join(fixturePath, 'actual.js');
 
@@ -47,7 +47,7 @@ describe('Lodash modularized builds', () => {
 
   const parsingFixturesPath = path.join(__dirname, 'parsing-fixtures');
 
-  fs.readdirSync(parsingFixturesPath).map(testName => {
+  _.each(fs.readdirSync(parsingFixturesPath), testName => {
     const fixturePath = path.join(parsingFixturesPath, testName);
     const actualPath = path.join(fixturePath, 'actual.js');
 
