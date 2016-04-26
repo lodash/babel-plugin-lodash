@@ -12,12 +12,8 @@ var _map2 = require('lodash/fp/map');
 
 var _map3 = _interopRequireDefault(_map2);
 
-var _add2 = require('lodash/fp/add');
-
-var _add3 = _interopRequireDefault(_add2);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mapper = (0, _map3.default)((0, _add3.default)(1));
+var mapper = (0, _map3.default)(function () {});
 var result = mapper([1, 2, 3]);
 (0, _take3.default)(1, (0, _reject3.default)(Boolean, result));
