@@ -10,13 +10,13 @@ import { transformFileSync } from 'babel-core';
 
 describe('Lodash modularized builds', () => {
 
-  function isEs(string) {
-    return /\bes\b/.test(string);
+  function getLodashId(testPath) {
+    return 'lodash' + (/\bes\b/.test(testPath) ? '-es' : '');
   }
 
   _.each(glob.sync(path.join(__dirname, 'fixtures/*/')), testPath => {
     const testName = _.lowerCase(path.basename(testPath));
-    const lodashId = 'lodash' + (isEs(testName) ? '-es' : '');
+    const lodashId = getLodashId(testName);
 
     const actualPath = path.join(testPath, 'actual.js');
     const expectedPath = path.join(testPath, 'expected.js');
@@ -33,7 +33,7 @@ describe('Lodash modularized builds', () => {
 
   _.each(glob.sync(path.join(__dirname, 'error-fixtures/*/')), testPath => {
     const testName = _.lowerCase(path.basename(testPath));
-    const lodashId = 'lodash' + (isEs(testName) ? '-es' : '');
+    const lodashId = getLodashId(testName);
 
     const actualPath = path.join(testPath, 'actual.js');
 
@@ -48,7 +48,7 @@ describe('Lodash modularized builds', () => {
 
   _.each(glob.sync(path.join(__dirname, 'parsing-fixtures/*/')), testPath => {
     const testName = _.lowerCase(path.basename(testPath));
-    const lodashId = 'lodash' + (isEs(testName) ? '-es' : '');
+    const lodashId = getLodashId(testName);
 
     const actualPath = path.join(testPath, 'actual.js');
 
