@@ -98,8 +98,8 @@ export default function({ 'types': types }) {
         const isFp = pkgId == 'lodash/fp';
         const importBase = isFp ? 'fp' : '';
 
-        const defaultSet = pkgStore.get('default');
-        const moduleMap = pkgStore.get('module');
+        const defaults = pkgStore.get('default');
+        const modules = pkgStore.get('module');
 
         // Remove the original import node to be replaced.
         path.remove();
@@ -111,11 +111,11 @@ export default function({ 'types': types }) {
           if (types.isImportSpecifier(spec)) {
             // Handle import specifier (i.e. `import {map} from 'lodash'`).
             const identifier = importModule(spec.imported.name, file, importBase, localName);
-            moduleMap.set(localName, identifier);
+            modules.set(localName, identifier);
           }
           else {
             // Handle default specifier (i.e. `import _ from 'lodash'`).
-            defaultSet.add(localName);
+            defaults.add(localName);
           }
         });
       },
