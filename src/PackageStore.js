@@ -12,7 +12,7 @@ export default class PackageStore extends MapCache {
   }
 
   clear() {
-    _.invokeMap(_.toArray(this.__data__), 'clear');
+    _.invokeMap(_.toArray(this.__data__), '[1].clear');
     return this;
   }
 };

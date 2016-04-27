@@ -9,8 +9,8 @@ function clear(store) {
 }
 
 function clearDeep(store) {
-  _.invokeMap(_.toArray(store.__data__), '[1].clear');
   clear(store);
+  _.invokeMap(_.toArray(store.__data__), '[1].clear');
 }
 
 function getByResolver(type, key) {
