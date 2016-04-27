@@ -2,9 +2,20 @@
 
 import _ from 'lodash';
 
-function findEntry(map, iteratee) {
-  return _.find(_.toArray(map), entry => iteratee(entry[1], entry[0], map));
+function clear(store) {
+  toArray.cache.clear();
 }
+
+function clearDeep(store) {
+  clear(store);
+  store.__data__.clear();
+}
+
+function findEntry(map, iteratee) {
+  return _.find(toArray(map), entry => iteratee(entry[1], entry[0], map));
+}
+
+const toArray = _.memoize(_.toArray);
 
 /*----------------------------------------------------------------------------*/
 
@@ -14,11 +25,12 @@ export default class MapCache {
   }
 
   clear() {
-    this.__data__.clear();
+    clearDeep(this);
     return this;
   }
 
   delete(key) {
+    clear(this);
     return this.__data__.delete(key);
   }
 
@@ -39,6 +51,7 @@ export default class MapCache {
   }
 
   set(key, value) {
+    clear(this);
     this.__data__.set(key, value);
     return this;
   }
