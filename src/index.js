@@ -79,7 +79,7 @@ export default function({ 'types': types }) {
           if (!store.has(id)) {
             store.set(id);
           }
-          // Clear tracked method imports and tracked variables used to import Lodash.
+          // Clear tracked Lodash method imports and variables.
           importModule.cache.clear();
           store.clear();
         }
