@@ -7,8 +7,21 @@ import path from 'path';
 
 const defaultPath = getModulePath('lodash') || getModulePath('lodash-es');
 const defaultId = path.basename(defaultPath);
+const moduleMaps = new Map;
 
 /*----------------------------------------------------------------------------*/
+
+function createModuleMap(id=defaultId) {
+  const modulePath = getModulePath(id);
+  const basePaths = modulePath ? [modulePath].concat(glob.sync(path.join(modulePath, '*/'))) : [];
+
+  return _.reduce(basePaths, (result, basePath) => {
+    const base = path.relative(modulePath, basePath);
+    const filenames = glob.sync(path.join(basePath, '*.js'));
+    const names = filenames.map(filename => path.basename(filename, '.js'));
+    return result.set(base, new Set(names));
+  }, new Map);
+}
 
 function getModulePath(id, from=process.cwd()) {
   try {
@@ -19,21 +32,14 @@ function getModulePath(id, from=process.cwd()) {
   return '';
 }
 
-function config(lodashId=defaultId) {
-  const lodashPath = getModulePath(lodashId);
-  const basePaths = lodashId ? [lodashPath].concat(glob.sync(path.join(lodashPath, '*/'))) : [];
-
-  const moduleMap = _.transform(basePaths, (map, basePath) => {
-    const filenames = glob.sync(path.join(basePath, '*.js'));
-    const base = path.relative(lodashPath, basePath);
-    const names = filenames.map(filename => path.basename(filename, '.js'));
-    map.set(base, new Set(names));
-  }, new Map);
-
-  return {
-    'id': lodashId,
-    'module': moduleMap
-  };
+function config(id=defaultId) {
+  const modulePath = getModulePath(id);
+  if (!modulePath) {
+    return {};
+  }
+  const module = moduleMaps.get(id) || createModuleMap(id);
+  moduleMaps.set(id, module);
+  return { id, module };
 }
 
 export default _.memoize(config);
