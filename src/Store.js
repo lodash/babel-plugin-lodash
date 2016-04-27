@@ -1,6 +1,7 @@
 'use strict';
 
 import _ from 'lodash';
+import MapCache from './MapCache';
 import PackageStore from './PackageStore';
 
 function clear(store) {
@@ -21,9 +22,9 @@ var toArray = _.memoize(_.toArray);
 
 /*----------------------------------------------------------------------------*/
 
-export default class Store {
+export default class Store extends MapCache {
   constructor(ids) {
-    this.__data__ = new Map;
+    super();
     _.each(ids, id => this.set(id));
 
     this.getStoreBy = _.memoize(this.getStoreBy, getByResolver);
@@ -34,14 +35,6 @@ export default class Store {
   clear() {
     clearDeep(this);
     return this;
-  }
-
-  delete(id) {
-    return this.__data__.delete(id);
-  }
-
-  get(id) {
-    return this.__data__.get(id);
   }
 
   getStoreBy(type, key) {
@@ -67,17 +60,9 @@ export default class Store {
     }
   }
 
-  has(id) {
-    return this.__data__.has(id);
-  }
-
   set(id, pkgStore=new PackageStore(id)) {
     clear(this);
     this.__data__.set(id, pkgStore);
     return this;
-  }
-
-  get [Symbol.iterator]() {
-    return this.__data__[Symbol.iterator]();
   }
 };

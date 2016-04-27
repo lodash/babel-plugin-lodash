@@ -1,41 +1,18 @@
 'use strict';
 
 import _ from 'lodash';
+import MapCache from './MapCache';
 
 /*----------------------------------------------------------------------------*/
 
-export default class PackageStore {
+export default class PackageStore extends MapCache {
   constructor(id) {
+    super([['default', new MapCache], ['member', new MapCache]]);
     this.id = id;
-    this.__data__ = {
-      'default': new Map,
-      'member': new Map
-    };
   }
 
   clear() {
-    _.invokeMap(this.__data__, 'clear');
+    _.invokeMap(_.toArray(this.__data__), 'clear');
     return this;
-  }
-
-  delete(type) {
-    return delete this.__data__[type];
-  }
-
-  get(type) {
-    return this.__data__[type];
-  }
-
-  has(id) {
-    return _.has(this.__data__, id);
-  }
-
-  set(type, map) {
-    this.__data__[type] = map;
-    return this;
-  }
-
-  get [Symbol.iterator]() {
-    return this.__data__[Symbol.iterator]();
   }
 };
