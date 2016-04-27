@@ -11,9 +11,9 @@ const moduleMaps = new Map;
 
 /*----------------------------------------------------------------------------*/
 
-function createModuleMap(id=defaultId) {
-  const modulePath = getModulePath(id);
-  const basePaths = modulePath ? [modulePath].concat(glob.sync(path.join(modulePath, '*/'))) : [];
+function createModuleMap(modulePath) {
+  const basePaths = [modulePath]
+    .concat(glob.sync(path.join(modulePath, '*/')));
 
   return _.reduce(basePaths, (result, basePath) => {
     const base = path.relative(modulePath, basePath);
@@ -37,7 +37,7 @@ function config(id=defaultId) {
   if (!modulePath) {
     return {};
   }
-  const module = moduleMaps.get(id) || createModuleMap(id);
+  const module = moduleMaps.get(id) || createModuleMap(modulePath);
   moduleMaps.set(id, module);
   return { id, module };
 }
