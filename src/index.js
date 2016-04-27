@@ -25,18 +25,18 @@ export default function({ 'types': types }) {
    * @type Store
    */
   const store = new Store(
-    mapping.moduleMap.has('fp')
-      ? [mapping.lodashId, 'lodash/fp']
-      : [mapping.lodashId]
+    mapping.module.has('fp')
+      ? [mapping.id, 'lodash/fp']
+      : [mapping.id]
   );
 
-  function buildDeclaratorHandler(prop) {
+  function buildDeclaratorHandler(key) {
     return function(path) {
       const { node } = path;
-      if (node[prop]) {
-        const identifier = store.getValueBy('module', node[prop].name);
+      if (node[key]) {
+        const identifier = store.getValueBy('member', node[key].name);
         if (identifier) {
-          node[prop] = identifier;
+          node[key] = identifier;
         }
       }
     };
@@ -45,14 +45,14 @@ export default function({ 'types': types }) {
   function buildExpressionHandler(props) {
     return function(path) {
       const { node } = path;
-      _.each(props, prop => {
-        const expressionNode = node[prop];
+      _.each(props, key => {
+        const expressionNode = node[key];
         if (!types.isIdentifier(expressionNode)) {
           return;
         }
-        const identifier = store.getValueBy('module', expressionNode.name);
+        const identifier = store.getValueBy('member', expressionNode.name);
         if (identifier) {
-          node[prop] = identifier;
+          node[key] = identifier;
         }
       });
     };
@@ -72,12 +72,12 @@ export default function({ 'types': types }) {
        */
       'Program': {
         enter(path, state) {
-          const { lodashId } = _.assign(mapping, config(state.opts.id));
-          if (!lodashId) {
+          const { id } = _.assign(mapping, config(state.opts.id));
+          if (!id) {
             throw new Error('Cannot find Lodash module');
           }
-          if (!store.has(lodashId)) {
-            store.set(lodashId);
+          if (!store.has(id)) {
+            store.set(id);
           }
           // Clear tracked method imports and tracked variables used to import Lodash.
           importModule.cache.clear();
@@ -97,8 +97,8 @@ export default function({ 'types': types }) {
         const isFp = pkgId == 'lodash/fp';
         const importBase = isFp ? 'fp' : '';
 
-        const defaults = pkgStore.get('default');
-        const modules = pkgStore.get('module');
+        const defaultMap = pkgStore.get('default');
+        const memberMap = pkgStore.get('member');
 
         // Remove the original import node to be replaced.
         path.remove();
@@ -110,11 +110,11 @@ export default function({ 'types': types }) {
           if (types.isImportSpecifier(spec)) {
             // Handle import specifier (i.e. `import {map} from 'lodash'`).
             const identifier = importModule(spec.imported.name, file, importBase, localName);
-            modules.set(localName, identifier);
+            memberMap.set(localName, identifier);
           }
           else {
             // Handle default specifier (i.e. `import _ from 'lodash'`).
-            defaults.add(localName);
+            defaultMap.set(localName, true);
           }
         });
       },
@@ -123,7 +123,7 @@ export default function({ 'types': types }) {
         const { node } = path;
         const { name } = node.callee;
 
-        const callee = store.getValueBy('module', name);
+        const callee = store.getValueBy('member', name);
         if (callee) {
           // Update the import specifier if it's marked for replacement.
           node.callee = callee;
@@ -140,7 +140,7 @@ export default function({ 'types': types }) {
           // Assume that it's a placeholder (#33).
           args[index] = isDefaultImport(name)
             ? types.memberExpression(node.callee, types.identifier('placeholder'))
-            : (store.getValueBy('module', name) || arg);
+            : (store.getValueBy('member', name) || arg);
         });
       },
 
@@ -150,15 +150,27 @@ export default function({ 'types': types }) {
         const pkgStore = store.getStoreBy('default', node.object.name);
 
         if (pkgStore) {
+          const key = node.property.name;
+
           // Detect chaining via `_.chain(value)`.
-          if (node.property.name == 'chain') {
+          if (key == 'chain') {
             throw new Error(CHAIN_ERROR);
           }
           const isFp = pkgStore.id == 'lodash/fp';
           const importBase = isFp ? 'fp' : '';
 
           // Transform `_.foo()` to `_foo()`.
-          path.replaceWith(importModule(node.property.name, file, importBase));
+          path.replaceWith(importModule(key, file, importBase));
+        }
+        else {
+          // Allow things like `bind.placeholder = {}`.
+          const { object } = node;
+          if (types.isIdentifier(object)) {
+            const identifier = store.getValueBy('member', object.name);
+            if (identifier) {
+              node.object = identifier;
+            }
+          }
         }
       },
 
@@ -166,21 +178,20 @@ export default function({ 'types': types }) {
         const { node } = path;
         const { file } = path.hub;
 
-        if (!node.source) {
-          return;
-        }
-        const pkgId = node.source.value;
+        const pkgId = _.get(node, 'source.value');
         const pkgStore = store.get(pkgId);
 
-        if (pkgStore) {
-          const isFp = pkgId == 'lodash/fp';
-          const importBase = isFp ? 'fp' : '';
+        const isFp = pkgId == 'lodash/fp';
+        const importBase = isFp ? 'fp' : '';
 
-          node.source = undefined;
-          _.each(node.specifiers, specifier => {
-            specifier.local = importModule(specifier.local.name, file, importBase);
-          });
-        }
+        node.source = null;
+
+        _.each(node.specifiers, spec => {
+          const localName = spec.local.name;
+          spec.local = pkgStore
+            ? importModule(localName, file, importBase)
+            : (store.getValueBy('member', localName) || spec.local);
+        });
       },
 
       // Various other (less common) ways to use a lodash specifier. This code
@@ -189,6 +200,9 @@ export default function({ 'types': types }) {
       // See #34.
       'Property': buildDeclaratorHandler('value'),
       'VariableDeclarator': buildDeclaratorHandler('init'),
+
+      // Allow things like `o.a = _.noop`.
+      'AssignmentExpression': buildExpressionHandler(['right']),
 
       // Allow things like `var x = y || _.noop`. See #28.
       'LogicalExpression': buildExpressionHandler(['left', 'right']),

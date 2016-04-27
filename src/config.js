@@ -31,9 +31,8 @@ function config(lodashId=defaultId) {
   }, new Map);
 
   return {
-    'lodashId': lodashId,
-    'lodashPath': lodashPath,
-    'moduleMap': moduleMap
+    'id': lodashId,
+    'module': moduleMap
   };
 }
 
