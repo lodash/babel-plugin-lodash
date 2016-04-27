@@ -7,9 +7,10 @@ import mapping from './mapping';
 
 function resolveModule(name, base='') {
   if (!mapping.module.get(base).has(name)) {
-    if (!base && !mapping.module.has('fp')) {
-      base = mapping.module.findKey(set => set.has(name));
-    }
+    base = (base || mapping.module.has('fp'))
+      ? ''
+      : mapping.module.findKey(set => set.has(name));
+
     if (!base) {
       throw new Error([
         `Lodash method ${ name } is not a known module.`,
