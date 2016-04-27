@@ -2,6 +2,10 @@
 
 import _ from 'lodash';
 
+function findEntry(map, iteratee) {
+  return _.find(_.toArray(map), entry => iteratee(entry[1], entry[0], map));
+}
+
 /*----------------------------------------------------------------------------*/
 
 export default class MapCache {
@@ -18,10 +22,12 @@ export default class MapCache {
     return this.__data__.delete(key);
   }
 
+  find(iteratee) {
+    return _.nth(findEntry(this.__data__, iteratee), 1);
+  }
+
   findKey(iteratee) {
-    return _.first(_.find(_.toArray(this.__data__), entry => {
-      return iteratee(entry[1], entry[0], this.__data__);
-    }));
+    return _.first(findEntry(this.__data__, iteratee));
   }
 
   get(key) {

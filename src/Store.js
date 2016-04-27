@@ -6,19 +6,16 @@ import PackageStore from './PackageStore';
 
 function clear(store) {
   _.invokeMap(store, 'cache.clear');
-  toArray.cache.clear();
 }
 
 function clearDeep(store) {
-  _.invokeMap(toArray(store.__data__), '[1].clear');
+  _.invokeMap(_.toArray(store.__data__), '[1].clear');
   clear(store);
 }
 
 function getByResolver(type, key) {
   return type + '/' + key;
 }
-
-var toArray = _.memoize(_.toArray);
 
 /*----------------------------------------------------------------------------*/
 
@@ -43,26 +40,15 @@ export default class Store extends MapCache {
   }
 
   getStoreBy(type, key) {
-    return _.nth(_.find(toArray(this.__data__), entry => {
-      const map = entry[1].get(type);
-      if (map) {
-        return map.has(key);
-      }
-    }), 1);
+    return super.find(entry => _.invoke(entry.get(type), 'has', key));
   }
 
   getMapBy(type, key) {
-    const store = this.getStoreBy(type, key);
-    if (store) {
-      return store.get(type);
-    }
+    return _.invoke(this.getStoreBy(type, key), 'get', type);
   }
 
   getValueBy(type, key) {
-    const map = this.getMapBy(type, key);
-    if (map) {
-      return map.get(key);
-    }
+    return _.invoke(this.getMapBy(type, key), 'get', key);
   }
 
   set(id, pkgStore=new PackageStore(id)) {
