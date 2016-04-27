@@ -2,12 +2,19 @@
 
 import _ from 'lodash';
 import glob from 'glob';
+import MapCache from './MapCache';
 import Module from 'module';
 import path from 'path';
 
-const defaultPath = getModulePath('lodash') || getModulePath('lodash-es');
+const defaultPath = _.find([
+  getModulePath('lodash'),
+  getModulePath('lodash-es'),
+  getModulePath('lodash-compat')
+]);
+
 const defaultId = path.basename(defaultPath);
-const moduleMaps = new Map;
+
+const moduleMaps = new MapCache;
 
 /*----------------------------------------------------------------------------*/
 
@@ -20,7 +27,7 @@ function createModuleMap(modulePath) {
     const filenames = glob.sync(path.join(basePath, '*.js'));
     const names = filenames.map(filename => path.basename(filename, '.js'));
     return result.set(base, new Set(names));
-  }, new Map);
+  }, new MapCache);
 }
 
 function getModulePath(id, from=process.cwd()) {

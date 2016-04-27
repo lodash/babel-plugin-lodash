@@ -11,7 +11,13 @@ import { transformFileSync } from 'babel-core';
 describe('Lodash modularized builds', () => {
 
   function getLodashId(testPath) {
-    return 'lodash' + (/\bes\b/.test(testPath) ? '-es' : '');
+    if (/\bcompat\b/.test(testPath)) {
+      return 'lodash-compat';
+    }
+    if (/\bes\b/.test(testPath)) {
+      return 'lodash-es';
+    }
+    return 'lodash';
   }
 
   _.each(glob.sync(path.join(__dirname, 'fixtures/*/')), testPath => {

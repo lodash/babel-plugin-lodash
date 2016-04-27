@@ -7,10 +7,15 @@ import mapping from './mapping';
 
 function resolveModule(name, base='') {
   if (!mapping.module.get(base).has(name)) {
-    throw new Error([
-      `Lodash method ${ name } is not a known module.`,
-      'Please report bugs to https://github.com/lodash/babel-plugin-lodash/issues.'
-    ].join('\n'));
+    if (!base && !mapping.module.has('fp')) {
+      base = mapping.module.findKey(set => set.has(name));
+    }
+    if (!base) {
+      throw new Error([
+        `Lodash method ${ name } is not a known module.`,
+        'Please report bugs to https://github.com/lodash/babel-plugin-lodash/issues.'
+      ].join('\n'));
+    }
   }
   return mapping.id + (base ? '/' + base : '') + '/' + name;
 }
