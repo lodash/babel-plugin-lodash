@@ -119,6 +119,36 @@ export default function({ 'types': types }) {
         });
       },
 
+      MemberExpression(path) {
+        const { node } = path;
+        const { file } = path.hub;
+        const pkgStore = store.getStoreBy('default', node.object.name);
+
+        if (pkgStore) {
+          const key = node.property.name;
+
+          // Detect chaining via `_.chain`.
+          if (key == 'chain') {
+            throw new Error(CHAIN_ERROR);
+          }
+          const isFp = pkgStore.id == 'lodash/fp';
+          const importBase = isFp ? 'fp' : '';
+
+          // Transform `_.foo` to `_foo`.
+          path.replaceWith(importModule(key, file, importBase));
+        }
+        else {
+          // Allow things like `bind.placeholder = {}`.
+          const { object } = node;
+          if (types.isIdentifier(object)) {
+            const identifier = store.getValueBy('member', object.name);
+            if (identifier) {
+              node.object = identifier;
+            }
+          }
+        }
+      },
+
       CallExpression(path) {
         const { node } = path;
         const { name } = node.callee;
@@ -142,36 +172,6 @@ export default function({ 'types': types }) {
             ? types.memberExpression(node.callee, types.identifier('placeholder'))
             : (store.getValueBy('member', name) || arg);
         });
-      },
-
-      MemberExpression(path) {
-        const { node } = path;
-        const { file } = path.hub;
-        const pkgStore = store.getStoreBy('default', node.object.name);
-
-        if (pkgStore) {
-          const key = node.property.name;
-
-          // Detect chaining via `_.chain(value)`.
-          if (key == 'chain') {
-            throw new Error(CHAIN_ERROR);
-          }
-          const isFp = pkgStore.id == 'lodash/fp';
-          const importBase = isFp ? 'fp' : '';
-
-          // Transform `_.foo()` to `_foo()`.
-          path.replaceWith(importModule(key, file, importBase));
-        }
-        else {
-          // Allow things like `bind.placeholder = {}`.
-          const { object } = node;
-          if (types.isIdentifier(object)) {
-            const identifier = store.getValueBy('member', object.name);
-            if (identifier) {
-              node.object = identifier;
-            }
-          }
-        }
       },
 
       ExportNamedDeclaration(path) {
