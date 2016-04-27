@@ -8,8 +8,8 @@ export default class PackageStore {
   constructor(id) {
     this.id = id;
     this.__data__ = {
-      'default': new Set,
-      'module': new Map
+      'default': new Map,
+      'member': new Map
     };
   }
 
@@ -30,8 +30,8 @@ export default class PackageStore {
     return _.has(this.__data__, id);
   }
 
-  set(type, collection) {
-    this.__data__[type] = collection;
+  set(type, map) {
+    this.__data__[type] = map;
     return this;
   }
 
