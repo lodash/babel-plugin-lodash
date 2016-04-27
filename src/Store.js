@@ -37,6 +37,11 @@ export default class Store extends MapCache {
     return this;
   }
 
+  delete(key) {
+    clear(this);
+    return super.delete(key);
+  }
+
   getStoreBy(type, key) {
     return _.nth(_.find(toArray(this.__data__), entry => {
       const map = entry[1].get(type);
@@ -62,7 +67,6 @@ export default class Store extends MapCache {
 
   set(id, pkgStore=new PackageStore(id)) {
     clear(this);
-    this.__data__.set(id, pkgStore);
-    return this;
+    return super.set(id, pkgStore);
   }
 };
