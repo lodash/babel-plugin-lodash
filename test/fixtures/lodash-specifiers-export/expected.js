@@ -17,6 +17,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 isObject(a);
 
-exports.foo = foo;
+exports.foo = _isObject2.default;
 exports.isObject = _isObject2.default;
 exports.map = _map3.default;
