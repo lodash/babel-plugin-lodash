@@ -59,7 +59,7 @@ export default function({ 'types': types }) {
   }
 
   function getImportBase(pkgStore) {
-    return (pkgStore && pkgStore.id == 'lodash/fp') ? 'fp' : '';
+    return _.get(pkgStore, 'id') == 'lodash/fp' ? 'fp' : '';
   }
 
   function isDefaultImport(name) {
