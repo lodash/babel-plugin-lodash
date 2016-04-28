@@ -120,9 +120,10 @@ export default function({ 'types': types }) {
       },
 
       MemberExpression(path) {
-        const { node } = path;
         const { file } = path.hub;
-        const pkgStore = store.getStoreBy('default', node.object.name);
+        const { node } = path;
+        const { object } = node;
+        const pkgStore = store.getStoreBy('default', object.name);
 
         if (pkgStore) {
           const key = node.property.name;
@@ -139,7 +140,6 @@ export default function({ 'types': types }) {
         }
         else {
           // Allow things like `bind.placeholder = {}`.
-          const { object } = node;
           if (types.isIdentifier(object)) {
             const identifier = store.getValueBy('member', object.name);
             if (identifier) {
@@ -153,27 +153,26 @@ export default function({ 'types': types }) {
         const { node } = path;
         const { name } = node.callee;
 
-        if (!name) {
-          return;
-        }
-        const callee = store.getValueBy('member', name);
-        if (callee) {
-          // Update the import specifier if it's marked for replacement.
-          node.callee = callee;
-        }
-        else if (isDefaultImport(name)) {
-          // Detect chain sequences via _(value).
-          throw new Error(CHAIN_ERROR);
+        if (name) {
+          const callee = store.getValueBy('member', name);
+          if (callee) {
+            // Update the import specifier if it's marked for replacement.
+            node.callee = callee;
+          } else if (isDefaultImport(name)) {
+            // Detect chain sequences via _(value).
+            throw new Error(CHAIN_ERROR);
+          }
         }
         // Support lodash methods used as parameters (#11),
         // e.g. `_.flow(_.map, _.head)`.
         _.each(node.arguments, (arg, index, args) => {
           const { name } = arg;
-
-          // Assume that it's a placeholder (#33).
-          args[index] = isDefaultImport(name)
-            ? types.memberExpression(node.callee, types.identifier('placeholder'))
-            : (store.getValueBy('member', name) || arg);
+          if (name) {
+            // Assume that it's a placeholder (#33).
+            args[index] = isDefaultImport(name)
+              ? types.memberExpression(node.callee, types.identifier('placeholder'))
+              : (store.getValueBy('member', name) || arg);
+          }
         });
       },
 
