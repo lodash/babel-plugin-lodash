@@ -105,7 +105,6 @@ export default function({ 'types': types }) {
       // Track all the Lodash default and specifier imports in the source.
       _.each(node.specifiers, spec => {
         const localName = spec.local.name;
-
         if (types.isImportSpecifier(spec)) {
           // Handle import specifier (i.e. `import {map} from 'lodash'`).
           const identifier = importModule(spec.imported.name, file, importBase, localName);
@@ -150,14 +149,12 @@ export default function({ 'types': types }) {
 
       if (types.isIdentifier(node.callee)) {
         const { name } = node.callee;
-        const callee = store.getValueBy('member', name);
-        if (callee) {
-          // Update the import specifier if it's marked for replacement.
-          node.callee = callee;
-        } else if (isDefaultImport(name)) {
+        if (isDefaultImport(name)) {
           // Detect chain sequences via _(value).
           throw new Error(CHAIN_ERROR);
         }
+        // Update the import specifier if it's marked for replacement.
+        node.callee = store.getValueBy('member', name) || node.callee;
       }
       else if (types.isMemberExpression(node.callee)) {
         visitor.MemberExpression(path.get('callee'));
