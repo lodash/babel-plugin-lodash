@@ -122,8 +122,11 @@ export default function({ 'types': types }) {
       const { file } = path.hub;
       const { node } = path;
       const { object } = node;
-      const pkgStore = store.getStoreBy('default', object.name);
 
+      if (!types.isIdentifier(object)) {
+        return;
+      }
+      const pkgStore = store.getStoreBy('default', object.name);
       if (pkgStore) {
         const key = node.property.name;
         if (key == 'chain') {
@@ -135,7 +138,7 @@ export default function({ 'types': types }) {
         // Transform `_.foo` to `_foo`.
         path.replaceWith(importModule(key, file, importBase));
       }
-      else if (types.isIdentifier(object)) {
+      else {
         // Allow things like `bind.placeholder = {}`.
         node.object = store.getValueBy('member', object.name) || object;
       }
@@ -162,12 +165,11 @@ export default function({ 'types': types }) {
       // Support lodash methods used as parameters (#11),
       // e.g. `_.flow(_.map, _.head)`.
       _.each(node.arguments, (arg, index, args) => {
-        const { name } = arg;
-        if (name) {
+        if (types.isIdentifier(arg)) {
           // Assume that it's a placeholder (#33).
-          args[index] = isDefaultImport(name)
+          args[index] = isDefaultImport(arg.name)
             ? types.memberExpression(node.callee, types.identifier('placeholder'))
-            : (store.getValueBy('member', name) || arg);
+            : (store.getValueBy('member', arg.name) || arg);
         }
       });
     },
