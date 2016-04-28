@@ -58,6 +58,10 @@ export default function({ 'types': types }) {
     };
   }
 
+  function getImportBase(pkgStore) {
+    return (pkgStore && pkgStore.id == 'lodash/fp') ? 'fp' : '';
+  }
+
   function isDefaultImport(name) {
     return !!store.getStoreBy('default', name);
   }
@@ -93,9 +97,7 @@ export default function({ 'types': types }) {
       if (!pkgStore) {
         return;
       }
-      const isFp = pkgId == 'lodash/fp';
-      const importBase = isFp ? 'fp' : '';
-
+      const importBase = getImportBase(pkgStore);
       const defaultMap = pkgStore.get('default');
       const memberMap = pkgStore.get('member');
 
@@ -131,11 +133,8 @@ export default function({ 'types': types }) {
         if (key == 'chain') {
           throw new Error(CHAIN_ERROR);
         }
-        const isFp = pkgStore.id == 'lodash/fp';
-        const importBase = isFp ? 'fp' : '';
-
         // Transform `_.foo` to `_foo`.
-        path.replaceWith(importModule(key, file, importBase));
+        path.replaceWith(importModule(key, file, getImportBase(pkgStore)));
       }
       else {
         // Allow things like `bind.placeholder = {}`.
@@ -146,24 +145,24 @@ export default function({ 'types': types }) {
     CallExpression(path) {
       const { file } = path.hub;
       const { node } = path;
+      const { callee } = node;
 
-      if (types.isIdentifier(node.callee)) {
-        const { name } = node.callee;
+      if (types.isIdentifier(callee)) {
+        const { name } = callee;
         if (isDefaultImport(name)) {
           // Detect chain sequences via _(value).
           throw new Error(CHAIN_ERROR);
         }
         // Update the import specifier if it's marked for replacement.
-        node.callee = store.getValueBy('member', name) || node.callee;
+        node.callee = store.getValueBy('member', name) || callee;
       }
-      else if (types.isMemberExpression(node.callee)) {
+      else if (types.isMemberExpression(callee)) {
         visitor.MemberExpression(path.get('callee'));
       }
-      // Support lodash methods used as parameters (#11),
-      // e.g. `_.flow(_.map, _.head)`.
+      // Support lodash methods as parameters (#11), e.g. `_.flow(_.map, _.head)`.
       _.each(node.arguments, (arg, index, args) => {
         if (types.isIdentifier(arg)) {
-          // Assume that it's a placeholder (#33).
+          // Assume default imports are placeholders (#33).
           args[index] = isDefaultImport(arg.name)
             ? types.memberExpression(node.callee, types.identifier('placeholder'))
             : (store.getValueBy('member', arg.name) || arg);
@@ -177,9 +176,7 @@ export default function({ 'types': types }) {
 
       const pkgId = _.get(node, 'source.value');
       const pkgStore = store.get(pkgId);
-
-      const isFp = pkgId == 'lodash/fp';
-      const importBase = isFp ? 'fp' : '';
+      const importBase = getImportBase(pkgStore);
 
       node.source = null;
 
