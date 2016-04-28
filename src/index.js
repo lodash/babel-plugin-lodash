@@ -127,8 +127,6 @@ export default function({ 'types': types }) {
 
         if (pkgStore) {
           const key = node.property.name;
-
-          // Detect chaining via `_.chain`.
           if (key == 'chain') {
             throw new Error(CHAIN_ERROR);
           }
@@ -150,10 +148,11 @@ export default function({ 'types': types }) {
       },
 
       CallExpression(path) {
+        const { file } = path.hub;
         const { node } = path;
-        const { name } = node.callee;
 
-        if (name) {
+        if (types.isIdentifier(node.callee)) {
+          const { name } = node.callee;
           const callee = store.getValueBy('member', name);
           if (callee) {
             // Update the import specifier if it's marked for replacement.
@@ -161,6 +160,19 @@ export default function({ 'types': types }) {
           } else if (isDefaultImport(name)) {
             // Detect chain sequences via _(value).
             throw new Error(CHAIN_ERROR);
+          }
+        }
+        else if (types.isMemberExpression(node.callee)) {
+          const { callee } = node;
+          const pkgStore = store.getStoreBy('default', callee.object.name);
+          if (pkgStore) {
+            const key = callee.property.name;
+            if (key == 'chain') {
+              throw new Error(CHAIN_ERROR);
+            }
+            const isFp = pkgStore.id == 'lodash/fp';
+            const importBase = isFp ? 'fp' : '';
+            node.callee = importModule(key, file, importBase);
           }
         }
         // Support lodash methods used as parameters (#11),
