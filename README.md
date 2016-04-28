@@ -28,8 +28,6 @@ _map([1, 2, 3], add1);
 
 ## Usage
 
-This plugin supports `lodash@^4.0.0` & `babel@^6.0.0`.
-
 ###### .babelrc (Recommended)
 
 ```json
