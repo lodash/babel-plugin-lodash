@@ -153,6 +153,9 @@ export default function({ 'types': types }) {
         const { node } = path;
         const { name } = node.callee;
 
+        if (!name) {
+          return;
+        }
         const callee = store.getValueBy('member', name);
         if (callee) {
           // Update the import specifier if it's marked for replacement.
