@@ -1,3 +1,3 @@
-import { map, capitalize } from 'lodash';
+import { head, map, toUpper } from 'lodash';
 
-let result = map(['foo', 'bar', 'baz'], capitalize);
+head(map(['a', 'b'], toUpper));

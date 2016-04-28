@@ -1,5 +1,5 @@
-import fp from 'lodash/fp'
+import { compose, first, map, toUpper } from 'lodash/fp';
 
-let c = fp.flowRight(fp.capitalize, fp.head);
+let c = compose(map(toUpper), first);
 
 c(['a', 'b']);
