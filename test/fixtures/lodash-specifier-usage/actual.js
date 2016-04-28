@@ -1,5 +1,5 @@
 import { map } from 'lodash';
 
-let result = map([1, 2, 3], function() {
+const result = map([1, 2, 3], function() {
 
 });

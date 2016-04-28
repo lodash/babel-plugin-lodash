@@ -1,8 +1,7 @@
 import lodash from 'lodash/fp';
 
-let method = lodash.identity || lodash.noop;
-
-let method2 = lodash.noop ? lodash.map : lodash.filter;
+const method1 = lodash.identity || lodash.noop;
+const method2 = lodash.noop ? lodash.map : lodash.filter;
 
 (something ? lodash.pick : lodash.omit)(function() {
 
