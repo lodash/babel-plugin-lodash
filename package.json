@@ -33,7 +33,12 @@
     ]
   },
   "files": [
+    "lib/config.js",
+    "lib/importModule.js",
     "lib/index.js",
-    "lib/lodash-modules.js"
+    "lib/MapCache.js",
+    "lib/mapping.js",
+    "lib/PackageStore.js",
+    "lib/Store.js"
   ]
 }
