@@ -1,4 +1,4 @@
-# babel-plugin-lodash v2.2.1
+# babel-plugin-lodash v2.3.0
 
 A simple transform to remove unused Lodash code without manual cherry picking
 letting you use Lodash as a monolithic library without worrying about bundling
