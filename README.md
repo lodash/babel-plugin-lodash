@@ -57,6 +57,22 @@ require('babel-core').transform('code', {
 });
 ```
 
+###### webpack.config.js
+
+```js
+'module': {
+  'loaders': [{
+    'loader': 'babel',
+    'test': /\.js$/,
+    'exclude': /node_modules/,
+    'query': {
+      'plugins': ['lodash'],
+      'presets': ['es2015']
+    }
+  }]
+}
+```
+
 ## FAQ
 
 > Do import specifiers, e.g. `import { x } from 'lodash'`, work?
