@@ -36,6 +36,13 @@ _map([1, 2, 3], add1);
 }
 ```
 
+Set plugin options using an array of `[pluginName, optionsObject]`
+```json
+{
+  "plugins": [["lodash", { "id": "lodash-compat" }]]
+}
+```
+
 ###### Babel CLI
 
 ```sh
