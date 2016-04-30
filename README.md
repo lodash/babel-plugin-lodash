@@ -77,11 +77,11 @@ require('babel-core').transform('code', {
 
 > Do import specifiers, e.g. `import { x } from 'lodash'`, work?
 
-You [know it](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/multi-specifier/actual.js)!
+You know it!
 
 > What about `lodash/fp`?
 
-We’ve got [you covered](https://github.com/lodash/babel-plugin-lodash/blob/master/test/fixtures/lodash-fp-specifiers/actual.js).
+Yep, we’ve got you covered!
 
 > Can this plugin produce ES2015 imports rather than CommonJS imports?
 
