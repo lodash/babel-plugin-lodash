@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "rm -rf lib && babel src --out-dir lib",
-    "test": "mocha --compilers js:babel-core/register"
+    "test": "mocha --reporter min --compilers js:babel-core/register"
   },
   "devDependencies": {
     "babel-cli": "^6.7.7",
