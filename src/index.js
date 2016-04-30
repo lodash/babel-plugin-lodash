@@ -70,9 +70,6 @@ export default function({ 'types': types }) {
 
   const visitor = {
 
-    /**
-     * Instantiate all the necessary tracking variables for this AST.
-     */
     'Program': {
       enter(path, state) {
         const { id } = _.assign(mapping, config(state.opts.id));
