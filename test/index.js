@@ -33,7 +33,7 @@ describe('Lodash modularized builds', () => {
         'plugins': [[plugin, { 'id': lodashId }]]
       }).code;
 
-      assert.equal(_.trim(actual), _.trim(expected));
+      assert.strictEqual(_.trim(actual), _.trim(expected));
     });
   });
 
