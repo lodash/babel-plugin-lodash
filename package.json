@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-lodash",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "description": "Lodash modularized builds without the hassle",
   "keywords": "babel-plugin, lodash, modularize",
   "repository": "lodash/babel-plugin-lodash",
