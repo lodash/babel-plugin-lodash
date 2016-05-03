@@ -16,7 +16,7 @@
     "test": "mocha --reporter min --compilers js:babel-core/register"
   },
   "devDependencies": {
-    "babel-cli": "^6.7.7",
+    "babel-cli": "^6.8.0",
     "babel-core": "^6.7.7",
     "babel-preset-es2015": "^6.6.0",
     "lodash-compat": "^3.10.2",
