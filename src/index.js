@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash';
 import config from './config';
 import importModule from './importModule';

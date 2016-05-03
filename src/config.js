@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash';
 import glob from 'glob';
 import MapCache from './MapCache';
