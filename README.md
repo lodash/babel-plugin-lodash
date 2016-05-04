@@ -1,8 +1,6 @@
 # babel-plugin-lodash v3.0.0
 
-A simple transform to remove unused Lodash code without manual cherry picking
-letting you use Lodash as a monolithic library without worrying about bundling
-unused parts.
+A simple transform to cherry-pick Lodash modules so you don’t have to.
 
 ## Example
 
