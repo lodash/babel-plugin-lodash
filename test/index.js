@@ -6,18 +6,19 @@ import path from 'path';
 import plugin from '../src/index';
 import { transformFileSync } from 'babel-core';
 
-describe('Lodash modularized builds', () => {
-
-  function getLodashId(testPath) {
-    if (/\bcompat\b/.test(testPath)) {
-      return 'lodash-compat';
-    }
-    if (/\bes\b/.test(testPath)) {
-      return 'lodash-es';
-    }
-    return 'lodash';
+function getLodashId(testPath) {
+  if (/\bcompat\b/.test(testPath)) {
+    return 'lodash-compat';
   }
+  if (/\bes\b/.test(testPath)) {
+    return 'lodash-es';
+  }
+  return 'lodash';
+}
 
+/*----------------------------------------------------------------------------*/
+
+describe('cherry-picked modular builds', () => {
   _.each(glob.sync(path.join(__dirname, 'fixtures/*/')), testPath => {
     const testName = _.lowerCase(path.basename(testPath));
     const lodashId = getLodashId(testName);
