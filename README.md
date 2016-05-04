@@ -12,7 +12,7 @@ Transforms
 import _ from 'lodash';
 import { add } from 'lodash/fp';
 
-let add1 = add(1);
+const add1 = add(1);
 _.map([1, 2, 3], add1);
 ```
 
@@ -22,7 +22,7 @@ roughly to
 import _add from 'lodash/fp/add';
 import _map from 'lodash/map';
 
-let add1 = _add(1);
+const add1 = _add(1);
 _map([1, 2, 3], add1);
 ```
 
