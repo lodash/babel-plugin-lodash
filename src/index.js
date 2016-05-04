@@ -87,8 +87,8 @@ export default function({ 'types': types }) {
       const { file } = path.hub;
       const { node } = path;
       const { value: pkgId } = node.source;
-
       const pkgStore = store.get(pkgId);
+
       if (!pkgStore) {
         return;
       }
@@ -168,13 +168,13 @@ export default function({ 'types': types }) {
     ExportNamedDeclaration(path) {
       const { node } = path;
       const { file } = path.hub;
-
       const pkgId = _.get(node, 'source.value');
       const pkgStore = store.get(pkgId);
       const importBase = getImportBase(pkgStore);
 
-      node.source = null;
-
+      if (pkgStore) {
+        node.source = null;
+      }
       _.each(node.specifiers, spec => {
         const localName = spec.local.name;
         spec.local = pkgStore
