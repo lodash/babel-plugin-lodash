@@ -4,11 +4,11 @@ import MapCache from './MapCache';
 import Module from 'module';
 import path from 'path';
 
-const defaultPath = _.find([
+const defaultPath = _.toString(_.find([
   getModulePath('lodash'),
   getModulePath('lodash-es'),
   getModulePath('lodash-compat')
-]);
+]));
 
 const defaultId = path.basename(defaultPath);
 
