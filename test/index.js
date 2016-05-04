@@ -7,13 +7,8 @@ import plugin from '../src/index';
 import { transformFileSync } from 'babel-core';
 
 function getLodashId(testPath) {
-  if (/\bcompat\b/.test(testPath)) {
-    return 'lodash-compat';
-  }
-  if (/\bes\b/.test(testPath)) {
-    return 'lodash-es';
-  }
-  return 'lodash';
+  const postfix = /\b(?:compat|es)\b/.exec(testPath);
+  return 'lodash' + (postfix ? '-' + postfix : '');
 }
 
 /*----------------------------------------------------------------------------*/
