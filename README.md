@@ -1,4 +1,4 @@
-# babel-plugin-lodash v3.0.0
+# babel-plugin-lodash v3.1.0
 
 A simple transform to cherry-pick Lodash modules so you don’t have to.
 
