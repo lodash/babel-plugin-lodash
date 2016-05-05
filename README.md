@@ -26,7 +26,7 @@ _map([1, 2, 3], add1);
 
 ## Usage
 
-###### .babelrc (Recommended)
+###### .babelrc
 
 ```json
 {
