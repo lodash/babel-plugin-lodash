@@ -66,7 +66,7 @@ require('babel-core').transform('code', {
 ```js
 'module': {
   'loaders': [{
-    'loader': 'babel',
+    'loader': 'babel-loader',
     'test': /\.js$/,
     'exclude': /node_modules/,
     'query': {
