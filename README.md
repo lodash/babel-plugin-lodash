@@ -2,6 +2,12 @@
 
 A simple transform to cherry-pick Lodash modules so you don’t have to.
 
+## Install
+
+```bash
+$ npm i --save-dev babel-plugin-lodash
+```
+
 ## Example
 
 Transforms
