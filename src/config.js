@@ -37,8 +37,9 @@ function getModulePath(id, from=process.cwd()) {
   return '';
 }
 
-function config(id=defaultId) {
-  const modulePath = getModulePath(id);
+function config(options={ 'cwd': process.cwd(), 'id': defaultId }) {
+  const { id, cwd } = options;
+  const modulePath = getModulePath(id, cwd);
   if (!modulePath) {
     return {};
   }

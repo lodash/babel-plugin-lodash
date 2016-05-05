@@ -70,7 +70,7 @@ export default function({ 'types': types }) {
 
     'Program': {
       enter(path, state) {
-        const { id } = _.assign(mapping, config(state.opts.id));
+        const { id } = _.assign(mapping, config(state.opts));
         if (!id) {
           throw new Error('Cannot find Lodash module');
         }

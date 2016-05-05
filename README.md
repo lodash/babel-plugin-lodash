@@ -37,7 +37,7 @@ _map([1, 2, 3], addOne);
 Set plugin options using an array of `[pluginName, optionsObject]`.
 ```json
 {
-  "plugins": [["lodash", { "id": "lodash-compat" }]]
+  "plugins": [["lodash", { "id": "lodash-compat", "cwd": "some/path" }]]
 }
 ```
 
