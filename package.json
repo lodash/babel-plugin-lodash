@@ -1,8 +1,8 @@
 {
   "name": "babel-plugin-lodash",
   "version": "3.0.0",
-  "description": "Lodash modularized builds without the hassle.",
-  "keywords": "babel-plugin, lodash, modularize",
+  "description": "Modular Lodash builds without the hassle.",
+  "keywords": "babel-plugin, cherry-pick, lodash, modules",
   "repository": "lodash/babel-plugin-lodash",
   "license": "MIT",
   "main": "lib/index.js",
