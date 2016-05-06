@@ -5,13 +5,13 @@ A simple transform to cherry-pick Lodash modules so you don’t have to.
 ## Install
 
 ```bash
+$ npm i --save lodash
 $ npm i --save-dev babel-plugin-lodash
 ```
 
 ## Example
 
 Transforms
-
 ```js
 import _ from 'lodash';
 import { add } from 'lodash/fp';
@@ -21,7 +21,6 @@ _.map([1, 2, 3], addOne);
 ```
 
 roughly to
-
 ```js
 import _add from 'lodash/fp/add';
 import _map from 'lodash/map';
@@ -33,7 +32,6 @@ _map([1, 2, 3], addOne);
 ## Usage
 
 ###### .babelrc
-
 ```json
 {
   "plugins": ["lodash"]
@@ -48,13 +46,11 @@ Set plugin options using an array of `[pluginName, optionsObject]`.
 ```
 
 ###### Babel CLI
-
 ```sh
 $ babel --plugins lodash script.js
 ```
 
 ###### Babel API
-
 ```js
 require('babel-core').transform('code', {
   'plugins': ['lodash']
@@ -62,7 +58,6 @@ require('babel-core').transform('code', {
 ```
 
 ###### webpack.config.js
-
 ```js
 'module': {
   'loaders': [{
