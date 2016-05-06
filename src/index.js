@@ -13,7 +13,7 @@ const CHAIN_ERROR = [
 
 /*----------------------------------------------------------------------------*/
 
-export default function({ 'types': types }) {
+export default function({ types: types }) {
 
   /**
    * Used to track variables built during the AST pass. We instantiate these in
@@ -29,28 +29,20 @@ export default function({ 'types': types }) {
   );
 
   function buildDeclaratorHandler(key) {
-    return function(path) {
-      const { node } = path;
-      if (node[key]) {
-        const identifier = store.getValueBy('member', node[key].name);
-        if (identifier) {
-          node[key] = identifier;
-        }
+    return function({ node: node }) {
+      const expressionNode = node[key];
+      if (types.isIdentifier(expressionNode)) {
+        node[key] = store.getValueBy('member', expressionNode.name) || expressionNode;
       }
     };
   }
 
   function buildExpressionHandler(props) {
-    return function(path) {
-      const { node } = path;
+    return function({ node: node }) {
       _.each(props, key => {
         const expressionNode = node[key];
-        if (!types.isIdentifier(expressionNode)) {
-          return;
-        }
-        const identifier = store.getValueBy('member', expressionNode.name);
-        if (identifier) {
-          node[key] = identifier;
+        if (types.isIdentifier(expressionNode)) {
+          node[key] = store.getValueBy('member', expressionNode.name) || expressionNode;
         }
       });
     };
