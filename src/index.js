@@ -30,9 +30,9 @@ export default function({ types: types }) {
 
   function buildDeclaratorHandler(key) {
     return function({ node: node }) {
-      const expressionNode = node[key];
-      if (types.isIdentifier(expressionNode)) {
-        node[key] = store.getValueBy('member', expressionNode.name) || expressionNode;
+      const decNode = node[key];
+      if (types.isIdentifier(decNode)) {
+        node[key] = store.getValueBy('member', decNode.name) || decNode;
       }
     };
   }
@@ -40,9 +40,9 @@ export default function({ types: types }) {
   function buildExpressionHandler(props) {
     return function({ node: node }) {
       _.each(props, key => {
-        const expressionNode = node[key];
-        if (types.isIdentifier(expressionNode)) {
-          node[key] = store.getValueBy('member', expressionNode.name) || expressionNode;
+        const expNode = node[key];
+        if (types.isIdentifier(expNode)) {
+          node[key] = store.getValueBy('member', expNode.name) || expNode;
         }
       });
     };
