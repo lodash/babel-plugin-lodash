@@ -2,6 +2,9 @@
 
 A simple transform to cherry-pick Lodash modules so you don’t have to.
 
+Combine with [lodash-webpack-plugin](https://www.npmjs.com/package/lodash-webpack-plugin)
+for even smaller cherry-picked builds!
+
 ## Install
 
 ```bash
