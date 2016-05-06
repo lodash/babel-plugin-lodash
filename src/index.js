@@ -60,19 +60,17 @@ export default function({ types: types }) {
 
   const visitor = {
 
-    'Program': {
-      enter(path, state) {
-        const { id } = _.assign(mapping, config(state.opts));
-        if (!id) {
-          throw new Error('Cannot find Lodash module');
-        }
-        if (!store.has(id)) {
-          store.set(id);
-        }
-        // Clear tracked Lodash method imports and variables.
-        importModule.cache.clear();
-        store.clear();
+    Program(path, state) {
+      const { id } = _.assign(mapping, config(state.opts));
+      if (!id) {
+        throw new Error('Cannot find Lodash module');
       }
+      if (!store.has(id)) {
+        store.set(id);
+      }
+      // Clear tracked Lodash method imports and variables.
+      importModule.cache.clear();
+      store.clear();
     },
 
     ImportDeclaration(path) {
