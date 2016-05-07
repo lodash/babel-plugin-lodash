@@ -30,6 +30,8 @@ describe('cherry-picked modular builds', () => {
     });
   });
 
+  /*--------------------------------------------------------------------------*/
+
   _.each(glob.sync(path.join(__dirname, 'error-fixtures/*/')), testPath => {
     const testName = _.lowerCase(path.basename(testPath));
     const lodashId = getLodashId(testName);
@@ -43,6 +45,8 @@ describe('cherry-picked modular builds', () => {
       });
     });
   });
+
+  /*--------------------------------------------------------------------------*/
 
   _.each(glob.sync(path.join(__dirname, 'parsing-fixtures/*/')), testPath => {
     const testName = _.lowerCase(path.basename(testPath));
