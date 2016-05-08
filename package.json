@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "babel src --out-dir lib",
-    "test": "mocha --compilers js:babel-core/register"
+    "test": "mocha --check-leaks --compilers js:babel-core/register"
   },
   "devDependencies": {
     "babel-cli": "^6.8.0",
