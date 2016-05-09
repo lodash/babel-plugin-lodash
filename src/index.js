@@ -59,11 +59,11 @@ export default function({ types: types }) {
   }
 
   function isIdentifier(node, path) {
-    if (!types.isIdentifier(node)) {
-      return false;
+    if (types.isIdentifier(node)) {
+      const parent = _.get(path.scope.getAllBindings(), [node.name, 'path', 'parent']);
+      return isImportDeclaration(parent);
     }
-    const parent = _.get(path.scope.bindings, [node.name, 'path', 'parent']);
-    return isImportDeclaration(parent);
+    return false;
   }
 
   function isImportDeclaration(node) {
