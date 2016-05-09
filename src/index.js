@@ -107,21 +107,22 @@ export default function({ types: types }) {
     MemberExpression(path) {
       const { file } = path.hub;
       const { node } = path;
-      const { object, property } = node;
+      const { object } = node;
 
       if (!types.isIdentifier(object)) {
         return;
       }
+      const key = node.property.name;
       const pkgStore = store.getStoreBy('default', object.name);
+
       if (pkgStore) {
-        const key = node.property.name;
         if (key == 'chain') {
           throw new Error(CHAIN_ERROR);
         }
         // Transform `_.foo` to `_foo`.
         path.replaceWith(importModule(key, file, getImportBase(pkgStore)));
       }
-      else if (property.name == 'placeholder') {
+      else if (key == 'placeholder') {
         // Allow things like `bind.placeholder = {}`.
         node.object = store.getValueBy('member', object.name) || object;
       }
