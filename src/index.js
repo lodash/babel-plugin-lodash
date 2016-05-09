@@ -107,7 +107,7 @@ export default function({ types: types }) {
     MemberExpression(path) {
       const { file } = path.hub;
       const { node } = path;
-      const { object } = node;
+      const { object, property } = node;
 
       if (!types.isIdentifier(object)) {
         return;
@@ -121,7 +121,7 @@ export default function({ types: types }) {
         // Transform `_.foo` to `_foo`.
         path.replaceWith(importModule(key, file, getImportBase(pkgStore)));
       }
-      else {
+      else if (property.name == 'placeholder') {
         // Allow things like `bind.placeholder = {}`.
         node.object = store.getValueBy('member', object.name) || object;
       }
