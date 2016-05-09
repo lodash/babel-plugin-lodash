@@ -3,7 +3,7 @@ import mapping from './mapping';
 
 /*----------------------------------------------------------------------------*/
 
-function resolveModule(name, base='') {
+function resolvePath(name, base='') {
   if (!mapping.module.get(base).has(name)) {
     base = (base || mapping.module.has('fp'))
       ? ''
@@ -20,8 +20,7 @@ function resolveModule(name, base='') {
 }
 
 function importModule(name, file, base='', importName=name) {
-  const importPath = resolveModule(name, base);
-  return file.addImport(importPath, 'default', importName);
+  return file.addImport(resolvePath(name, base), 'default', importName);
 }
 
 export default _.memoize(importModule, function(name, file, base) {
