@@ -106,13 +106,15 @@ export default function({ types: types }) {
 
     MemberExpression(path) {
       const { file } = path.hub;
-      const { node } = path;
+      const { node, scope } = path;
+      const { bindings } = scope;
       const { object } = node;
 
       if (!types.isIdentifier(object)) {
         return;
       }
       const key = node.property.name;
+      const parent = _.get(bindings, [object.name, 'path', 'parent']);
       const pkgStore = store.getStoreBy('default', object.name);
 
       if (pkgStore) {
@@ -122,7 +124,7 @@ export default function({ types: types }) {
         // Transform `_.foo` to `_foo`.
         path.replaceWith(importModule(key, file, getImportBase(pkgStore)));
       }
-      else if (key == 'placeholder') {
+      else if (types.isImportDeclaration(parent) && store.has(parent.source.value))  {
         // Allow things like `bind.placeholder = {}`.
         node.object = store.getValueBy('member', object.name) || object;
       }
