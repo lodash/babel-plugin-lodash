@@ -144,10 +144,10 @@ export default function({ types: types }) {
       else if (types.isMemberExpression(callee)) {
         visitor.MemberExpression(path.get('callee'));
       }
-      // Support lodash methods as parameters (#11), e.g. `_.flow(_.map, _.head)`.
+      // Support lodash methods as parameters, e.g. `_.flow(_.map, _.head)`.
       _.each(node.arguments, (arg, index, args) => {
         if (types.isIdentifier(arg)) {
-          // Assume default imports are placeholders (#33).
+          // Assume default imports are placeholders.
           args[index] = isDefaultImport(arg.name)
             ? types.memberExpression(node.callee, types.identifier('placeholder'))
             : (store.getValueBy('member', arg.name) || arg);
@@ -174,19 +174,17 @@ export default function({ types: types }) {
     },
 
     // Various other (less common) ways to use a lodash specifier. This code
-    // doesn't apply to uses on a lodash object only directly imported specifiers.
-
-    // See #34.
+    // doesn't apply to uses on a lodash object, only directly imported specifiers.
     'Property': buildDeclaratorHandler('value'),
     'VariableDeclarator': buildDeclaratorHandler('init'),
 
     // Allow things like `o.a = _.noop`.
     'AssignmentExpression': buildExpressionHandler(['right']),
 
-    // Allow things like `var x = y || _.noop`. See #28.
+    // Allow things like `var x = y || _.noop`.
     'LogicalExpression': buildExpressionHandler(['left', 'right']),
 
-    // Allow things like `var x = y ? _.identity : _.noop`. See #28.
+    // Allow things like `var x = y ? _.identity : _.noop`.
     'ConditionalExpression': buildExpressionHandler(['test', 'consequent', 'alternate'])
   };
 
