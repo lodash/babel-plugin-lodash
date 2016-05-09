@@ -29,20 +29,22 @@ export default function({ types: types }) {
   );
 
   function buildDeclaratorHandler(key) {
-    return function({ node: node }) {
+    return function(path) {
+      const { node } = path;
       const decNode = node[key];
-      if (types.isIdentifier(decNode)) {
-        node[key] = store.getValueBy('member', decNode.name) || decNode;
+      if (isIdentifier(decNode, path)) {
+        node[key] = store.getValueBy('member', decNode.name);
       }
     };
   }
 
   function buildExpressionHandler(props) {
-    return function({ node: node }) {
+    return function(path) {
+      const { node } = path;
       _.each(props, key => {
         const expNode = node[key];
-        if (types.isIdentifier(expNode)) {
-          node[key] = store.getValueBy('member', expNode.name) || expNode;
+        if (isIdentifier(expNode, path)) {
+          node[key] = store.getValueBy('member', expNode.name);
         }
       });
     };
@@ -54,6 +56,18 @@ export default function({ types: types }) {
 
   function isDefaultImport(name) {
     return !!store.getStoreBy('default', name);
+  }
+
+  function isIdentifier(node, path) {
+    if (!types.isIdentifier(node)) {
+      return false;
+    }
+    const parent = _.get(path.scope.bindings, [node.name, 'path', 'parent']);
+    return isImportDeclaration(parent);
+  }
+
+  function isImportDeclaration(node) {
+    return types.isImportDeclaration(node) && store.has(node.source.value);
   }
 
   /*--------------------------------------------------------------------------*/
@@ -91,42 +105,38 @@ export default function({ types: types }) {
 
       // Track all the Lodash default and specifier imports in the source.
       _.each(node.specifiers, spec => {
-        const localName = spec.local.name;
+        const { local } = spec;
         if (types.isImportSpecifier(spec)) {
-          // Handle import specifier (i.e. `import {map} from 'lodash'`).
-          const identifier = importModule(spec.imported.name, file, importBase, localName);
-          memberMap.set(localName, identifier);
+          // Handle import specifier, e.g. `import {map} from 'lodash'`.
+          const identifier = importModule(spec.imported.name, file, importBase, local.name);
+          memberMap.set(local.name, identifier);
         }
         else {
-          // Handle default specifier (i.e. `import _ from 'lodash'`).
-          defaultMap.set(localName, true);
+          // Handle default specifier, e.g. `import _ from 'lodash'`.
+          defaultMap.set(local.name, true);
         }
       });
     },
 
     MemberExpression(path) {
       const { file } = path.hub;
-      const { node, scope } = path;
-      const { bindings } = scope;
-      const { object } = node;
+      const { node } = path;
+      const { object, property } = node;
 
-      if (!types.isIdentifier(object)) {
+      if (!isIdentifier(object, path)) {
         return;
       }
-      const key = node.property.name;
-      const parent = _.get(bindings, [object.name, 'path', 'parent']);
       const pkgStore = store.getStoreBy('default', object.name);
-
       if (pkgStore) {
-        if (key == 'chain') {
+        if (property.name == 'chain') {
           throw new Error(CHAIN_ERROR);
         }
         // Transform `_.foo` to `_foo`.
-        path.replaceWith(importModule(key, file, getImportBase(pkgStore)));
+        path.replaceWith(importModule(property.name, file, getImportBase(pkgStore)));
       }
-      else if (types.isImportDeclaration(parent) && store.has(parent.source.value))  {
+      else {
         // Allow things like `bind.placeholder = {}`.
-        node.object = store.getValueBy('member', object.name) || object;
+        node.object = store.getValueBy('member', object.name);
       }
     },
 
@@ -135,25 +145,24 @@ export default function({ types: types }) {
       const { node } = path;
       const { callee } = node;
 
-      if (types.isIdentifier(callee)) {
-        const { name } = callee;
-        if (isDefaultImport(name)) {
-          // Detect chain sequences via _(value).
+      if (isIdentifier(callee, path)) {
+        if (isDefaultImport(callee.name)) {
+          // Detect chain sequences with `_(value)`.
           throw new Error(CHAIN_ERROR);
         }
         // Update the import specifier if it's marked for replacement.
-        node.callee = store.getValueBy('member', name) || callee;
+        node.callee = store.getValueBy('member', callee.name);
       }
       else if (types.isMemberExpression(callee)) {
         visitor.MemberExpression(path.get('callee'));
       }
       // Support lodash methods as parameters, e.g. `_.flow(_.map, _.head)`.
       _.each(node.arguments, (arg, index, args) => {
-        if (types.isIdentifier(arg)) {
+        if (isIdentifier(arg, path)) {
           // Assume default imports are placeholders.
           args[index] = isDefaultImport(arg.name)
             ? types.memberExpression(node.callee, types.identifier('placeholder'))
-            : (store.getValueBy('member', arg.name) || arg);
+            : store.getValueBy('member', arg.name);
         }
       });
     },
@@ -169,10 +178,12 @@ export default function({ types: types }) {
         node.source = null;
       }
       _.each(node.specifiers, spec => {
-        const localName = spec.local.name;
-        spec.local = pkgStore
-          ? importModule(localName, file, importBase)
-          : (store.getValueBy('member', localName) || spec.local);
+        const { local } = spec;
+        if (pkgStore) {
+          spec.local = importModule(local.name, file, importBase);
+        } else if (isIdentifier(spec.local, path)) {
+          spec.local = store.getValueBy('member', local.name);
+        }
       });
     },
 
