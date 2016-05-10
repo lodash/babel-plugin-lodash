@@ -9,7 +9,7 @@ for even smaller cherry-picked builds!
 
 ```bash
 $ npm i --save lodash
-$ npm i --save-dev babel-plugin-lodash
+$ npm i --save-dev babel-plugin-lodash babel-cli babel-preset-es2015
 ```
 
 ## Example
@@ -37,26 +37,29 @@ _map([1, 2, 3], addOne);
 ###### .babelrc
 ```json
 {
-  "plugins": ["lodash"]
+  "plugins": ["lodash"],
+  "presets": ["es2015"]
 }
 ```
 
 Set plugin options using an array of `[pluginName, optionsObject]`.
 ```json
 {
-  "plugins": [["lodash", { "id": "lodash-compat", "cwd": "some/path" }]]
+  "plugins": [["lodash", { "id": "lodash-compat", "cwd": "some/path" }]],
+  "presets": ["es2015"]
 }
 ```
 
 ###### Babel CLI
 ```sh
-$ babel --plugins lodash script.js
+$ babel --plugins lodash --presets es2015 script.js
 ```
 
 ###### Babel API
 ```js
 require('babel-core').transform('code', {
-  'plugins': ['lodash']
+  'plugins': ['lodash'],
+  'presets': ['es2015']
 });
 ```
 
