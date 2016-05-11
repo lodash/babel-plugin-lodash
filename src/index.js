@@ -15,6 +15,11 @@ const CHAIN_ERROR = [
 
 export default function({ types: types }) {
 
+  const identifiers = {
+    'PLACEHOLDER': types.identifier('placeholder'),
+    'UNDEFINED': types.identifier('undefined')
+  };
+
   /**
    * Used to track variables built during the AST pass. We instantiate these in
    * the `Program` visitor in order to support running the plugin in watch mode
@@ -114,7 +119,7 @@ export default function({ types: types }) {
         else {
           // Handle default specifier, e.g. `import _ from 'lodash'`.
           defaultMap.set(local.name, true);
-          memberMap.set(local.name, { 'type': 'Identifier', 'name': 'undefined' });
+          memberMap.set(local.name, identifiers.UNDEFINED);
         }
       });
     },
@@ -171,7 +176,7 @@ export default function({ types: types }) {
         if (isIdentifier(arg, path)) {
           // Assume default imports are placeholders.
           args[index] = isDefaultImport(arg.name)
-            ? types.memberExpression(node.callee, types.identifier('placeholder'))
+            ? types.memberExpression(node.callee, identifiers.PLACEHOLDER)
             : store.getValueBy('member', arg.name);
         }
       });
