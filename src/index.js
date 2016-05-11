@@ -118,6 +118,15 @@ export default function({ types: types }) {
       });
     },
 
+    ArrayExpression(path) {
+      const { node } = path;
+      _.each(node.elements, (element, index, elements) => {
+        if (isIdentifier(element, path)) {
+          elements[index] = store.getValueBy('member', element.name);
+        }
+      });
+    },
+
     MemberExpression(path) {
       const { file } = path.hub;
       const { node } = path;
