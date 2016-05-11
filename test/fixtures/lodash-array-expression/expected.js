@@ -26,4 +26,4 @@ cond([[_isNumber3.default, _round3.default], [_isString3.default, _capitalize3.d
 
 (0, _partial3.default)(function (a, b) {
   return [a, b];
-})([, 2]);
+})([undefined, 2]);

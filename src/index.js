@@ -114,6 +114,7 @@ export default function({ types: types }) {
         else {
           // Handle default specifier, e.g. `import _ from 'lodash'`.
           defaultMap.set(local.name, true);
+          memberMap.set(local.name, { 'type': 'Identifier', 'name': 'undefined' });
         }
       });
     },
