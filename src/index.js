@@ -34,25 +34,11 @@ export default function({ types: types }) {
   );
 
   function buildDeclaratorHandler(key) {
-    return path => {
-      const { node } = path;
-      const decNode = node[key];
-      if (isIdentifier(decNode, path)) {
-        node[key] = store.getValueBy('member', decNode.name);
-      }
-    };
+    return path => replaceNode(key, path);
   }
 
   function buildExpressionHandler(props) {
-    return path => {
-      const { node } = path;
-      _.each(props, key => {
-        const expNode = node[key];
-        if (isIdentifier(expNode, path)) {
-          node[key] = store.getValueBy('member', expNode.name);
-        }
-      });
-    };
+    return path => { _.each(props, key => replaceNode(key, path)); }
   }
 
   function getCallee(path) {
@@ -99,6 +85,14 @@ export default function({ types: types }) {
           : store.getValueBy('member', element.name);
       }
     });
+  }
+
+  function replaceNode(key, path) {
+    const object = path.node;
+    const node = object[key];
+    if (isIdentifier(node, path)) {
+      object[key] = store.getValueBy('member', node.name);
+    }
   }
 
   /*--------------------------------------------------------------------------*/
