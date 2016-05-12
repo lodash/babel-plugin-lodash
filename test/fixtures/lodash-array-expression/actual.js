@@ -1,4 +1,4 @@
-import { capitalize, isNumber, isString, round } from 'lodash';
+import { capitalize, cond, isNumber, isString, round } from 'lodash';
 import fp, { partial } from 'lodash/fp';
 
 cond([

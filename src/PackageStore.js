@@ -5,7 +5,11 @@ import MapCache from './MapCache';
 
 export default class PackageStore extends MapCache {
   constructor(id) {
-    super([['default', new MapCache], ['member', new MapCache]]);
+    super([
+      ['default', new MapCache],
+      ['identifier', new MapCache],
+      ['member', new MapCache]
+    ]);
     this.id = id;
   }
 
