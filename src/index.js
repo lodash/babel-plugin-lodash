@@ -220,7 +220,7 @@ export default function({ types: types }) {
     'VariableDeclarator': replaceNode('init'),
 
     // Allow things like `o.a = _.noop`.
-    'AssignmentExpression': replaceNodes(['right']),
+    'AssignmentExpression': replaceNode('right'),
 
     // Allow things like `var x = y || _.noop`.
     'LogicalExpression': replaceNodes(['left', 'right']),
