@@ -91,7 +91,7 @@ export default function({ types: types }) {
       ? types.memberExpression(callee, identifiers.PLACEHOLDER)
       : identifiers.UNDEFINED;
 
-    return _.each(elements, (element, index) => {
+    _.each(elements, (element, index) => {
       if (isIdentifier(element, path)) {
         // Assume default members are placeholders.
         elements[index] = isDefaultMember(element.name)
