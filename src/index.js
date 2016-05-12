@@ -64,21 +64,6 @@ export default function({ types: types }) {
     return types.isImportDeclaration(node) && store.has(node.source.value);
   }
 
-  function replaceElements(elements, path, callee) {
-    const placeholder = callee
-      ? types.memberExpression(callee, identifiers.PLACEHOLDER)
-      : identifiers.UNDEFINED;
-
-    _.each(elements, (element, index) => {
-      if (isIdentifier(element, path)) {
-        // Assume default members are placeholders.
-        elements[index] = isDefaultMember(element.name)
-          ? placeholder
-          : store.getValueBy('member', element.name);
-      }
-    });
-  }
-
   const replaceNode = _.curry((key, path) => {
     const object = path.node;
     const node = object[key];
@@ -90,6 +75,25 @@ export default function({ types: types }) {
   const replaceNodes = _.curry((props, path) => {
     _.each(props, key => replaceNode(key, path));
   });
+
+  const replaceNodeList = _.curry((key, callee, path) => {
+    const nodes = path.node[key];
+    const placeholder = callee
+      ? types.memberExpression(callee, identifiers.PLACEHOLDER)
+      : identifiers.UNDEFINED;
+
+    _.each(nodes, (node, index) => {
+      if (isIdentifier(node, path)) {
+        // Assume default members are placeholders.
+        nodes[index] = isDefaultMember(node.name)
+          ? placeholder
+          : store.getValueBy('member', node.name);
+      }
+    });
+  });
+
+  const replaceElements = replaceNodeList('elements');
+  const replaceArguments = replaceNodeList('arguments');
 
   /*--------------------------------------------------------------------------*/
 
@@ -184,14 +188,14 @@ export default function({ types: types }) {
         visitor.MemberExpression(path.get('callee'));
       }
       // Replace lodash in arguments, e.g. `_.flow(_.map, _.head)`.
-      replaceElements(node.arguments, path, node.callee);
+      replaceArguments(node.callee, path);
     },
 
     ArrayExpression(path) {
       // Detect lodash callees to use as argument placeholders.
       const callee = getCallee(path);
       const name = callee ? (store.getValueBy('identifier', callee.name) || callee.name) : '';
-      replaceElements(path.node.elements, path, store.getValueBy('member', name));
+      replaceElements(store.getValueBy('member', name), path);
     },
 
     ExportNamedDeclaration(path) {
