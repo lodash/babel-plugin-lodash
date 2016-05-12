@@ -34,7 +34,7 @@ export default function({ types: types }) {
   );
 
   function buildDeclaratorHandler(key) {
-    return function(path) {
+    return path => {
       const { node } = path;
       const decNode = node[key];
       if (isIdentifier(decNode, path)) {
@@ -44,7 +44,7 @@ export default function({ types: types }) {
   }
 
   function buildExpressionHandler(props) {
-    return function(path) {
+    return path => {
       const { node } = path;
       _.each(props, key => {
         const expNode = node[key];
