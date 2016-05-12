@@ -33,14 +33,6 @@ export default function({ types: types }) {
       : [mapping.id]
   );
 
-  function buildDeclaratorHandler(key) {
-    return path => replaceNode(key, path);
-  }
-
-  function buildExpressionHandler(props) {
-    return path => { _.each(props, key => replaceNode(key, path)); }
-  }
-
   function getCallee(path) {
     let result;
     let { parent } = path;
@@ -87,13 +79,17 @@ export default function({ types: types }) {
     });
   }
 
-  function replaceNode(key, path) {
+  const replaceNode = _.curry((key, path) => {
     const object = path.node;
     const node = object[key];
     if (isIdentifier(node, path)) {
       object[key] = store.getValueBy('member', node.name);
     }
-  }
+  });
+
+  const replaceNodes = _.curry((props, path) => {
+    _.each(props, key => replaceNode(key, path));
+  });
 
   /*--------------------------------------------------------------------------*/
 
@@ -220,17 +216,17 @@ export default function({ types: types }) {
 
     // Various other (less common) ways to use a lodash specifier. This code
     // doesn't apply to uses on a lodash object, only directly imported specifiers.
-    'Property': buildDeclaratorHandler('value'),
-    'VariableDeclarator': buildDeclaratorHandler('init'),
+    'Property': replaceNode('value'),
+    'VariableDeclarator': replaceNode('init'),
 
     // Allow things like `o.a = _.noop`.
-    'AssignmentExpression': buildExpressionHandler(['right']),
+    'AssignmentExpression': replaceNodes(['right']),
 
     // Allow things like `var x = y || _.noop`.
-    'LogicalExpression': buildExpressionHandler(['left', 'right']),
+    'LogicalExpression': replaceNodes(['left', 'right']),
 
     // Allow things like `var x = y ? _.identity : _.noop`.
-    'ConditionalExpression': buildExpressionHandler(['test', 'consequent', 'alternate'])
+    'ConditionalExpression': replaceNodes(['test', 'consequent', 'alternate'])
   };
 
   return { visitor };
