@@ -193,7 +193,7 @@ export default function({ types: types }) {
       else if (types.isMemberExpression(callee)) {
         visitor.MemberExpression(path.get('callee'));
       }
-      // Replace lodash used in arguments, e.g. `_.flow(_.map, _.head)`.
+      // Replace lodash in arguments, e.g. `_.flow(_.map, _.head)`.
       replaceElements(node.arguments, path, node.callee);
     },
 
