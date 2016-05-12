@@ -1,5 +1,3 @@
-import lodash from 'lodash-es';
+import _ from 'lodash-es';
 
-const result = lodash.map([1, 2, 3], function() {
-
-});
+const result = _.map([1, 2, 3], String);

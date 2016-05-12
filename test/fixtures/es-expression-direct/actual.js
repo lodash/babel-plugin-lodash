@@ -1,9 +1,9 @@
-import lodash from 'lodash-es';
+import _ from 'lodash-es';
 
-const method = lodash.identity || lodash.noop;
+const method = _.identity || _.noop;
 
-const method2 = lodash.noop ? lodash.map : lodash.filter;
+const method2 = _.noop ? _.map : _.filter;
 
-(something ? lodash.pick : lodash.omit)(obj, function() {
+(something ? _.pick : _.omit)(obj, function() {
 
 });

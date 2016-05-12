@@ -19,5 +19,5 @@ var _map3 = _interopRequireDefault(_map2);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapper = (0, _map3.default)((0, _add3.default)(1));
-var result = mapper([1, 2, 3]);
+var result = mapper([-1, 0, 1]);
 (0, _take3.default)(1, (0, _reject3.default)(Boolean, result));
