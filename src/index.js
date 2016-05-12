@@ -187,7 +187,7 @@ export default function({ types: types }) {
       else if (types.isMemberExpression(callee)) {
         visitor.MemberExpression(path.get('callee'));
       }
-      // Replace lodash in arguments, e.g. `_.flow(_.map, _.head)`.
+      // Replace lodash references in arguments, e.g. `_.flow(_.map, _.head)`.
       replaceArguments(node.callee, path);
     },
 
