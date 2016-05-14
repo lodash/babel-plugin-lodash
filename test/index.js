@@ -59,4 +59,22 @@ describe('cherry-picked modular builds', () => {
       }).code;
     });
   });
+
+  /*--------------------------------------------------------------------------*/
+
+  _.each(glob.sync(path.join(__dirname, 'acceptance-fixtures/*/')), testPath => {
+    const testName = _.lowerCase(path.basename(testPath));
+    const lodashId = getLodashId(testName);
+    const actualPath = path.join(testPath, 'actual.js');
+    const expectedPath = path.join(testPath, 'expected.js');
+    const babelOptions = require(path.join(testPath, 'babelrc.json'));
+    babelOptions.plugins.push([plugin, { 'id': lodashId }]);
+
+    it(`should work with ${ testName }`, () => {
+      const expected = fs.readFileSync(expectedPath, 'utf8');
+      const actual = transformFileSync(actualPath, babelOptions).code;
+
+      assert.strictEqual(_.trim(actual), _.trim(expected));
+    });
+  });
 });
