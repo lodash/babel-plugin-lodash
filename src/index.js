@@ -13,7 +13,7 @@ const CHAIN_ERROR = [
 
 /*----------------------------------------------------------------------------*/
 
-export default function({ types: types }) {
+export default function({ types }) {
 
   const identifiers = {
     'PLACEHOLDER': types.identifier('placeholder'),
