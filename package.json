@@ -12,7 +12,7 @@
     "John-David Dalton <john.david.dalton@gmail.com> (http://allyoucanleet.com/)"
   ],
   "scripts": {
-    "build": "babel src --out-dir lib",
+    "build": "babel src --out-dir lib || true",
     "prepublish": "npm run build",
     "test": "mocha --check-leaks --compilers js:babel-core/register"
   },
