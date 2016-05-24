@@ -11,11 +11,15 @@ function getLodashId(testPath) {
   return 'lodash' + (postfix ? '-' + postfix : '');
 }
 
+function getTestName(testPath) {
+  return path.basename(testPath).split('-').join(' ');
+}
+
 /*----------------------------------------------------------------------------*/
 
 describe('cherry-picked modular builds', () => {
   _.each(glob.sync(path.join(__dirname, 'fixtures/*/')), testPath => {
-    const testName = _.lowerCase(path.basename(testPath));
+    const testName = getTestName(testPath);
     const lodashId = getLodashId(testName);
     const actualPath = path.join(testPath, 'actual.js');
     const expectedPath = path.join(testPath, 'expected.js');
@@ -33,7 +37,7 @@ describe('cherry-picked modular builds', () => {
   /*--------------------------------------------------------------------------*/
 
   _.each(glob.sync(path.join(__dirname, 'error-fixtures/*/')), testPath => {
-    const testName = _.lowerCase(path.basename(testPath));
+    const testName = getTestName(testPath);
     const lodashId = getLodashId(testName);
     const actualPath = path.join(testPath, 'actual.js');
 
@@ -49,7 +53,7 @@ describe('cherry-picked modular builds', () => {
   /*--------------------------------------------------------------------------*/
 
   _.each(glob.sync(path.join(__dirname, 'parsing-fixtures/*/')), testPath => {
-    const testName = _.lowerCase(path.basename(testPath));
+    const testName = getTestName(testPath);
     const lodashId = getLodashId(testName);
     const actualPath = path.join(testPath, 'actual.js');
 
