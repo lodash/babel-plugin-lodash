@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import assert from 'assert';
+import { assert } from 'chai';
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
