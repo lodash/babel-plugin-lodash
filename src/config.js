@@ -17,9 +17,7 @@ const moduleMaps = new MapCache;
 /*----------------------------------------------------------------------------*/
 
 function createModuleMap(modulePath) {
-  const basePaths = [modulePath]
-    .concat(glob.sync(path.join(modulePath, '*/')));
-
+  const basePaths = modulePath ? glob.sync(path.join(modulePath, '**/')) : [];
   return _.reduce(basePaths, (result, basePath) => {
     const base = path.relative(modulePath, basePath);
     const filenames = glob.sync(path.join(basePath, '*.js'));
@@ -39,9 +37,6 @@ function getModulePath(id, from=process.cwd()) {
 
 function config({ cwd=process.cwd(), id=defaultId } = {}) {
   const modulePath = getModulePath(id, cwd);
-  if (!modulePath) {
-    return {};
-  }
   const module = moduleMaps.get(id) || createModuleMap(modulePath);
   moduleMaps.set(id, module);
   return { id, module };
