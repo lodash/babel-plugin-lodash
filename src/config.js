@@ -36,8 +36,7 @@ function getModulePath(id, from=process.cwd()) {
 }
 
 function config({ cwd=process.cwd(), id=defaultId } = {}) {
-  const modulePath = getModulePath(id, cwd);
-  const module = moduleMaps.get(id) || createModuleMap(modulePath);
+  const module = moduleMaps.get(id) || createModuleMap(getModulePath(id, cwd));
   moduleMaps.set(id, module);
   return { id, module };
 }
