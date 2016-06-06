@@ -38,13 +38,12 @@ describe('cherry-picked modular builds', () => {
 
   _.each(glob.sync(path.join(__dirname, 'error-fixtures/*/')), testPath => {
     const testName = getTestName(testPath);
-    const lodashId = getLodashId(testName);
     const actualPath = path.join(testPath, 'actual.js');
 
     it(`should throw an error with ${ testName }`, () => {
       assert.throws(function() {
         transformFileSync(actualPath, {
-          'plugins': [[plugin, { 'id': lodashId }]]
+          'plugins': [plugin]
         }).code;
       });
     });
@@ -54,12 +53,11 @@ describe('cherry-picked modular builds', () => {
 
   _.each(glob.sync(path.join(__dirname, 'parsing-fixtures/*/')), testPath => {
     const testName = getTestName(testPath);
-    const lodashId = getLodashId(testName);
     const actualPath = path.join(testPath, 'actual.js');
 
     it(`should not error with ${ testName }`, () => {
       transformFileSync(actualPath, {
-        'plugins': [[plugin, { 'id': lodashId }]]
+        'plugins': [plugin]
       }).code;
     });
   });
