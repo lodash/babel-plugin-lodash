@@ -113,7 +113,6 @@ export default function({ types }) {
     },
 
     ImportDeclaration(path) {
-      const { file } = path.hub;
       const { node } = path;
       const { value: pkgId } = node.source;
       const pkgStore = store.get(pkgId);
@@ -135,7 +134,7 @@ export default function({ types }) {
         if (types.isImportSpecifier(spec)) {
           // Replace member import, e.g. `import { map } from 'lodash'`, with
           // cherry-picked default import, e.g. `import _map from 'lodash/map'`.
-          const identifier = importModule(spec.imported.name, file, importBase, local.name);
+          const identifier = importModule(spec.imported.name, path.hub.file, importBase, local.name);
 
           identifierMap.set(identifier.name, local.name);
           memberMap.set(identifier.name, identifier);
@@ -150,7 +149,6 @@ export default function({ types }) {
     },
 
     MemberExpression(path) {
-      const { file } = path.hub;
       const { node } = path;
       const { object, property } = node;
 
@@ -163,7 +161,7 @@ export default function({ types }) {
           throw new Error(CHAIN_ERROR);
         }
         // Replace `_.map` with `_map`.
-        path.replaceWith(importModule(property.name, file, getImportBase(pkgStore)));
+        path.replaceWith(importModule(property.name, path.hub.file, getImportBase(pkgStore)));
       }
       else {
         // Allow things like `_bind.placeholder = {}`.
@@ -172,7 +170,6 @@ export default function({ types }) {
     },
 
     CallExpression(path) {
-      const { file } = path.hub;
       const { node } = path;
       const { callee } = node;
 
@@ -200,7 +197,6 @@ export default function({ types }) {
 
     ExportNamedDeclaration(path) {
       const { node } = path;
-      const { file } = path.hub;
       const pkgId = _.get(node, 'source.value');
       const pkgStore = store.get(pkgId);
       const importBase = getImportBase(pkgStore);
@@ -211,7 +207,7 @@ export default function({ types }) {
       _.each(node.specifiers, spec => {
         const { local } = spec;
         if (pkgStore) {
-          spec.local = importModule(local.name, file, importBase);
+          spec.local = importModule(local.name, path.hub.file, importBase);
         } else if (isIdentifier(spec.local, path)) {
           spec.local = store.getValueBy('member', local.name);
         }
