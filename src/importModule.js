@@ -5,7 +5,7 @@ import mapping from './mapping';
 
 function resolvePath(name, base='') {
   if (!mapping.module.get(base).has(name)) {
-    base = (base || mapping.module.has('fp'))
+    base = (base || (mapping.id == 'lodash' && mapping.module.has('fp')))
       ? ''
       : mapping.module.findKey(set => set.has(name));
 

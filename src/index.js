@@ -28,7 +28,7 @@ export default function({ types }) {
    * @type Store
    */
   const store = new Store(
-    mapping.module.has('fp')
+    (mapping.id == 'lodash' && mapping.module.has('fp'))
       ? [mapping.id, 'lodash/fp']
       : [mapping.id]
   );
