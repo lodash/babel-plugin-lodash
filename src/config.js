@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import fs from 'fs';
 import glob from 'glob';
 import MapCache from './MapCache';
 import Module from 'module';
@@ -34,9 +35,24 @@ function createModuleMap(modulePath) {
 
 function getModulePath(id, from=process.cwd()) {
   try {
-    return path.dirname(Module._resolveFilename(id, _.assign(new Module, {
+    const dirs = path.dirname(Module._resolveFilename(id, _.assign(new Module, {
       'paths': Module._nodeModulePaths(from)
-    })));
+    }))).split(path.sep);
+
+    dirs[0] = path.sep;
+
+    let { length:index } = dirs;
+    while (index--) {
+      let dirSub  = dirs.slice(0, index + 1);
+      let dirPath = dirSub.join('/');
+      let pkgPath = path.join(dirPath, 'package.json');
+
+      if (dirs[index -1] === 'node_modules' ||
+          (fs.existsSync(pkgPath) && require(pkgPath).name == id)) {
+        return dirPath;
+      }
+    }
+    return dirs.join('/');
   } catch (e) {}
   return '';
 }

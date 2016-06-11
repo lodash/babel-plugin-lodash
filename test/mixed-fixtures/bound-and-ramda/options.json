@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    ["lodash", { "id": ["lodash-bound", "ramda"] }]
+  ],
+  "presets": [
+    "es2015",
+    "stage-0"
+  ]
+}
