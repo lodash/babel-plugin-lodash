@@ -7,7 +7,7 @@ import Store from './Store';
 /** The error message used when chain sequences are detected. */
 const CHAIN_ERROR = [
   'Lodash chain sequences are not supported by babel-plugin-lodash.',
-  'Consider substituting chain sequences with _.flow composition patterns.',
+  'Consider substituting chain sequences with composition patterns.',
   'See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba'
 ].join('\n');
 
