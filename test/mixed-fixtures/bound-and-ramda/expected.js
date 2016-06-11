@@ -1,8 +1,8 @@
 'use strict';
 
-var _reject2 = require('ramda/src/reject');
+var _reject3 = require('ramda/src/reject');
 
-var _reject3 = _interopRequireDefault(_reject2);
+var _reject4 = _interopRequireDefault(_reject3);
 
 var _values2 = require('ramda/src/values');
 
@@ -24,6 +24,10 @@ var _take5 = require('lodash-bound/take');
 
 var _take6 = _interopRequireDefault(_take5);
 
+var _reject5 = require('lodash-bound/reject');
+
+var _reject6 = _interopRequireDefault(_reject5);
+
 var _map5 = require('lodash-bound/map');
 
 var _map6 = _interopRequireDefault(_map5);
@@ -40,11 +44,11 @@ var object = { 'a': -1, 'b': 0, 'c': 1 };
 
 var mapper = (0, _map4.default)((0, _add4.default)(1));
 var result = mapper(object);
-ftake(1, (0, _values3.default)((0, _reject3.default)(Boolean, result)));
+(0, _take4.default)(1, (0, _values3.default)((0, _reject4.default)(Boolean, result)));
 
 var result2 = _map6.default.call(object, function (n) {
   var _context;
 
-  return (_context = 1, add).call(_context, n);
+  return (_context = 1, _add6.default).call(_context, n);
 });
-(_context2 = reject.call(result2), take).call(_context2, 1);
+(_context2 = _reject6.default.call(result2), _take6.default).call(_context2, 1);

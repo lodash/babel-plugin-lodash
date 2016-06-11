@@ -170,6 +170,9 @@ export default function({ types }) {
         // Replace `map()` with `_map()`.
         node.callee = store.getValueBy('member', callee.name);
       }
+      else if (types.isBindExpression(callee)) {
+        visitor.CallExpression(path.get('callee'));
+      }
       else if (types.isMemberExpression(callee)) {
         visitor.MemberExpression(path.get('callee'));
       }
