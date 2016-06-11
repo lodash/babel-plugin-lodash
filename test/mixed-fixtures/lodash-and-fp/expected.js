@@ -41,4 +41,4 @@ var result = mapper([-1, 0, 1]);
 var result2 = (0, _map6.default)([-1, 0, 1], function (n) {
   return (0, _add4.default)(1, n);
 });
-(0, _take6.default)((0, _reject4.default)(result), 1);
+(0, _take6.default)((0, _reject4.default)(result2), 1);
