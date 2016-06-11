@@ -17,7 +17,9 @@ function getTestName(testPath) {
 
 /*----------------------------------------------------------------------------*/
 
-describe('cherry-picked modular builds', () => {
+describe('cherry-picked modular builds', function() {
+  this.timeout(0);
+
   _.each(glob.sync(path.join(__dirname, 'fixtures/*/')), testPath => {
     const testName = getTestName(testPath);
     const lodashId = getLodashId(testName);
