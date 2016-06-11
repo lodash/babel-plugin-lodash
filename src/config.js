@@ -39,15 +39,16 @@ function getModulePath(id, from=process.cwd()) {
       'paths': Module._nodeModulePaths(from)
     }))).split(path.sep);
 
-    dirs[0] = path.sep;
-
+    if (dirs[0] == '') {
+      dirs[0] = path.sep;
+    }
     let { length:index } = dirs;
     while (index--) {
       let dirSub  = dirs.slice(0, index + 1);
       let dirPath = dirSub.join('/');
       let pkgPath = path.join(dirPath, 'package.json');
 
-      if (dirs[index -1] === 'node_modules' ||
+      if (dirs[index - 1] === 'node_modules' ||
           (fs.existsSync(pkgPath) && require(pkgPath).name == id)) {
         return dirPath;
       }
