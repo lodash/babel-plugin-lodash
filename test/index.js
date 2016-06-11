@@ -60,7 +60,7 @@ describe('cherry-picked modular builds', () => {
     _.each(options.plugins, (value, index, plugins) => {
       if (_.isArray(value) && value[0] == 'lodash') {
         value[0] = plugin;
-      } else if (value == 'lodash') {
+      } else if (value === 'lodash') {
         plugins[index] = plugin;
       }
     });
