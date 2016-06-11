@@ -9,16 +9,16 @@ var _map2 = require('lodash/map');
 
 var _map3 = _interopRequireDefault(_map2);
 
-var _isObject = require('lodash/fp/isObject');
+var _isObject2 = require('lodash/fp/isObject');
 
-var _isObject2 = _interopRequireDefault(_isObject);
+var _isObject3 = _interopRequireDefault(_isObject2);
 
-var _foo2 = require('foo');
+var _foo = require('foo');
 
 Object.defineProperty(exports, 'bar', {
   enumerable: true,
   get: function get() {
-    return _interopRequireDefault(_foo2).default;
+    return _interopRequireDefault(_foo).default;
   }
 });
 
@@ -26,6 +26,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 isObject(a);
 
-exports.foo = _isObject2.default;
-exports.isObject = _isObject2.default;
+exports.foo = _isObject3.default;
+exports.isObject = _isObject3.default;
 exports.map = _map3.default;

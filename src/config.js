@@ -4,15 +4,21 @@ import MapCache from './MapCache';
 import Module from 'module';
 import path from 'path';
 
-const defaultPath = _.toString(_.find([
-  getModulePath('lodash'),
-  getModulePath('lodash-es'),
-  getModulePath('lodash-compat')
-]));
+const defaultIds = [
+  'lodash',
+  'lodash-es',
+  'lodash-compat'
+];
 
-const defaultId = path.basename(defaultPath);
+const ids = [];
 
-const moduleMaps = new MapCache;
+const modules = _.transform(defaultIds, (modules, id) => {
+  const modulePath = getModulePath(id);
+  if (modulePath) {
+    ids.push(id);
+    modules.set(id, createModuleMap(modulePath));
+  }
+}, new MapCache);
 
 /*----------------------------------------------------------------------------*/
 
@@ -35,10 +41,14 @@ function getModulePath(id, from=process.cwd()) {
   return '';
 }
 
-function config({ cwd=process.cwd(), id=defaultId } = {}) {
-  const module = moduleMaps.get(id) || createModuleMap(getModulePath(id, cwd));
-  moduleMaps.set(id, module);
-  return { id, module };
+function config({ cwd=process.cwd(), id=ids[0] } = {}) {
+  _.each(_.castArray(id), id => {
+    if (!modules.get(id)) {
+      ids.push(id);
+      modules.set(id, createModuleMap(getModulePath(id, cwd)));
+    }
+  });
+  return { ids, modules };
 }
 
-export default _.memoize(config);
+export default config;

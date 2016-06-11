@@ -4,13 +4,16 @@ import MapCache from './MapCache';
 /*----------------------------------------------------------------------------*/
 
 export default class PackageStore extends MapCache {
-  constructor(id) {
+  constructor(pkgPath) {
     super([
       ['default', new MapCache],
       ['identifier', new MapCache],
       ['member', new MapCache]
     ]);
-    this.id = id;
+    const parts = pkgPath.split('/');
+    this.base = parts[1] || '';
+    this.id = parts[0];
+    this.path = pkgPath;
   }
 
   clear() {

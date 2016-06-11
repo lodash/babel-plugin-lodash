@@ -18,9 +18,9 @@ function getByResolver(type, key) {
 /*----------------------------------------------------------------------------*/
 
 export default class Store extends MapCache {
-  constructor(ids) {
+  constructor(pkgPaths) {
     super();
-    _.each(ids, id => this.set(id));
+    _.each(pkgPaths, pkgPath => this.set(pkgPath));
 
     this.getStoreBy = _.memoize(this.getStoreBy, getByResolver);
     this.getMapBy = _.memoize(this.getMapBy, getByResolver);
@@ -49,8 +49,7 @@ export default class Store extends MapCache {
     return _.invoke(this.getMapBy(type, key), 'get', key);
   }
 
-  set(id, pkgStore=new PackageStore(id)) {
-    clear(this);
-    return super.set(id, pkgStore);
+  set(pkgPath, pkgStore=new PackageStore(pkgPath)) {
+    return super.set(pkgPath, pkgStore);
   }
 };

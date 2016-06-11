@@ -3,26 +3,27 @@ import mapping from './mapping';
 
 /*----------------------------------------------------------------------------*/
 
-function resolvePath(name, base='') {
-  if (!mapping.module.get(base).has(name)) {
-    base = (base || (mapping.id == 'lodash' && mapping.module.has('fp')))
+function resolvePath(pkgStore, name) {
+  let { base, id } = pkgStore;
+  const module = mapping.modules.get(id);
+
+  if (!module.get(base).has(name)) {
+    base = (base || (id == 'lodash' && module.has('fp')))
       ? ''
-      : mapping.module.findKey(set => set.has(name));
+      : module.findKey(set => set.has(name));
 
     if (!base) {
       throw new Error([
-        `Lodash method ${ name } is not a known module.`,
+        `The '${ id }' method ${ name } is not a known module.`,
         'Please report bugs to https://github.com/lodash/babel-plugin-lodash/issues.'
       ].join('\n'));
     }
   }
-  return mapping.id + (base ? '/' + base : '') + '/' + name;
+  return id + '/' + (base ? base + '/' : '') + name;
 }
 
-function importModule(name, file, base='', importName=name) {
-  return file.addImport(resolvePath(name, base), 'default', importName);
+function importModule(pkgStore, name, file) {
+  return file.addImport(resolvePath(pkgStore, name), 'default', name);
 }
 
-export default _.memoize(importModule, function(name, file, base) {
-  return (base ? base + '/' : '') + name;
-});
+export default _.memoize(importModule, (pkgStore, name) => pkgStore.path + '/' + name);

@@ -27,11 +27,7 @@ export default function({ types }) {
    *
    * @type Store
    */
-  const store = new Store(
-    (mapping.id == 'lodash' && mapping.module.has('fp'))
-      ? [mapping.id, 'lodash/fp']
-      : [mapping.id]
-  );
+  const store = new Store(mapping.ids.concat('lodash/fp'));
 
   function getCallee(path) {
     let result;
@@ -42,10 +38,6 @@ export default function({ types }) {
       parent = result = parent.callee;
     }
     return result;
-  }
-
-  function getImportBase(pkgStore) {
-    return _.get(pkgStore, 'id') == 'lodash/fp' ? 'fp' : '';
   }
 
   function isDefaultMember(name) {
@@ -100,13 +92,12 @@ export default function({ types }) {
   const visitor = {
 
     Program(path, state) {
-      const { id } = _.assign(mapping, config(state.opts));
-      if (!id) {
+      const { ids } = _.assign(mapping, config(state.opts));
+      if (_.isEmpty(ids)) {
         throw new Error('Cannot find Lodash module');
       }
-      if (!store.has(id)) {
-        store.set(id);
-      }
+      _.each(ids, id => store.set(id));
+
       // Clear tracked Lodash method imports and variables.
       importModule.cache.clear();
       store.clear();
@@ -114,13 +105,11 @@ export default function({ types }) {
 
     ImportDeclaration(path) {
       const { node } = path;
-      const { value: pkgId } = node.source;
-      const pkgStore = store.get(pkgId);
+      const pkgStore = store.get(node.source.value);
 
       if (!pkgStore) {
         return;
       }
-      const importBase = getImportBase(pkgStore);
       const defaultMap = pkgStore.get('default');
       const identifierMap = pkgStore.get('identifier');
       const memberMap = pkgStore.get('member');
@@ -134,7 +123,7 @@ export default function({ types }) {
         if (types.isImportSpecifier(spec)) {
           // Replace member import, e.g. `import { map } from 'lodash'`, with
           // cherry-picked default import, e.g. `import _map from 'lodash/map'`.
-          const identifier = importModule(spec.imported.name, path.hub.file, importBase, local.name);
+          const identifier = importModule(pkgStore, spec.imported.name, path.hub.file);
 
           identifierMap.set(identifier.name, local.name);
           memberMap.set(identifier.name, identifier);
@@ -161,7 +150,7 @@ export default function({ types }) {
           throw new Error(CHAIN_ERROR);
         }
         // Replace `_.map` with `_map`.
-        path.replaceWith(importModule(property.name, path.hub.file, getImportBase(pkgStore)));
+        path.replaceWith(importModule(pkgStore, property.name, path.hub.file));
       }
       else {
         // Allow things like `_bind.placeholder = {}`.
@@ -197,9 +186,8 @@ export default function({ types }) {
 
     ExportNamedDeclaration(path) {
       const { node } = path;
-      const pkgId = _.get(node, 'source.value');
-      const pkgStore = store.get(pkgId);
-      const importBase = getImportBase(pkgStore);
+      const pkgPath = _.get(node, 'source.value');
+      const pkgStore = store.get(pkgPath);
 
       if (pkgStore) {
         node.source = null;
@@ -207,7 +195,7 @@ export default function({ types }) {
       _.each(node.specifiers, spec => {
         const { local } = spec;
         if (pkgStore) {
-          spec.local = importModule(local.name, path.hub.file, importBase);
+          spec.local = importModule(pkgStore, local.name, path.hub.file);
         } else if (isIdentifier(spec.local, path)) {
           spec.local = store.getValueBy('member', local.name);
         }
