@@ -6,4 +6,4 @@ cond([
   [isString, capitalize]
 ])(1.8);
 
-partial(function(a, b) { return [a, b]; })([fp, 2]);
+partial((a, b) => [a, b])([fp, 2]);

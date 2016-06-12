@@ -43,7 +43,7 @@ describe('cherry-picked modular builds', function() {
     const actualPath = path.join(testPath, 'actual.js');
 
     it(`should throw an error with ${ testName }`, () => {
-      assert.throws(function() {
+      assert.throws(() => {
         transformFileSync(actualPath, {
           'plugins': [plugin]
         }).code;
