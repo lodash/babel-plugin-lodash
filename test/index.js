@@ -57,9 +57,9 @@ describe('cherry-picked modular builds', function() {
     const testName = getTestName(testPath);
     const actualPath = path.join(testPath, 'actual.js');
     const expectedPath = path.join(testPath, 'expected.js');
+    const babelrc = require(path.join(testPath, 'babel.json'));
 
-    const options = require(path.join(testPath, 'options.json'));
-    _.each(options.plugins, (value, index, plugins) => {
+    _.each(babelrc.plugins, (value, index, plugins) => {
       if (_.isArray(value) && value[0] == 'lodash') {
         value[0] = plugin;
       } else if (value === 'lodash') {
@@ -69,7 +69,7 @@ describe('cherry-picked modular builds', function() {
 
     it(`should work with ${ testName }`, () => {
       const expected = fs.readFileSync(expectedPath, 'utf8');
-      const actual = transformFileSync(actualPath, options).code;
+      const actual = transformFileSync(actualPath, babelrc).code;
 
       assert.strictEqual(_.trim(actual), _.trim(expected));
     });
