@@ -35,15 +35,6 @@
     "glob": "^7.0.5",
     "lodash": "^4.13.1"
   },
-  "babel": {
-    "plugins": [
-      "add-module-exports",
-      "transform-object-rest-spread"
-    ],
-    "presets": [
-      "es2015"
-    ]
-  },
   "files": [
     "lib/config.js",
     "lib/importModule.js",

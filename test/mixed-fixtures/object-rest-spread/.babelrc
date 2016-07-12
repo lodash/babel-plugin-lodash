@@ -1,6 +1,6 @@
 {
   "plugins": [
-    "lodash"
+    "transform-object-rest-spread"
   ],
   "presets": [
     "es2015"
