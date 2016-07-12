@@ -36,19 +36,31 @@ var _add5 = require('lodash-bound/add');
 
 var _add6 = _interopRequireDefault(_add5);
 
+var _concat2 = require('async/concat');
+
+var _concat3 = _interopRequireDefault(_concat2);
+
 var _context2;
+
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var object = { 'a': -1, 'b': 0, 'c': 1 };
 
-var mapper = (0, _map4.default)((0, _add4.default)(1));
-var result = mapper(object);
-(0, _take4.default)(1, (0, _values3.default)((0, _reject4.default)(Boolean, result)));
+(0, _concat3.default)(['a', 'b', 'c'], _fs2.default.readdir, function (error, files) {
+  return console.log(files);
+});
 
-var result2 = _map6.default.call(object, function (n) {
+var result = _map6.default.call(object, function (n) {
   var _context;
 
   return (_context = 1, _add6.default).call(_context, n);
 });
-(_context2 = _reject6.default.call(result2), _take6.default).call(_context2, 1);
+(_context2 = _reject6.default.call(result), _take6.default).call(_context2, 1);
+
+var mapper = (0, _map4.default)((0, _add4.default)(1));
+var result2 = mapper(object);
+(0, _take4.default)(1, (0, _values3.default)((0, _reject4.default)(Boolean, result2)));

@@ -17,6 +17,7 @@
     "test": "mocha --check-leaks --compilers js:babel-core/register"
   },
   "devDependencies": {
+    "async": "^2.0.0-rc.6",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.10.4",
     "babel-plugin-add-module-exports": "~0.2.1",
