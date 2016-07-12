@@ -30,4 +30,6 @@ var method = _identity3.default || _noop3.default;
 
 var method2 = _noop3.default ? _map3.default : _filter3.default;
 
+_noop3.default;
+
 (something ? _pick3.default : _omit3.default)(obj, function () {});

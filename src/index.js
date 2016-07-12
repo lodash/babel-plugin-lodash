@@ -213,6 +213,9 @@ export default ({ types }) => {
     // Allow things like `var x = y ? y : _.noop`.
     'ConditionalExpression': replaceNodes(['test', 'consequent', 'alternate']),
 
+    // Allow things like `_.noop`.
+    'ExpressionStatement': replaceNode('expression'),
+
     // Allow things like `var x = y || _.noop`.
     'LogicalExpression': replaceNodes(['left', 'right']),
 
