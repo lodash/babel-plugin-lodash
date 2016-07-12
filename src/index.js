@@ -137,6 +137,13 @@ export default ({ types }) => {
       });
     },
 
+    ArrayExpression(path) {
+      // Detect lodash callees to use as argument placeholders.
+      const callee = getCallee(path);
+      const name = callee ? (store.getValueBy('identifier', callee.name) || callee.name) : '';
+      replaceElements(store.getValueBy('member', name), path);
+    },
+
     MemberExpression(path) {
       const { node } = path;
       const { object, property } = node;
@@ -180,13 +187,6 @@ export default ({ types }) => {
       replaceArguments(node.callee, path);
     },
 
-    ArrayExpression(path) {
-      // Detect lodash callees to use as argument placeholders.
-      const callee = getCallee(path);
-      const name = callee ? (store.getValueBy('identifier', callee.name) || callee.name) : '';
-      replaceElements(store.getValueBy('member', name), path);
-    },
-
     ExportNamedDeclaration(path) {
       const { node } = path;
       const pkgPath = _.get(node, 'source.value');
@@ -205,19 +205,22 @@ export default ({ types }) => {
       });
     },
 
-    // Various other (less common) ways to use a lodash specifier. This code
-    // doesn't apply to uses on a lodash object, only directly imported specifiers.
-    'Property': replaceNode('value'),
-    'VariableDeclarator': replaceNode('init'),
+    // Various other less common ways to use a lodash specifier.
 
-    // Allow things like `o.a = _.noop`.
+    // Allow things like `o.x = _.noop`.
     'AssignmentExpression': replaceNode('right'),
+
+    // Allow things like `var x = y ? y : _.noop`.
+    'ConditionalExpression': replaceNodes(['test', 'consequent', 'alternate']),
 
     // Allow things like `var x = y || _.noop`.
     'LogicalExpression': replaceNodes(['left', 'right']),
 
-    // Allow things like `var x = y ? _.identity : _.noop`.
-    'ConditionalExpression': replaceNodes(['test', 'consequent', 'alternate'])
+    // Allow things like `var o = { 'x': _.noop }`.
+    'ObjectProperty': replaceNode('value'),
+
+    // Allow things like `var x = _.noop`.
+    'VariableDeclarator': replaceNode('init')
   };
 
   return { visitor };
