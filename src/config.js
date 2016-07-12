@@ -27,9 +27,12 @@ function createModuleMap(moduleRoot) {
   const basePaths = moduleRoot ? glob.sync(path.join(moduleRoot, '**/')) : [];
   return _.reduce(basePaths, (result, basePath) => {
     const base = path.relative(moduleRoot, basePath);
-    const filenames = glob.sync(path.join(basePath, '*.js'));
-    const names = filenames.map(filename => path.basename(filename, '.js'));
-    return result.set(base, new Set(names));
+    const filePaths = glob.sync(path.join(basePath, '*.js'));
+    const pairs = filePaths.map(filePath => {
+      const name = path.basename(filePath, '.js');
+      return [name.toLowerCase(), name];
+    });
+    return result.set(base, new MapCache(pairs));
   }, new MapCache);
 }
 

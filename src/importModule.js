@@ -5,12 +5,13 @@ import mapping from './mapping';
 
 function resolvePath(pkgStore, name) {
   let { base, id } = pkgStore;
+  const lower = name.toLowerCase();
   const module = mapping.modules.get(id);
 
-  if (!module.get(base).has(name)) {
+  if (!module.get(base).has(lower)) {
     base = (base || (id == 'lodash' && module.has('fp')))
       ? ''
-      : module.findKey(set => set.has(name));
+      : module.findKey(map => map.has(lower));
 
     if (!base) {
       throw new Error([
@@ -19,7 +20,7 @@ function resolvePath(pkgStore, name) {
       ].join('\n'));
     }
   }
-  return id + '/' + (base ? base + '/' : '') + name;
+  return id + '/' + (base ? base + '/' : '') + module.get(base).get(lower);
 }
 
 function importModule(pkgStore, name, file) {
