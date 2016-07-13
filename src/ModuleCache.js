@@ -8,10 +8,12 @@ import path from 'path';
 /*----------------------------------------------------------------------------*/
 
 export default class ModuleCache extends MapCache {
-  constructor(moduleRoot='') {
+  constructor(moduleRoot) {
     super();
 
+    moduleRoot = _.toString(moduleRoot);
     const dirPaths = moduleRoot ? glob.sync(path.join(moduleRoot, '**/')) : [];
+
     _.each(dirPaths, dirPath => {
       const base = path.relative(moduleRoot, dirPath);
       const filePaths = glob.sync(path.join(dirPath, '*.js'));
