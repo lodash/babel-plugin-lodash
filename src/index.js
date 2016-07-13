@@ -205,7 +205,7 @@ export default function lodash({ types }) {
       });
     },
 
-    // Various other less common ways to use a lodash specifier.
+    // Various less common ways to use a Lodash specifier.
 
     // Allow things like `o.x = _.noop`.
     'AssignmentExpression': replaceNode('right'),
@@ -216,7 +216,7 @@ export default function lodash({ types }) {
     // Allow things like `_.noop`.
     'ExpressionStatement': replaceNode('expression'),
 
-    // Allow things like `<div onClick={_.noop} />`.
+    // Allow things like `<div onClick={ _.noop } />`.
     'JSXExpressionContainer': replaceNode('expression'),
 
     // Allow things like `var x = y || _.noop`.
