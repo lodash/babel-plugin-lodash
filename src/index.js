@@ -138,7 +138,7 @@ export default function lodash({ types }) {
     },
 
     ArrayExpression(path) {
-      // Detect lodash callees to use as argument placeholders.
+      // Detect Lodash callees to use as argument placeholders.
       const callee = getCallee(path);
       const name = callee ? (store.getValueBy('identifier', callee.name) || callee.name) : '';
       replaceElements(store.getValueBy('member', name), path);
@@ -183,7 +183,7 @@ export default function lodash({ types }) {
       else if (types.isMemberExpression(callee)) {
         visitor.MemberExpression(path.get('callee'));
       }
-      // Replace lodash references in arguments, e.g. `_.flow(_.map, _.head)`.
+      // Replace Lodash references in arguments, e.g. `_.flow(_.map, _.head)`.
       replaceArguments(node.callee, path);
     },
 
