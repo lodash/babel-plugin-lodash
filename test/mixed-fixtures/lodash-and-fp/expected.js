@@ -1,18 +1,18 @@
 'use strict';
 
-var _reject3 = require('lodash/reject');
+var _reject3 = require('lodash/fp/reject');
 
 var _reject4 = _interopRequireDefault(_reject3);
 
-var _add3 = require('lodash/add');
+var _add3 = require('lodash/fp/add');
 
 var _add4 = _interopRequireDefault(_add3);
 
-var _reject5 = require('lodash/fp/reject');
+var _reject5 = require('lodash/reject');
 
 var _reject6 = _interopRequireDefault(_reject5);
 
-var _add5 = require('lodash/fp/add');
+var _add5 = require('lodash/add');
 
 var _add6 = _interopRequireDefault(_add5);
 
@@ -34,11 +34,11 @@ var _map6 = _interopRequireDefault(_map5);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mapper = (0, _map4.default)((0, _add6.default)(1));
+var mapper = (0, _map4.default)((0, _add4.default)(1));
 var result = mapper([-1, 0, 1]);
-(0, _take4.default)(1, (0, _reject6.default)(Boolean, result));
+(0, _take4.default)(1, (0, _reject4.default)(Boolean, result));
 
 var result2 = (0, _map6.default)([-1, 0, 1], function (n) {
-  return (0, _add4.default)(1, n);
+  return (0, _add6.default)(1, n);
 });
-(0, _take6.default)((0, _reject4.default)(result2), 1);
+(0, _take6.default)((0, _reject6.default)(result2), 1);
