@@ -15,6 +15,10 @@ function getByResolver(type, key) {
   return type + '/' + key;
 }
 
+function normalize(pkgPath) {
+  return _.toString(pkgPath).replace(/\\/g, '/');
+}
+
 /*----------------------------------------------------------------------------*/
 
 export default class Store extends MapCache {
@@ -37,6 +41,10 @@ export default class Store extends MapCache {
     return super.delete(key);
   }
 
+  get(pkgPath) {
+    return super.get(normalize(pkgPath));
+  }
+
   getStoreBy(type, key) {
     return super.find(entry => _.invoke(entry.get(type), 'has', key));
   }
@@ -49,7 +57,7 @@ export default class Store extends MapCache {
     return _.invoke(this.getMapBy(type, key), 'get', key);
   }
 
-  set(pkgPath, pkgStore=new PackageStore(pkgPath)) {
-    return super.set(pkgPath, pkgStore);
+  set(pkgPath, pkgStore=new PackageStore(normalize(pkgPath))) {
+    return super.set(normalize(pkgPath), pkgStore);
   }
 };
