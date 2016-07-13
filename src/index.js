@@ -47,74 +47,70 @@ export default function lodash({ types }) {
 
   function importer({ declarations, defaults, members }) {
     // Phase 1: Import all modules.
-
     _.each(members, ({ pkgStore, spec }) => {
       const { node } = spec;
       const name = node.local.name;
 
-      if (name === 'chain') {
+      if (pkgStore.isLodash() && name == 'chain') {
         throw path.buildCodeFrameError(CHAIN_ERROR);
       }
-
       const identifier = importModule(pkgStore, node.imported.name, spec.hub.file);
       pkgStore.set(name, identifier);
       pkgStore.set(identifier.name, identifier);
     })
+
     _.each(defaults, ({ pkgStore, spec }) => {
-        const binding = spec.scope.getBinding(spec.node.local.name);
-        _.each(binding.referencePaths, path => {
-          if (path.key === 'callee') {
-            throw path.buildCodeFrameError(CHAIN_ERROR);
-          } else if (path.parentPath.isMemberExpression()) {
-            const name = path.parent.property.name;
+      const binding = spec.scope.getBinding(spec.node.local.name);
 
-            if (name === 'chain') {
-              throw path.buildCodeFrameError(CHAIN_ERROR);
-            }
-
-            if (!pkgStore.has(name)) {
-              const identifier = importModule(pkgStore, name, path.hub.file);
-              pkgStore.set(name, identifier);
-              pkgStore.set(identifier.name, identifier);
-            }
-          }
-        });
+      _.each(binding.referencePaths, path => {
+        if (!path.parentPath.isMemberExpression()) {
+          return;
+        }
+        const key = path.parent.property.name;
+        if (pkgStore.isLodash() && (key == 'chain' || path.key == 'callee')) {
+          throw path.buildCodeFrameError(CHAIN_ERROR);
+        }
+        if (!pkgStore.has(key)) {
+          const identifier = importModule(pkgStore, key, path.hub.file);
+          pkgStore.set(key, identifier);
+          pkgStore.set(identifier.name, identifier);
+        }
+      });
     });
 
     // Phase 2: Replace all uses with their modularized version.
     _.each(members, ({ pkgStore, spec }) => {
       const name = spec.node.local.name;
-
-      const identifier = pkgStore.get(name);
       const binding = spec.scope.getBinding(name);
-      _.each(binding.referencePaths, path => {
-        path.replaceWith(identifier);
-      });
-    })
+      const identifier = pkgStore.get(name);
+
+      _.each(binding.referencePaths, path => path.replaceWith(identifier));
+    });
+
     _.each(defaults, ({ pkgStore, spec }) => {
-      const binding = spec.scope.getBinding(spec.node.local.name);
+      const name = spec.node.local.name;
+      const binding = spec.scope.getBinding(name);
+
       _.each(binding.referencePaths, path => {
         const { parentPath, node } = path;
-
         if (parentPath.isMemberExpression()) {
-          const name = path.parent.property.name;
-          parentPath.replaceWith(pkgStore.get(name));
-        } else {
+          parentPath.replaceWith(pkgStore.get(path.parent.property.name));
+        }
+        else if (pkgStore.isLodash()) {
           const callee = getCallee(path);
-          if (callee && pkgStore.has(callee.name)) {
-            path.replaceWith(types.memberExpression(
-              callee,
-              types.identifier('placeholder')
-            ));
-          } else {
-            throw path.buildCodeFrameError('wtf');
+          if (callee && callee.name == name) {
+            throw path.buildCodeFrameError(CHAIN_ERROR);
           }
+          path.replaceWith(callee
+            ? types.memberExpression(callee, identifiers.PLACEHOLDER)
+            : identifiers.UNDEFINED
+          );
         }
       });
     });
 
     // Phase 3: Remove the old imports.
-    _.each(declarations, (dec) => dec.remove());
+    _.invokeMap(declarations, 'remove');
   }
 
   const importVisitor = {
@@ -125,14 +121,10 @@ export default function lodash({ types }) {
       if (!pkgStore) {
         return;
       }
-
       this.declarations.push(path);
-      _.each(path.get("specifiers"), (spec) => {
-        if (spec.isImportSpecifier()) {
-          this.members.push({ pkgStore, spec });
-        } else {
-          this.defaults.push({ pkgStore, spec });
-        }
+      _.each(path.get('specifiers'), spec => {
+        const key = spec.isImportSpecifier() ? 'members' : 'defaults';
+        this[key].push({ pkgStore, spec });
       });
     }
   };
