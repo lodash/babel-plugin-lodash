@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import MapCache from './MapCache';
 
+const reLodash = /^lodash(?:-compat|-es)?$/;
+
 /*----------------------------------------------------------------------------*/
 
 export default class PackageStore extends MapCache {
@@ -22,5 +24,9 @@ export default class PackageStore extends MapCache {
   clear() {
     _.invokeMap(_.toArray(this.__data__), '[1].clear');
     return this;
+  }
+
+  isLodash() {
+    return reLodash.test(this.id);
   }
 };

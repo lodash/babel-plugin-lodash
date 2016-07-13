@@ -40,10 +40,6 @@ export default function lodash({ types }) {
     return result;
   }
 
-  function isDefaultMember(name) {
-    return !!store.getStoreBy('default', name);
-  }
-
   function isIdentifier(node, path) {
     if (types.isIdentifier(node)) {
       const parent = _.get(path.scope.getAllBindings(), [node.name, 'path', 'parent']);
@@ -77,7 +73,7 @@ export default function lodash({ types }) {
     _.each(nodes, (node, index) => {
       if (isIdentifier(node, path)) {
         // Assume default members are placeholders.
-        nodes[index] = isDefaultMember(node.name)
+        nodes[index] = store.getStoreBy('default', node.name)
           ? placeholder
           : store.getValueBy('member', node.name);
       }
@@ -159,7 +155,7 @@ export default function lodash({ types }) {
       }
       const pkgStore = store.getStoreBy('default', object.name);
       if (pkgStore) {
-        if (property.name == 'chain') {
+        if (pkgStore.isLodash() && property.name == 'chain') {
           throw new Error(CHAIN_ERROR);
         }
         // Replace `_.map` with `_map`.
@@ -176,7 +172,8 @@ export default function lodash({ types }) {
       const { callee } = node;
 
       if (isIdentifier(callee, path)) {
-        if (isDefaultMember(callee.name)) {
+        const pkgStore = store.getStoreBy('default', callee.name);
+        if (pkgStore && pkgStore.isLodash()) {
           // Detect chain sequences by `_()`.
           throw new Error(CHAIN_ERROR);
         }
