@@ -27,7 +27,7 @@ export default function lodash({ types }) {
    *
    * @type Store
    */
-  const store = new Store(mapping.ids.concat('lodash/fp'));
+  const store = new Store;
 
   function getCallee(path) {
     let result;
@@ -93,10 +93,16 @@ export default function lodash({ types }) {
 
     Program(path, state) {
       const { ids } = _.assign(mapping, config(state.opts));
+
       if (_.isEmpty(ids)) {
-        throw new Error('Cannot find Lodash module');
+        throw new Error('Cannot find module');
       }
-      _.each(ids, id => store.set(id));
+      _.each(ids, id => {
+        store.set(id);
+        mapping.modules.get(id).forEach(function(value, key) {
+          store.set(id + '/' + key);
+        });
+      });
 
       // Clear tracked Lodash method imports and variables.
       importModule.cache.clear();

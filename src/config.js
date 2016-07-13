@@ -9,22 +9,18 @@ const defaultIds = [
 ];
 
 const ids = [];
-
-const modules = _.transform(defaultIds, (modules, id) => {
-  const moduleRoot = ModuleCache.resolve(id);
-  if (moduleRoot) {
-    ids.push(id);
-    modules.set(id, new ModuleCache(moduleRoot));
-  }
-}, new MapCache);
+const modules = new MapCache;
 
 /*----------------------------------------------------------------------------*/
 
-export default function config({ cwd=process.cwd(), id=ids[0] }={}) {
+export default function config({ cwd=process.cwd(), id=defaultIds }={}) {
   _.each(_.castArray(id), id => {
     if (!modules.get(id)) {
-      ids.push(id);
-      modules.set(id, new ModuleCache(ModuleCache.resolve(id, cwd)));
+      const moduleRoot = ModuleCache.resolve(id, cwd);
+      if (moduleRoot) {
+        ids.push(id);
+        modules.set(id, new ModuleCache(moduleRoot));
+      }
     }
   });
   return { ids, modules };
