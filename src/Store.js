@@ -15,7 +15,7 @@ export default class Store extends MapCache {
   }
 
   clear() {
-    _.invokeMap(_.toArray(this.__data__), '[1].clear');
+    this.__data__.forEach(map => map.clear());
     return this;
   }
 
