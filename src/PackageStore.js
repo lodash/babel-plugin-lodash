@@ -18,15 +18,12 @@ export default class PackageStore extends MapCache {
 
     this.base = parts.slice(1).join('/');
     this.id = parts[0];
+    this.isLodash = _.constant(reLodash.test(this.id));
     this.path = pkgPath;
   }
 
   clear() {
     _.invokeMap(_.toArray(this.__data__), '[1].clear');
     return this;
-  }
-
-  isLodash() {
-    return reLodash.test(this.id);
   }
 };
