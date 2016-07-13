@@ -19,7 +19,11 @@ export default class Store extends MapCache {
     return this;
   }
 
-  set(pkgPath, pkgStore=new PackageStore(pkgPath)) {
+  get(pkgPath) {
+    return super.get(normalize(pkgPath));
+  }
+
+  set(pkgPath, pkgStore=new PackageStore(normalize(pkgPath))) {
     return super.set(normalize(pkgPath), pkgStore);
   }
 };
