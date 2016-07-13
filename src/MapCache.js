@@ -20,6 +20,7 @@ const toArray = _.memoize(_.toArray);
 export default class MapCache {
   constructor(values) {
     this.__data__ = new Map(values);
+    _.bindAll(this.__data__, ['entries', 'forEach', 'keys', 'values']);
   }
 
   clear() {
@@ -54,7 +55,27 @@ export default class MapCache {
     return this;
   }
 
+  get entries() {
+    return this.__data__.entries;
+  }
+
+  get forEach() {
+    return this.__data__.forEach;
+  }
+
+  get keys() {
+    return this.__data__.keys;
+  }
+
+  get size() {
+    return this.__data__.size;
+  }
+
+  get values() {
+    return this.__data__.values;
+  }
+
   get [Symbol.iterator]() {
-    return this.__data__[Symbol.iterator]();
+    return this.__data__.entries;
   }
 };
