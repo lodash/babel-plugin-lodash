@@ -29,9 +29,7 @@ export default function lodash({ types }) {
    */
   const store = new Store;
 
-  function getCallee(path) {
-    let { parentPath } = path;
-
+  function getCallee({ parentPath }) {
     // Trace curried calls to their origin, e.g. `fp.partial(func)([fp, 2])(1)`.
     while (!parentPath.isStatement()) {
       if (parentPath.isCallExpression()) {
@@ -39,10 +37,8 @@ export default function lodash({ types }) {
         while (types.isCallExpression(result)) {
           result = result.callee;
         }
-
         return result;
       }
-
       parentPath = parentPath.parentPath;
     }
   }
