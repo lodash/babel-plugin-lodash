@@ -181,7 +181,7 @@ export default function lodash({ types }) {
       _.each(node.specifiers, spec => {
         spec.local = importModule(pkgStore, spec.local.name, path.hub.file);
       });
-    },
+    }
   };
 
   return { visitor };
