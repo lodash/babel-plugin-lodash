@@ -9,10 +9,7 @@ function resolvePath(pkgStore, name) {
   const module = mapping.modules.get(id);
 
   if (!module.get(base).has(lower)) {
-    base = (base || (id == 'lodash' && module.has('fp')))
-      ? ''
-      : module.findKey(map => map.has(lower));
-
+    base = base ? '' : module.findKey(map => map.has(lower));
     if (!base) {
       throw new Error([
         `The '${ id }' method ${ name } is not a known module.`,
