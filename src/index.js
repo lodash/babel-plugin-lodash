@@ -73,7 +73,8 @@ export default function lodash({ types }) {
     _.each(nodes, (node, index) => {
       if (isIdentifier(node, path)) {
         // Assume default members are placeholders.
-        nodes[index] = store.getStoreBy('default', node.name)
+        const pkgStore = store.getStoreBy('default', node.name);
+        nodes[index] = _.result(pkgStore, 'isLodash')
           ? placeholder
           : store.getValueBy('member', node.name);
       }
@@ -173,7 +174,7 @@ export default function lodash({ types }) {
 
       if (isIdentifier(callee, path)) {
         const pkgStore = store.getStoreBy('default', callee.name);
-        if (pkgStore && pkgStore.isLodash()) {
+        if (_.result(pkgStore, 'isLodash')) {
           // Detect chain sequences by `_()`.
           throw new Error(CHAIN_ERROR);
         }
