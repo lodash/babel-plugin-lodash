@@ -7,11 +7,7 @@ const reLodash = /^lodash(?:-compat|-es)?$/;
 
 export default class PackageStore extends MapCache {
   constructor(pkgPath) {
-    super([
-      ['default', new MapCache],
-      ['identifier', new MapCache],
-      ['member', new MapCache]
-    ]);
+    super();
 
     pkgPath = _.toString(pkgPath);
     const parts = pkgPath.split('/');
@@ -20,10 +16,5 @@ export default class PackageStore extends MapCache {
     this.id = parts[0];
     this.isLodash = _.constant(reLodash.test(this.id));
     this.path = pkgPath;
-  }
-
-  clear() {
-    _.invokeMap(_.toArray(this.__data__), '[1].clear');
-    return this;
   }
 };

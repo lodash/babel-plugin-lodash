@@ -29,17 +29,6 @@ export default function lodash({ types }) {
    */
   const store = new Store;
 
-  function getCallee(path) {
-    let result;
-    let { parent } = path;
-
-    // Trace curried calls to their origin, e.g. `fp.partial(func)([fp, 2])(1)`.
-    while (types.isCallExpression(parent)) {
-      parent = result = parent.callee;
-    }
-    return result;
-  }
-
   function isIdentifier(node, path) {
     if (types.isIdentifier(node)) {
       const parent = _.get(path.scope.getAllBindings(), [node.name, 'path', 'parent']);
@@ -52,45 +41,121 @@ export default function lodash({ types }) {
     return types.isImportDeclaration(node) && store.has(node.source.value);
   }
 
-  const replaceNode = _.curry((key, path) => {
-    const object = path.node;
-    const node = object[key];
-    if (isIdentifier(node, path)) {
-      object[key] = store.getValueBy('member', node.name);
-    }
-  });
+  function getCallee(path) {
+    let { parentPath } = path;
 
-  const replaceNodes = _.curry((props, path) => {
-    _.each(props, key => replaceNode(key, path));
-  });
+    // Trace curried calls to their origin, e.g. `fp.partial(func)([fp, 2])(1)`.
+    while (!parentPath.isStatement()) {
+      if (parentPath.isCallExpression()) {
+        let result = parentPath.node.callee;
+        while (types.isCallExpression(result)) {
+          result = result.callee;
+        }
 
-  const replaceNodeList = _.curry((key, callee, path) => {
-    const nodes = path.node[key];
-    const placeholder = callee
-      ? types.memberExpression(callee, identifiers.PLACEHOLDER)
-      : identifiers.UNDEFINED;
-
-    _.each(nodes, (node, index) => {
-      if (isIdentifier(node, path)) {
-        // Assume default members are placeholders.
-        const pkgStore = store.getStoreBy('default', node.name);
-        nodes[index] = _.result(pkgStore, 'isLodash')
-          ? placeholder
-          : store.getValueBy('member', node.name);
+        return result;
       }
-    });
-  });
 
-  const replaceElements = replaceNodeList('elements');
-  const replaceArguments = replaceNodeList('arguments');
+      parentPath = parentPath.parentPath;
+    }
+  }
 
   /*--------------------------------------------------------------------------*/
 
-  const visitor = {
+  function importer({ declarations, defaults, members }) {
+    // Phase 1: Import all modules.
 
+    _.each(members, ({ pkgStore, spec }) => {
+      const { node } = spec;
+      const name = node.local.name;
+
+      if (name === 'chain') {
+        throw path.buildCodeFrameError(CHAIN_ERROR);
+      }
+
+      const identifier = importModule(pkgStore, node.imported.name, spec.hub.file);
+      pkgStore.set(name, identifier);
+      pkgStore.set(identifier.name, identifier);
+    })
+    _.each(defaults, ({ pkgStore, spec }) => {
+        const binding = spec.scope.getBinding(spec.node.local.name);
+        _.each(binding.referencePaths, path => {
+          if (path.key === 'callee') {
+            throw path.buildCodeFrameError(CHAIN_ERROR);
+          } else if (path.parentPath.isMemberExpression()) {
+            const name = path.parent.property.name;
+
+            if (name === 'chain') {
+              throw path.buildCodeFrameError(CHAIN_ERROR);
+            }
+
+            if (!pkgStore.has(name)) {
+              const identifier = importModule(pkgStore, name, path.hub.file);
+              pkgStore.set(name, identifier);
+              pkgStore.set(identifier.name, identifier);
+            }
+          }
+        });
+    });
+
+    // Phase 2: Replace all uses with their modularized version.
+    _.each(members, ({ pkgStore, spec }) => {
+      const name = spec.node.local.name;
+
+      const identifier = pkgStore.get(name);
+      const binding = spec.scope.getBinding(name);
+      _.each(binding.referencePaths, path => {
+        path.replaceWith(identifier);
+      });
+    })
+    _.each(defaults, ({ pkgStore, spec }) => {
+      const binding = spec.scope.getBinding(spec.node.local.name);
+      _.each(binding.referencePaths, path => {
+        const { parentPath, node } = path;
+
+        if (parentPath.isMemberExpression()) {
+          const name = path.parent.property.name;
+          parentPath.replaceWith(pkgStore.get(name));
+        } else {
+          const callee = getCallee(path);
+          if (callee && pkgStore.has(callee.name)) {
+            path.replaceWith(types.memberExpression(
+              callee,
+              types.identifier('placeholder')
+            ));
+          } else {
+            throw path.buildCodeFrameError('wtf');
+          }
+        }
+      });
+    });
+
+    // Phase 3: Remove the old imports.
+    _.each(declarations, (dec) => dec.remove());
+  }
+
+  const importVisitor = {
+    ImportDeclaration(path) {
+      const { node } = path;
+      const pkgStore = store.get(node.source.value);
+
+      if (!pkgStore) {
+        return;
+      }
+
+      this.declarations.push(path);
+      _.each(path.get("specifiers"), (spec) => {
+        if (spec.isImportSpecifier()) {
+          this.members.push({ pkgStore, spec });
+        } else {
+          this.defaults.push({ pkgStore, spec });
+        }
+      });
+    }
+  };
+
+  const visitor = {
     Program(path, state) {
       const { ids } = _.assign(mapping, config(state.opts));
-
       if (_.isEmpty(ids)) {
         throw new Error('Cannot find module');
       }
@@ -104,91 +169,15 @@ export default function lodash({ types }) {
       // Clear tracked Lodash method imports and variables.
       importModule.cache.clear();
       store.clear();
-    },
 
-    ImportDeclaration(path) {
-      const { node } = path;
-      const pkgStore = store.get(node.source.value);
+      const imports = {
+        defaults: [],
+        members: [],
+        declarations: [],
+      };
+      path.traverse(importVisitor, imports);
 
-      if (!pkgStore) {
-        return;
-      }
-      const defaultMap = pkgStore.get('default');
-      const identifierMap = pkgStore.get('identifier');
-      const memberMap = pkgStore.get('member');
-
-      // Remove the original import node.
-      path.remove();
-
-      // Track all the Lodash default and specifier imports in the source.
-      _.each(node.specifiers, spec => {
-        const { local } = spec;
-        if (types.isImportSpecifier(spec)) {
-          // Replace member import, e.g. `import { map } from 'lodash'`, with
-          // cherry-picked default import, e.g. `import _map from 'lodash/map'`.
-          const identifier = importModule(pkgStore, spec.imported.name, path.hub.file);
-
-          identifierMap.set(identifier.name, local.name);
-          memberMap.set(identifier.name, identifier);
-          memberMap.set(local.name, identifier);
-        }
-        else {
-          // Cache original default member name, e.g. `_` of `import _ from 'lodash'`.
-          defaultMap.set(local.name, true);
-          memberMap.set(local.name, identifiers.UNDEFINED);
-        }
-      });
-    },
-
-    ArrayExpression(path) {
-      // Detect Lodash callees to use as argument placeholders.
-      const callee = getCallee(path);
-      const name = callee ? (store.getValueBy('identifier', callee.name) || callee.name) : '';
-      replaceElements(store.getValueBy('member', name), path);
-    },
-
-    MemberExpression(path) {
-      const { node } = path;
-      const { object, property } = node;
-
-      if (!isIdentifier(object, path)) {
-        return;
-      }
-      const pkgStore = store.getStoreBy('default', object.name);
-      if (pkgStore) {
-        if (pkgStore.isLodash() && property.name == 'chain') {
-          throw new Error(CHAIN_ERROR);
-        }
-        // Replace `_.map` with `_map`.
-        path.replaceWith(importModule(pkgStore, property.name, path.hub.file));
-      }
-      else {
-        // Allow things like `_bind.placeholder = {}`.
-        node.object = store.getValueBy('member', object.name);
-      }
-    },
-
-    CallExpression(path) {
-      const { node } = path;
-      const { callee } = node;
-
-      if (isIdentifier(callee, path)) {
-        const pkgStore = store.getStoreBy('default', callee.name);
-        if (_.result(pkgStore, 'isLodash')) {
-          // Detect chain sequences by `_()`.
-          throw new Error(CHAIN_ERROR);
-        }
-        // Replace `map()` with `_map()`.
-        node.callee = store.getValueBy('member', callee.name);
-      }
-      else if (types.isBindExpression(callee)) {
-        visitor.CallExpression(path.get('callee'));
-      }
-      else if (types.isMemberExpression(callee)) {
-        visitor.MemberExpression(path.get('callee'));
-      }
-      // Replace Lodash references in arguments, e.g. `_.flow(_.map, _.head)`.
-      replaceArguments(node.callee, path);
+      importer(imports);
     },
 
     ExportNamedDeclaration(path) {
@@ -196,41 +185,15 @@ export default function lodash({ types }) {
       const pkgPath = _.get(node, 'source.value');
       const pkgStore = store.get(pkgPath);
 
-      if (pkgStore) {
-        node.source = null;
+      if (!pkgStore) {
+        return;
       }
+      node.source = null;
+
       _.each(node.specifiers, spec => {
-        const { local } = spec;
-        if (pkgStore) {
-          spec.local = importModule(pkgStore, local.name, path.hub.file);
-        } else if (isIdentifier(spec.local, path)) {
-          spec.local = store.getValueBy('member', local.name);
-        }
+        spec.local = importModule(pkgStore, spec.local.name, path.hub.file);
       });
     },
-
-    // Various less common ways to use a Lodash specifier.
-
-    // Allow things like `o.x = _.noop`.
-    'AssignmentExpression': replaceNode('right'),
-
-    // Allow things like `const x = y ? y : _.noop`.
-    'ConditionalExpression': replaceNodes(['test', 'consequent', 'alternate']),
-
-    // Allow things like `_.noop`.
-    'ExpressionStatement': replaceNode('expression'),
-
-    // Allow things like `<div onClick={ _.noop } />`.
-    'JSXExpressionContainer': replaceNode('expression'),
-
-    // Allow things like `const x = y || _.noop`.
-    'LogicalExpression': replaceNodes(['left', 'right']),
-
-    // Allow things like `const o = { 'x': _.noop }`.
-    'ObjectProperty': replaceNode('value'),
-
-    // Allow things like `const x = _.noop`.
-    'VariableDeclarator': replaceNode('init')
   };
 
   return { visitor };
