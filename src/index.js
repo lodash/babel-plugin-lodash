@@ -216,6 +216,9 @@ export default ({ types }) => {
     // Allow things like `_.noop`.
     'ExpressionStatement': replaceNode('expression'),
 
+    // Allow things like `<div onClick={_.noop} />`.
+    'JSXExpressionContainer': replaceNode('expression'),
+
     // Allow things like `var x = y || _.noop`.
     'LogicalExpression': replaceNodes(['left', 'right']),
 

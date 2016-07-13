@@ -1,0 +1,8 @@
+{
+  "plugins": [
+    "syntax-jsx"
+  ],
+  "presets": [
+    "es2015"
+  ]
+}
