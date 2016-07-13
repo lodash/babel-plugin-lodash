@@ -216,7 +216,7 @@ export default function lodash({ types }) {
     // Allow things like `o.x = _.noop`.
     'AssignmentExpression': replaceNode('right'),
 
-    // Allow things like `var x = y ? y : _.noop`.
+    // Allow things like `const x = y ? y : _.noop`.
     'ConditionalExpression': replaceNodes(['test', 'consequent', 'alternate']),
 
     // Allow things like `_.noop`.
@@ -225,13 +225,13 @@ export default function lodash({ types }) {
     // Allow things like `<div onClick={ _.noop } />`.
     'JSXExpressionContainer': replaceNode('expression'),
 
-    // Allow things like `var x = y || _.noop`.
+    // Allow things like `const x = y || _.noop`.
     'LogicalExpression': replaceNodes(['left', 'right']),
 
-    // Allow things like `var o = { 'x': _.noop }`.
+    // Allow things like `const o = { 'x': _.noop }`.
     'ObjectProperty': replaceNode('value'),
 
-    // Allow things like `var x = _.noop`.
+    // Allow things like `const x = _.noop`.
     'VariableDeclarator': replaceNode('init')
   };
 
