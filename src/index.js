@@ -29,18 +29,6 @@ export default function lodash({ types }) {
    */
   const store = new Store;
 
-  function isIdentifier(node, path) {
-    if (types.isIdentifier(node)) {
-      const parent = _.get(path.scope.getAllBindings(), [node.name, 'path', 'parent']);
-      return isImportDeclaration(parent);
-    }
-    return false;
-  }
-
-  function isImportDeclaration(node) {
-    return types.isImportDeclaration(node) && store.has(node.source.value);
-  }
-
   function getCallee(path) {
     let { parentPath } = path;
 
