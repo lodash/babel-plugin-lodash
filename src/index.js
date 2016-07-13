@@ -155,12 +155,12 @@ export default function lodash({ types }) {
       store.clear();
 
       const imports = {
-        defaults: [],
-        members: [],
-        declarations: [],
+        'declarations': [],
+        'defaults': [],
+        'members': []
       };
-      path.traverse(importVisitor, imports);
 
+      path.traverse(importVisitor, imports);
       importer(imports);
     },
 
