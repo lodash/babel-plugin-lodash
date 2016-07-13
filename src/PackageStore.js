@@ -11,7 +11,7 @@ export default class PackageStore extends MapCache {
       ['member', new MapCache]
     ]);
     const parts = pkgPath.split('/');
-    this.base = parts[1] || '';
+    this.base = parts.slice(1).join('/');
     this.id = parts[0];
     this.path = pkgPath;
   }
