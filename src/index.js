@@ -46,57 +46,48 @@ export default function lodash({ types }) {
   /*--------------------------------------------------------------------------*/
 
   function importer({ declarations, defaults, members }) {
-    // Phase 1: Import all modules.
     _.each(members, ({ pkgStore, spec }) => {
+      // Import module.
       const { node } = spec;
       const name = node.local.name;
-
-      if (pkgStore.isLodash() && name == 'chain') {
-        throw path.buildCodeFrameError(CHAIN_ERROR);
-      }
+      const binding = spec.scope.getBinding(name);
       const identifier = importModule(pkgStore, node.imported.name, spec.hub.file);
+      const isLodash = pkgStore.isLodash();
+
       pkgStore.set(name, identifier);
       pkgStore.set(identifier.name, identifier);
-    })
 
-    _.each(defaults, ({ pkgStore, spec }) => {
-      const binding = spec.scope.getBinding(spec.node.local.name);
-
+      // Replace references with their modular versions.
       _.each(binding.referencePaths, path => {
-        if (!path.parentPath.isMemberExpression()) {
-          return;
-        }
-        const key = path.parent.property.name;
-        if (pkgStore.isLodash() && (key == 'chain' || path.key == 'callee')) {
+        if (isLodash && name == 'chain' && path.parentPath.isCallExpression()) {
           throw path.buildCodeFrameError(CHAIN_ERROR);
         }
-        if (!pkgStore.has(key)) {
-          const identifier = importModule(pkgStore, key, path.hub.file);
-          pkgStore.set(key, identifier);
-          pkgStore.set(identifier.name, identifier);
-        }
+        path.replaceWith(identifier);
       });
     });
 
-    // Phase 2: Replace all uses with their modularized version.
-    _.each(members, ({ pkgStore, spec }) => {
-      const name = spec.node.local.name;
-      const binding = spec.scope.getBinding(name);
-      const identifier = pkgStore.get(name);
-
-      _.each(binding.referencePaths, path => path.replaceWith(identifier));
-    });
-
     _.each(defaults, ({ pkgStore, spec }) => {
       const name = spec.node.local.name;
       const binding = spec.scope.getBinding(name);
+      const isLodash = pkgStore.isLodash();
 
       _.each(binding.referencePaths, path => {
-        const { parentPath, node } = path;
+        const { parentPath } = path;
+
         if (parentPath.isMemberExpression()) {
-          parentPath.replaceWith(pkgStore.get(path.parent.property.name));
+          const key = path.parent.property.name;
+          if (isLodash && key == 'chain' && parentPath.parentPath.isCallExpression()) {
+            throw path.buildCodeFrameError(CHAIN_ERROR);
+          }
+          // Import module.
+          const identifier = importModule(pkgStore, key, path.hub.file);
+          pkgStore.set(key, identifier);
+          pkgStore.set(identifier.name, identifier);
+
+          // Replace reference with its modular version.
+          parentPath.replaceWith(identifier);
         }
-        else if (pkgStore.isLodash()) {
+        else if (isLodash) {
           const callee = getCallee(path);
           if (callee && callee.name == name) {
             throw path.buildCodeFrameError(CHAIN_ERROR);
@@ -109,7 +100,7 @@ export default function lodash({ types }) {
       });
     });
 
-    // Phase 3: Remove the old imports.
+    // Remove old imports.
     _.invokeMap(declarations, 'remove');
   }
 
@@ -135,16 +126,17 @@ export default function lodash({ types }) {
       if (_.isEmpty(ids)) {
         throw new Error('Cannot find module');
       }
+      // Clear tracked Lodash method imports and variables.
+      importModule.cache.clear();
+      store.clear();
+
+      // Populate module paths per package.
       _.each(ids, id => {
         store.set(id);
         mapping.modules.get(id).forEach(function(value, key) {
           store.set(id + '/' + key);
         });
       });
-
-      // Clear tracked Lodash method imports and variables.
-      importModule.cache.clear();
-      store.clear();
 
       const imports = {
         'declarations': [],
