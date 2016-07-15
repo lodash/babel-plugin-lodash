@@ -46,46 +46,46 @@ export default function lodash({ types }) {
   /*--------------------------------------------------------------------------*/
 
   function importer({ defaults, members }) {
-    _.each(members, ({ pkgStore, spec }) => {
+    _.each(members, ({ pkgStore, specPath }) => {
       // Import module.
-      const { node } = spec;
+      const { node } = specPath;
       const name = node.local.name;
-      const binding = spec.scope.getBinding(name);
-      const identifier = importModule(pkgStore, node.imported.name, spec.hub.file);
+      const binding = specPath.scope.getBinding(name);
+      const identifier = importModule(pkgStore, node.imported.name, specPath.hub.file);
       const isLodash = pkgStore.isLodash();
 
       // Replace the old member with its new identifier.
-      _.each(binding.referencePaths, path => {
-        if (isLodash && name == 'chain' && path.parentPath.isCallExpression()) {
-          throw path.buildCodeFrameError(CHAIN_ERROR);
+      _.each(binding.referencePaths, refPath => {
+        if (isLodash && name == 'chain' && refPath.parentPath.isCallExpression()) {
+          throw refPath.buildCodeFrameError(CHAIN_ERROR);
         }
-        path.replaceWith(types.clone(identifier));
+        refPath.replaceWith(types.clone(identifier));
       });
     });
 
-    _.each(defaults, ({ pkgStore, spec }) => {
-      const name = spec.node.local.name;
-      const binding = spec.scope.getBinding(name);
+    _.each(defaults, ({ pkgStore, specPath }) => {
+      const name = specPath.node.local.name;
+      const binding = specPath.scope.getBinding(name);
       const isLodash = pkgStore.isLodash();
 
-      _.each(binding.referencePaths, path => {
-        const { parentPath } = path;
+      _.each(binding.referencePaths, refPath => {
+        const { parentPath } = refPath;
 
         if (parentPath.isMemberExpression()) {
-          const key = path.parent.property.name;
+          const key = refPath.parent.property.name;
           if (isLodash && key == 'chain' && parentPath.parentPath.isCallExpression()) {
-            throw path.buildCodeFrameError(CHAIN_ERROR);
+            throw refPath.buildCodeFrameError(CHAIN_ERROR);
           }
           // Import and replace the old member with its new identifier.
-          const identifier = importModule(pkgStore, key, path.hub.file);
+          const identifier = importModule(pkgStore, key, refPath.hub.file);
           parentPath.replaceWith(types.clone(identifier));
         }
         else if (isLodash) {
-          const callee = getCallee(path);
+          const callee = getCallee(refPath);
           if (callee && callee.name == name) {
-            throw path.buildCodeFrameError(CHAIN_ERROR);
+            throw refPath.buildCodeFrameError(CHAIN_ERROR);
           }
-          path.replaceWith(callee
+          refPath.replaceWith(callee
             ? types.memberExpression(callee, identifiers.PLACEHOLDER)
             : identifiers.UNDEFINED
           );
@@ -102,9 +102,9 @@ export default function lodash({ types }) {
       if (!pkgStore) {
         return;
       }
-      _.each(path.get('specifiers'), spec => {
-        const key = spec.isImportSpecifier() ? 'members' : 'defaults';
-        this[key].push({ pkgStore, spec });
+      _.each(path.get('specifiers'), specPath => {
+        const key = specPath.isImportSpecifier() ? 'members' : 'defaults';
+        this[key].push({ pkgStore, specPath });
       });
       // Remove old import.
       path.remove();
@@ -148,7 +148,6 @@ export default function lodash({ types }) {
         return;
       }
       node.source = null;
-
       _.each(node.specifiers, spec => {
         spec.local = importModule(pkgStore, spec.local.name, path.hub.file);
       });
