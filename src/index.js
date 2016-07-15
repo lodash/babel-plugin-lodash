@@ -15,11 +15,6 @@ const CHAIN_ERROR = [
 
 export default function lodash({ types }) {
 
-  const identifiers = {
-    'PLACEHOLDER': types.identifier('placeholder'),
-    'UNDEFINED': types.identifier('undefined')
-  };
-
   /**
    * Used to track variables built during the AST pass. We instantiate these in
    * the `Program` visitor in order to support running the plugin in watch mode
@@ -45,30 +40,26 @@ export default function lodash({ types }) {
 
   /*--------------------------------------------------------------------------*/
 
-  function importer({ declarations, defaults, members }) {
-    _.each(members, ({ pkgStore, spec }) => {
-      // Import module.
-      const { node } = spec;
-      const name = node.local.name;
-      const binding = spec.scope.getBinding(name);
-      const identifier = importModule(pkgStore, node.imported.name, spec.hub.file);
+  function importer(file, defaults, members) {
+    _.each(members, ({ pkgStore, imported, local }) => {
+      const binding = file.scope.getBinding(local);
+      const module = importModule(pkgStore, imported, file);
       const isLodash = pkgStore.isLodash();
 
-      pkgStore.set(name, identifier);
-      pkgStore.set(identifier.name, identifier);
+      pkgStore.set(local, module);
+      pkgStore.set(module, module);
 
       // Replace references with their modular versions.
       _.each(binding.referencePaths, path => {
-        if (isLodash && name == 'chain' && path.parentPath.isCallExpression()) {
+        if (isLodash && local == 'chain' && path.parentPath.isCallExpression()) {
           throw path.buildCodeFrameError(CHAIN_ERROR);
         }
-        path.replaceWith(identifier);
+        path.replaceWith(types.identifier(module));
       });
     });
 
-    _.each(defaults, ({ pkgStore, spec }) => {
-      const name = spec.node.local.name;
-      const binding = spec.scope.getBinding(name);
+    _.each(defaults, ({ pkgStore, local }) => {
+      const binding = file.scope.getBinding(local);
       const isLodash = pkgStore.isLodash();
 
       _.each(binding.referencePaths, path => {
@@ -80,45 +71,26 @@ export default function lodash({ types }) {
             throw path.buildCodeFrameError(CHAIN_ERROR);
           }
           // Import module.
-          const identifier = importModule(pkgStore, key, path.hub.file);
-          pkgStore.set(key, identifier);
-          pkgStore.set(identifier.name, identifier);
+          const module = importModule(pkgStore, key, file);
+          pkgStore.set(key, module);
+          pkgStore.set(module, module);
 
           // Replace reference with its modular version.
-          parentPath.replaceWith(identifier);
+          parentPath.replaceWith(types.identifier(module));
         }
         else if (isLodash) {
           const callee = getCallee(path);
-          if (callee && callee.name == name) {
+          if (callee && callee.name == local) {
             throw path.buildCodeFrameError(CHAIN_ERROR);
           }
           path.replaceWith(callee
-            ? types.memberExpression(callee, identifiers.PLACEHOLDER)
-            : identifiers.UNDEFINED
+            ? types.memberExpression(callee, types.identifier('placeholder'))
+            : types.identifier('undefined')
           );
         }
       });
     });
-
-    // Remove old imports.
-    _.invokeMap(declarations, 'remove');
   }
-
-  const importVisitor = {
-    ImportDeclaration(path) {
-      const { node } = path;
-      const pkgStore = store.get(node.source.value);
-
-      if (!pkgStore) {
-        return;
-      }
-      this.declarations.push(path);
-      _.each(path.get('specifiers'), spec => {
-        const key = spec.isImportSpecifier() ? 'members' : 'defaults';
-        this[key].push({ pkgStore, spec });
-      });
-    }
-  };
 
   const visitor = {
     Program(path, state) {
@@ -138,14 +110,35 @@ export default function lodash({ types }) {
         });
       });
 
-      const imports = {
-        'declarations': [],
-        'defaults': [],
-        'members': []
-      };
+      const defaults = [];
+      const members = [];
 
-      path.traverse(importVisitor, imports);
-      importer(imports);
+      _.each(path.hub.file.metadata.modules.imports, module => {
+        const pkgStore = store.get(module.source);
+        if (!pkgStore) {
+          return;
+        }
+
+        _.each(module.specifiers, (spec) => {
+          const type = (spec.imported === 'default') ? defaults : members;
+          type.push({
+            pkgStore,
+            imported: spec.imported,
+            local: spec.local,
+          });
+        });
+      });
+      importer(path.hub.file, defaults, members);
+    },
+
+    ImportDeclaration(path) {
+      const { node } = path;
+      const pkgStore = store.get(node.source.value);
+
+      if (!pkgStore) {
+        return;
+      }
+      path.remove();
     },
 
     ExportNamedDeclaration(path) {
@@ -159,7 +152,9 @@ export default function lodash({ types }) {
       node.source = null;
 
       _.each(node.specifiers, spec => {
-        spec.local = importModule(pkgStore, spec.local.name, path.hub.file);
+        spec.local = types.identifier(
+          importModule(pkgStore, spec.local.name, path.hub.file)
+        );
       });
     }
   };
