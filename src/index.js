@@ -62,7 +62,7 @@ export default function lodash({ types }) {
         if (isLodash && name == 'chain' && path.parentPath.isCallExpression()) {
           throw path.buildCodeFrameError(CHAIN_ERROR);
         }
-        path.replaceWith(identifier);
+        path.replaceWith(types.clone(identifier));
       });
     });
 
@@ -85,7 +85,7 @@ export default function lodash({ types }) {
           pkgStore.set(identifier.name, identifier);
 
           // Replace reference with its modular version.
-          parentPath.replaceWith(identifier);
+          parentPath.replaceWith(types.clone(identifier));
         }
         else if (isLodash) {
           const callee = getCallee(path);
