@@ -45,7 +45,7 @@ export default function lodash({ types }) {
 
   /*--------------------------------------------------------------------------*/
 
-  function importer({ declarations, defaults, members }) {
+  function importer({ defaults, members }) {
     _.each(members, ({ pkgStore, spec }) => {
       // Import module.
       const { node } = spec;
@@ -94,9 +94,6 @@ export default function lodash({ types }) {
         }
       });
     });
-
-    // Remove old imports.
-    _.invokeMap(declarations, 'remove');
   }
 
   const importVisitor = {
@@ -107,11 +104,12 @@ export default function lodash({ types }) {
       if (!pkgStore) {
         return;
       }
-      this.declarations.push(path);
       _.each(path.get('specifiers'), spec => {
         const key = spec.isImportSpecifier() ? 'members' : 'defaults';
         this[key].push({ pkgStore, spec });
       });
+      // Remove old import.
+      path.remove();
     }
   };
 
