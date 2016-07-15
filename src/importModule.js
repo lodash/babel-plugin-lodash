@@ -24,4 +24,4 @@ function importModule(pkgStore, name, file) {
   return file.addImport(resolvePath(pkgStore, name), 'default', name);
 }
 
-export default _.memoize(importModule, (pkgStore, name) => pkgStore.path + '/' + name);
+export default _.memoize(importModule, (pkgStore, name) => (pkgStore.path + '/' + name).toLowerCase());
