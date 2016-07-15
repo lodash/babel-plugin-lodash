@@ -6,8 +6,8 @@ const DATA = Symbol('data');
 /*----------------------------------------------------------------------------*/
 
 export default class MapCache {
-  constructor(values) {
-    this[DATA] = new Map(values);
+  constructor(entries) {
+    this[DATA] = new Map(entries);
     _.bindAll(this[DATA], ['entries', 'forEach', 'keys', 'values']);
   }
 
