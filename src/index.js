@@ -54,9 +54,6 @@ export default function lodash({ types }) {
       const identifier = importModule(pkgStore, node.imported.name, spec.hub.file);
       const isLodash = pkgStore.isLodash();
 
-      pkgStore.set(name, identifier);
-      pkgStore.set(identifier.name, identifier);
-
       // Replace references with their modular versions.
       _.each(binding.referencePaths, path => {
         if (isLodash && name == 'chain' && path.parentPath.isCallExpression()) {
@@ -81,8 +78,6 @@ export default function lodash({ types }) {
           }
           // Import module.
           const identifier = importModule(pkgStore, key, path.hub.file);
-          pkgStore.set(key, identifier);
-          pkgStore.set(identifier.name, identifier);
 
           // Replace reference with its modular version.
           parentPath.replaceWith(types.clone(identifier));
