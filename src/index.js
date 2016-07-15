@@ -96,8 +96,7 @@ export default function lodash({ types }) {
 
   const importVisitor = {
     ImportDeclaration(path) {
-      const { node } = path;
-      const pkgStore = store.get(node.source.value);
+      const pkgStore = store.get(path.node.source.value);
 
       if (!pkgStore) {
         return;
