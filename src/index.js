@@ -117,7 +117,7 @@ export default function lodash({ types }) {
       if (_.isEmpty(ids)) {
         throw new Error('Cannot find module');
       }
-      // Clear tracked Lodash method imports and variables.
+      // Clear tracked method imports and variables.
       importModule.cache.clear();
       store.clear();
 
