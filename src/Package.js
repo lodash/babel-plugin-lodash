@@ -9,7 +9,7 @@ export default class Package {
     pkgPath = _.toString(pkgPath);
     const parts = pkgPath.split('/');
 
-    this.base = parts.slice(1).join('/');
+    this.base = _.tail(parts).join('/');
     this.id = parts[0];
     this.isLodash = _.constant(reLodash.test(this.id));
     this.path = pkgPath;
