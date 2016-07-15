@@ -1,81 +1,76 @@
 import _ from 'lodash';
 
-function clear(store) {
-  toArray.cache.clear();
-}
-
-function clearDeep(store) {
-  clear(store);
-  store.__data__.clear();
-}
-
-function findEntry(map, iteratee) {
-  return _.find(toArray(map), entry => iteratee(entry[1], entry[0], map));
-}
-
-const toArray = _.memoize(_.toArray);
+const BREAK = {};
+const DATA = Symbol('data');
 
 /*----------------------------------------------------------------------------*/
 
 export default class MapCache {
   constructor(values) {
-    this.__data__ = new Map(values);
-    _.bindAll(this.__data__, ['entries', 'forEach', 'keys', 'values']);
+    this[DATA] = new Map(values);
+    _.bindAll(this[DATA], ['entries', 'forEach', 'keys', 'values']);
   }
 
   clear() {
-    clearDeep(this);
+    this[DATA].clear();
     return this;
   }
 
   delete(key) {
-    clear(this);
-    return this.__data__.delete(key);
-  }
-
-  find(iteratee) {
-    return _.nth(findEntry(this.__data__, iteratee), 1);
+    return this[DATA].delete(key);
   }
 
   findKey(iteratee) {
-    return _.first(findEntry(this.__data__, iteratee));
+    let result;
+    try {
+      this[DATA].forEach((value, key, map) => {
+        if (iteratee(value, key, map)) {
+          result = key;
+          throw BREAK;
+        }
+      });
+    } catch (e) {
+      if (e !== BREAK) {
+        throw e;
+      }
+    }
+    return result;
   }
 
   get(key) {
-    return this.__data__.get(key);
+    return this[DATA].get(key);
   }
 
   has(key) {
-    return this.__data__.has(key);
+    return this[DATA].has(key);
   }
 
   set(key, value) {
-    clear(this);
-    this.__data__.set(key, value);
+    this[DATA].set(key, value);
     return this;
   }
 
   get entries() {
-    return this.__data__.entries;
+    return this[DATA].entries;
   }
 
   get forEach() {
-    return this.__data__.forEach;
+    return this[DATA].forEach;
   }
 
   get keys() {
-    return this.__data__.keys;
+    return this[DATA].keys;
   }
 
   get size() {
-    return this.__data__.size;
+    return this[DATA].size;
   }
 
   get values() {
-    return this.__data__.values;
+    return this[DATA].values;
   }
 
   get [Symbol.iterator]() {
-    return this.__data__.entries;
+    return this[DATA].entries;
   }
 };
