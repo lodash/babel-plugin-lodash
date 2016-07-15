@@ -44,7 +44,7 @@
     "lib/MapCache.js",
     "lib/mapping.js",
     "lib/ModuleCache.js",
-    "lib/PackageStore.js",
+    "lib/Package.js",
     "lib/Store.js"
   ]
 }

@@ -1,14 +1,11 @@
 import _ from 'lodash';
-import MapCache from './MapCache';
 
 const reLodash = /^lodash(?:-compat|-es)?$/;
 
 /*----------------------------------------------------------------------------*/
 
-export default class PackageStore extends MapCache {
+export default class Package {
   constructor(pkgPath) {
-    super();
-
     pkgPath = _.toString(pkgPath);
     const parts = pkgPath.split('/');
 
