@@ -21,7 +21,7 @@ function resolvePath(pkgStore, name) {
 }
 
 function importModule(pkgStore, name, file) {
-  return file.addImport(resolvePath(pkgStore, name), 'default', name);
+  return file.addImport(resolvePath(pkgStore, name), 'default', name).name;
 }
 
 export default _.memoize(importModule, (pkgStore, name) => pkgStore.path + '/' + name);
