@@ -45,78 +45,15 @@ export default function lodash({ types }) {
 
   /*--------------------------------------------------------------------------*/
 
-  function importer({ defaults, members }) {
-    _.each(members, ({ pkgStore, specPath }) => {
-      // Import module.
-      const { node } = specPath;
-      const name = node.local.name;
-      const binding = specPath.scope.getBinding(name);
-      const identifier = importModule(pkgStore, node.imported.name, specPath.hub.file);
-      const isLodash = pkgStore.isLodash();
-
-      // Replace the old member with its new identifier.
-      _.each(binding.referencePaths, refPath => {
-        if (isLodash && name == 'chain' && refPath.parentPath.isCallExpression()) {
-          throw refPath.buildCodeFrameError(CHAIN_ERROR);
-        }
-        refPath.replaceWith(types.clone(identifier));
-      });
-    });
-
-    _.each(defaults, ({ pkgStore, specPath }) => {
-      const name = specPath.node.local.name;
-      const binding = specPath.scope.getBinding(name);
-      const isLodash = pkgStore.isLodash();
-
-      _.each(binding.referencePaths, refPath => {
-        const { parentPath } = refPath;
-
-        if (parentPath.isMemberExpression()) {
-          const key = refPath.parent.property.name;
-          if (isLodash && key == 'chain' && parentPath.parentPath.isCallExpression()) {
-            throw refPath.buildCodeFrameError(CHAIN_ERROR);
-          }
-          // Import and replace the old member with its new identifier.
-          const identifier = importModule(pkgStore, key, refPath.hub.file);
-          parentPath.replaceWith(types.clone(identifier));
-        }
-        else if (isLodash) {
-          const callee = getCallee(refPath);
-          if (callee && callee.name == name) {
-            throw refPath.buildCodeFrameError(CHAIN_ERROR);
-          }
-          refPath.replaceWith(callee
-            ? types.memberExpression(callee, identifiers.PLACEHOLDER)
-            : identifiers.UNDEFINED
-          );
-        }
-      });
-    });
-  }
-
-  const importVisitor = {
-    ImportDeclaration(path) {
-      const pkgStore = store.get(path.node.source.value);
-
-      if (!pkgStore) {
-        return;
-      }
-      _.each(path.get('specifiers'), specPath => {
-        const key = specPath.isImportSpecifier() ? 'members' : 'defaults';
-        this[key].push({ pkgStore, specPath });
-      });
-      // Remove old import.
-      path.remove();
-    }
-  };
-
   const visitor = {
     Program(path, state) {
       const { ids } = _.assign(mapping, config(state.opts));
+      const file = path.hub.file;
+
       if (_.isEmpty(ids)) {
         throw new Error('Cannot find module');
       }
-      // Clear tracked method imports and variables.
+      // Clear tracked method imports.
       importModule.cache.clear();
       store.clear();
 
@@ -128,14 +65,58 @@ export default function lodash({ types }) {
         });
       });
 
-      const imports = {
-        'declarations': [],
-        'defaults': [],
-        'members': []
-      };
+      // Replace old members with their method imports.
+      _.each(file.metadata.modules.imports, module => {
+        const pkgStore = store.get(module.source);
+        if (!pkgStore) {
+          return;
+        }
+        const isLodash = pkgStore.isLodash();
+        const specs = _.sortBy(module.specifiers, spec => spec.imported == 'default');
 
-      path.traverse(importVisitor, imports);
-      importer(imports);
+        _.each(specs, spec => {
+          const { imported, local } = spec;
+          const binding = file.scope.getBinding(local);
+          const isChain = isLodash && imported == 'chain';
+
+          _.each(binding.referencePaths, refPath => {
+            const { parentPath } = refPath;
+
+            if (imported != 'default') {
+              if (isChain && refPath.parentPath.isCallExpression()) {
+                throw refPath.buildCodeFrameError(CHAIN_ERROR);
+              }
+              const identifier = importModule(pkgStore, imported, file);
+              refPath.replaceWith(types.clone(identifier));
+            }
+            else if (parentPath.isMemberExpression()) {
+              const key = refPath.parent.property.name;
+              if (isLodash && key == 'chain' && parentPath.parentPath.isCallExpression()) {
+                throw refPath.buildCodeFrameError(CHAIN_ERROR);
+              }
+              const identifier = importModule(pkgStore, key, file);
+              parentPath.replaceWith(types.clone(identifier));
+            }
+            else if (isLodash) {
+              const callee = getCallee(refPath);
+              if (callee && callee.name == local) {
+                throw refPath.buildCodeFrameError(CHAIN_ERROR);
+              }
+              refPath.replaceWith(callee
+                ? types.memberExpression(callee, identifiers.PLACEHOLDER)
+                : identifiers.UNDEFINED
+              );
+            }
+          });
+        });
+      });
+    },
+
+    ImportDeclaration(path) {
+      if (store.get(path.node.source.value)) {
+        // Remove old import.
+        path.remove();
+      }
     },
 
     ExportNamedDeclaration(path) {

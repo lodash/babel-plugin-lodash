@@ -8,14 +8,6 @@ var _add3 = require('lodash/fp/add');
 
 var _add4 = _interopRequireDefault(_add3);
 
-var _reject5 = require('lodash/reject');
-
-var _reject6 = _interopRequireDefault(_reject5);
-
-var _add5 = require('lodash/add');
-
-var _add6 = _interopRequireDefault(_add5);
-
 var _take3 = require('lodash/fp/take');
 
 var _take4 = _interopRequireDefault(_take3);
@@ -23,6 +15,14 @@ var _take4 = _interopRequireDefault(_take3);
 var _map3 = require('lodash/fp/map');
 
 var _map4 = _interopRequireDefault(_map3);
+
+var _reject5 = require('lodash/reject');
+
+var _reject6 = _interopRequireDefault(_reject5);
+
+var _add5 = require('lodash/add');
+
+var _add6 = _interopRequireDefault(_add5);
 
 var _take5 = require('lodash/take');
 
