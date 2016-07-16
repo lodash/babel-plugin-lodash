@@ -42,6 +42,7 @@
     "lib/config.js",
     "lib/importModule.js",
     "lib/index.js",
+    "lib/Map.js",
     "lib/MapCache.js",
     "lib/mapping.js",
     "lib/ModuleCache.js",
