@@ -8,12 +8,17 @@ const defaultIds = [
   'lodash-compat'
 ];
 
+let oldCwd;
 const ids = [];
 const modules = new MapCache;
 
 /*----------------------------------------------------------------------------*/
 
 export default function config({ cwd=process.cwd(), id=defaultIds }={}) {
+  if (oldCwd !== cwd) {
+    oldCwd = cwd;
+    modules.clear();
+  }
   _.each(_.castArray(id), id => {
     if (!modules.get(id)) {
       const moduleRoot = ModuleCache.resolve(id, cwd);
