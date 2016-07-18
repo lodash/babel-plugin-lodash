@@ -82,7 +82,7 @@ export default function lodash({ types }) {
           _.each(binding.referencePaths, refPath => {
             const { parentPath } = refPath;
 
-            if (imported != 'default') {
+            if (imported && imported != 'default') {
               if (isChain && refPath.parentPath.isCallExpression()) {
                 throw refPath.buildCodeFrameError(CHAIN_ERROR);
               }
