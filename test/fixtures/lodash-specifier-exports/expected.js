@@ -5,11 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.bar = exports.map = exports.isObject = exports.foo = undefined;
 
-var _map2 = require('lodash/map');
+var _map2 = require('lodash/fp/map');
 
 var _map3 = _interopRequireDefault(_map2);
 
-var _isObject2 = require('lodash/fp/isObject');
+var _isObject2 = require('lodash/isObject');
 
 var _isObject3 = _interopRequireDefault(_isObject2);
 

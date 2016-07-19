@@ -1,3 +1,3 @@
-import lodash from 'lodash';
+import _ from 'lodash';
 
-const result = lodash([1, 2, 3]).map(() => {});
+_().map();

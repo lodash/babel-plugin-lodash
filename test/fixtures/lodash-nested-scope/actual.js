@@ -1,5 +1,5 @@
 import { merge } from 'lodash';
 
-function foo(a) {
-  return merge(a, { 'b': 1 });
+function foo(object) {
+  return merge(object, { 'a': 1 });
 }

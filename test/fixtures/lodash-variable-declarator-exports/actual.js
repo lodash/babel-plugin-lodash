@@ -1,6 +1,6 @@
-import _, { kebabCase } from 'lodash';
-import { bar } from 'foo';
+import _, { camelCase } from 'lodash';
+import { snakeCase } from 'string';
 
-export const dashCase = kebabCase;
-export const some = _.some;
-export const baz = bar;
+export const case1 = camelCase;
+export const case2 = fp.kebabCase;
+export const case3 = snakeCase;

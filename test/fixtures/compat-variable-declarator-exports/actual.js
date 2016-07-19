@@ -1,4 +1,6 @@
-import _, { kebabCase } from 'lodash-compat';
+import _, { camelCase } from 'lodash-compat';
+import { snakeCase } from 'string';
 
-export const dashCase = kebabCase;
-export const some = _.some;
+export const case1 = camelCase;
+export const case2 = _.kebabCase;
+export const case3 = snakeCase;

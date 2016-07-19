@@ -3,17 +3,20 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.some = exports.dashCase = undefined;
-
-var _some2 = require('lodash-es/some');
-
-var _some3 = _interopRequireDefault(_some2);
+exports.case3 = exports.case2 = exports.case1 = undefined;
 
 var _kebabCase2 = require('lodash-es/kebabCase');
 
 var _kebabCase3 = _interopRequireDefault(_kebabCase2);
 
+var _camelCase2 = require('lodash-es/camelCase');
+
+var _camelCase3 = _interopRequireDefault(_camelCase2);
+
+var _string = require('string');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var dashCase = exports.dashCase = _kebabCase3.default;
-var some = exports.some = _some3.default;
+var case1 = exports.case1 = _camelCase3.default;
+var case2 = exports.case2 = _kebabCase3.default;
+var case3 = exports.case3 = _string.snakeCase;

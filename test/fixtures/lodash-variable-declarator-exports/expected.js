@@ -3,20 +3,16 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.baz = exports.some = exports.dashCase = undefined;
+exports.case3 = exports.case2 = exports.case1 = undefined;
 
-var _some2 = require('lodash/some');
+var _camelCase2 = require('lodash/camelCase');
 
-var _some3 = _interopRequireDefault(_some2);
+var _camelCase3 = _interopRequireDefault(_camelCase2);
 
-var _kebabCase2 = require('lodash/kebabCase');
-
-var _kebabCase3 = _interopRequireDefault(_kebabCase2);
-
-var _foo = require('foo');
+var _string = require('string');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var dashCase = exports.dashCase = _kebabCase3.default;
-var some = exports.some = _some3.default;
-var baz = exports.baz = _foo.bar;
+var case1 = exports.case1 = _camelCase3.default;
+var case2 = exports.case2 = fp.kebabCase;
+var case3 = exports.case3 = _string.snakeCase;

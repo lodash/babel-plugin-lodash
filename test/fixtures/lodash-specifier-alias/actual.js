@@ -1,3 +1,3 @@
-import { map as map1 } from 'lodash';
+import { map as map2 } from 'lodash';
 
-const result = map1([1, 2, 3], () => {});
+map2([]);

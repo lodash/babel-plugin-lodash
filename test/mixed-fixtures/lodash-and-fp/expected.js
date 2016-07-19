@@ -35,10 +35,10 @@ var _map6 = _interopRequireDefault(_map5);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapper = (0, _map4.default)((0, _add4.default)(1));
-var result = mapper([-1, 0, 1]);
+var result = mapper([]);
 (0, _take4.default)(1, (0, _reject4.default)(Boolean, result));
 
-var result2 = (0, _map6.default)([-1, 0, 1], function (n) {
+var result2 = (0, _map6.default)([], function (n) {
   return (0, _add6.default)(1, n);
 });
 (0, _take6.default)((0, _reject6.default)(result2), 1);
