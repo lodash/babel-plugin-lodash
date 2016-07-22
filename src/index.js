@@ -80,22 +80,23 @@ export default function lodash({ types }) {
           const isChain = isLodash && imported == 'chain';
 
           _.each(binding.referencePaths, refPath => {
-            const { parentPath } = refPath;
+            const { node, parentPath } = refPath;
+            const { type } = node;
 
             if (imported && imported != 'default') {
               if (isChain && refPath.parentPath.isCallExpression()) {
                 throw refPath.buildCodeFrameError(CHAIN_ERROR);
               }
-              const identifier = importModule(pkgStore, imported, file);
-              refPath.replaceWith(types.clone(identifier));
+              const { name } = importModule(pkgStore, imported, file);
+              refPath.replaceWith({ type, name });
             }
             else if (parentPath.isMemberExpression()) {
               const key = refPath.parent.property.name;
               if (isLodash && key == 'chain' && parentPath.parentPath.isCallExpression()) {
                 throw refPath.buildCodeFrameError(CHAIN_ERROR);
               }
-              const identifier = importModule(pkgStore, key, file);
-              parentPath.replaceWith(types.clone(identifier));
+              const { name } = importModule(pkgStore, key, file);
+              parentPath.replaceWith({ type, name });
             }
             else if (isLodash) {
               const callee = getCallee(refPath);
