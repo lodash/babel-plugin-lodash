@@ -32,7 +32,7 @@
     "chai": "^3.5.0",
     "lodash-bound": "^1.1.1",
     "lodash-compat": "^3.10.2",
-    "lodash-es": "^4.13.1",
+    "lodash-es": "^4.14.0",
     "mocha": "^2.5.3",
     "ramda": "^0.21.0",
     "react-bootstrap": "^0.30.0-rc.2"
