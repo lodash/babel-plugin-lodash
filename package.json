@@ -35,7 +35,7 @@
     "lodash-es": "^4.14.0",
     "mocha": "^2.5.3",
     "ramda": "^0.21.0",
-    "react-bootstrap": "^0.30.0-rc.2"
+    "react-bootstrap": "^0.30.0"
   },
   "dependencies": {
     "glob": "^7.0.5",
