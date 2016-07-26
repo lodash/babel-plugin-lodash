@@ -50,6 +50,14 @@ Set plugin options using an array of `[pluginName, optionsObject]`.
 }
 ```
 
+The `options.id` can be an array of ids.
+```json
+{
+  "plugins": [["lodash", { "id": ["async", "lodash-bound"] }]],
+  "presets": ["es2015"]
+}
+```
+
 ###### Babel CLI
 ```sh
 $ babel --plugins lodash --presets es2015 script.js
