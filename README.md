@@ -80,14 +80,6 @@ require('babel-core').transform('code', {
 
 ## FAQ
 
-> Do import specifiers, e.g. `import { x } from 'lodash'`, work?
-
-You know it!
-
-> What about `lodash/fp`?
-
-Yep, we’ve got you covered!
-
 > Can this plugin produce ES2015 imports rather than CommonJS imports?
 
 This plugin produces ES2015 imports by default. The
