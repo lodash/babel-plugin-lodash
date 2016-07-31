@@ -3,8 +3,8 @@
 Contributions are always welcome. Before contributing please
 [search the issue tracker](https://github.com/lodash/babel-plugin-lodash/issues);
 your issue may have already been discussed or fixed in `master`. To contribute,
-[fork](https://help.github.com/articles/fork-a-repo/) babel-plugin-lodash, commit your
-changes, & [send a pull request](https://help.github.com/articles/using-pull-requests/).
+[fork](https://help.github.com/articles/fork-a-repo/) babel-plugin-lodash, commit
+your changes, & [send a pull request](https://help.github.com/articles/using-pull-requests/).
 
 ## Pull Requests
 
