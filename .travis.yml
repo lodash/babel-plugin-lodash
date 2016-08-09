@@ -18,3 +18,4 @@ before_install:
   - "npm set loglevel error"
   - "npm set progress false"
   - "npm i -g npm@\"^2.0.0\""
+  - "npm prune && npm update --dev"
