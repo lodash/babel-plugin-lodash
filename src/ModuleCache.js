@@ -12,13 +12,17 @@ export default class ModuleCache extends MapCache {
     super();
 
     moduleRoot = _.toString(moduleRoot);
+    if (!moduleRoot) {
+      return;
+    }
+    const pkgPath = path.join(moduleRoot, 'package.json');
+    const pkg = fs.existsSync(pkgPath) ? require(pkgPath) : { 'main': 'index.js' };
+    const mainPath = path.dirname(path.resolve(moduleRoot, pkg.main));
 
-    const pkgPath = moduleRoot ? path.join(moduleRoot, 'package.json') : '';
-    const pkg = fs.existsSync(pkgPath) ? require(pkgPath) : {};
-    const mainPath = 'main' in pkg ? path.dirname(path.resolve(moduleRoot, pkg.main)) : '';
-    const dirPaths = _.orderBy(moduleRoot && glob.sync(path.join(moduleRoot, '**/'), {
+    // Sort paths by the “main” entry first.
+    const dirPaths = _.orderBy(glob.sync(path.join(moduleRoot, '**/'), {
       'ignore': path.join(moduleRoot, 'node_modules/**/')
-    }), dirPath => _.includes(dirPath, mainPath), ['desc']);
+    }), dirPath => _.startsWith(dirPath, mainPath), ['desc']);
 
     _.each(dirPaths, dirPath => {
       const base = path.relative(moduleRoot, dirPath);
