@@ -1,6 +1,6 @@
 'use strict';
 
-var _Alert2 = require('react-bootstrap/es/Alert');
+var _Alert2 = require('react-bootstrap/lib/Alert');
 
 var _Alert3 = _interopRequireDefault(_Alert2);
 
