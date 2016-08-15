@@ -1,10 +1,7 @@
 import _ from 'lodash';
 import MapCache from './MapCache';
+import { normalizePath } from './util';
 import Package from './Package';
-
-function normalize(pkgPath) {
-  return _.toString(pkgPath).replace(/\\/g, '/');
-}
 
 /*----------------------------------------------------------------------------*/
 
@@ -15,10 +12,10 @@ export default class Store extends MapCache {
   }
 
   get(pkgPath) {
-    return super.get(normalize(pkgPath));
+    return super.get(normalizePath(pkgPath));
   }
 
-  set(pkgPath, pkgStore=new Package(normalize(pkgPath))) {
-    return super.set(normalize(pkgPath), pkgStore);
+  set(pkgPath, pkgStore=new Package(normalizePath(pkgPath))) {
+    return super.set(normalizePath(pkgPath), pkgStore);
   }
 };

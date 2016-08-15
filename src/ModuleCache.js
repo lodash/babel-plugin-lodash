@@ -3,6 +3,7 @@ import fs from 'fs';
 import glob from 'glob';
 import MapCache from './MapCache';
 import Module from 'module';
+import { normalizePath } from './util';
 import path from 'path';
 
 /*----------------------------------------------------------------------------*/
@@ -17,7 +18,7 @@ export default class ModuleCache extends MapCache {
     }
     const pkgPath = path.join(moduleRoot, 'package.json');
     const pkg = fs.existsSync(pkgPath) ? require(pkgPath) : { 'main': 'index.js' };
-    const mainPath = path.dirname(path.resolve(moduleRoot, pkg.main)).replace(/\\/g, '/');
+    const mainPath = normalizePath(path.dirname(path.resolve(moduleRoot, pkg.main)));
 
     // Sort paths by the “main” entry first.
     const dirPaths = _.orderBy(glob.sync(path.join(moduleRoot, '**/'), {

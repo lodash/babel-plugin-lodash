@@ -50,6 +50,7 @@
     "lib/mapping.js",
     "lib/ModuleCache.js",
     "lib/Package.js",
-    "lib/Store.js"
+    "lib/Store.js",
+    "lib/util.js"
   ]
 }
