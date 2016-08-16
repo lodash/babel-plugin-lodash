@@ -12,7 +12,7 @@ function resolvePath(pkgStore, name) {
     base = base ? '' : module.findKey(map => map.has(lower));
     if (!base) {
       throw new Error([
-        `The '${ id }' method ${ name } is not a known module.`,
+        `The '${ id }' method '${ name }' is not a known module.`,
         'Please report bugs to https://github.com/lodash/babel-plugin-lodash/issues.'
       ].join('\n'));
     }
