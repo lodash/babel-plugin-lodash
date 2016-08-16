@@ -3,7 +3,7 @@ import mapping from './mapping';
 
 /*----------------------------------------------------------------------------*/
 
-function resolvePath(pkgStore, name) {
+function resolvePath(pkgStore, name, path) {
   let { base, id } = pkgStore;
   const lower = name.toLowerCase();
   const module = mapping.modules.get(id);
@@ -11,17 +11,17 @@ function resolvePath(pkgStore, name) {
   if (!module.get(base).has(lower)) {
     base = base ? '' : module.findKey(map => map.has(lower));
     if (!base) {
-      throw new Error([
-        `The '${ id }' method ${ name } is not a known module.`,
+      throw path.buildCodeFrameError([
+        `The '${ id }' method '${ name }' is not a known module.`,
         'Please report bugs to https://github.com/lodash/babel-plugin-lodash/issues.'
-      ].join('\n'));
+      ].join('\n'), Error);
     }
   }
   return id + '/' + (base ? base + '/' : '') + module.get(base).get(lower);
 }
 
-function importModule(pkgStore, name, file) {
-  return file.addImport(resolvePath(pkgStore, name), 'default', name);
+function importModule(pkgStore, name, file, path) {
+  return file.addImport(resolvePath(pkgStore, name, path), 'default', name);
 }
 
 export default _.memoize(importModule, (pkgStore, name) => (pkgStore.path + '/' + name).toLowerCase());
