@@ -87,7 +87,7 @@ export default function lodash({ types }) {
               if (isChain && refPath.parentPath.isCallExpression()) {
                 throw refPath.buildCodeFrameError(CHAIN_ERROR);
               }
-              const { name } = importModule(pkgStore, imported, file);
+              const { name } = importModule(pkgStore, imported, file, refPath);
               refPath.replaceWith({ type, name });
             }
             else if (parentPath.isMemberExpression()) {
@@ -95,7 +95,7 @@ export default function lodash({ types }) {
               if (isLodash && key == 'chain' && parentPath.parentPath.isCallExpression()) {
                 throw refPath.buildCodeFrameError(CHAIN_ERROR);
               }
-              const { name } = importModule(pkgStore, key, file);
+              const { name } = importModule(pkgStore, key, file, refPath);
               parentPath.replaceWith({ type, name });
             }
             else if (isLodash) {
@@ -130,7 +130,7 @@ export default function lodash({ types }) {
       }
       node.source = null;
       _.each(node.specifiers, spec => {
-        spec.local = importModule(pkgStore, spec.local.name, path.hub.file);
+        spec.local = importModule(pkgStore, spec.local.name, path.hub.file, path);
       });
     }
   };
