@@ -43,11 +43,12 @@ describe('cherry-picked modular builds', function() {
     const actualPath = path.join(testPath, 'actual.js');
 
     it(`should throw an error with ${ testName }`, () => {
-      assert.throws(() => {
-        transformFileSync(actualPath, {
-          'plugins': [plugin]
-        }).code;
-      });
+      const error = _.attempt(() => transformFileSync(actualPath, {
+        'plugins': [plugin]
+      }));
+
+      assert.ok(_.isError(error));
+      assert.ok(_.isString(_.get(error, 'codeFrame')));
     });
   });
 
@@ -79,7 +80,7 @@ describe('cherry-picked modular builds', function() {
     it(`should not error with ${ testName }`, () => {
       transformFileSync(actualPath, {
         'plugins': [plugin]
-      }).code;
+      });
     });
   });
 });
