@@ -7,7 +7,7 @@ for even smaller cherry-picked builds!
 
 ## Install
 
-```bash
+```shell
 $ npm i --save lodash
 $ npm i --save-dev babel-plugin-lodash babel-cli babel-preset-es2015
 ```
