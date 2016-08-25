@@ -38,7 +38,7 @@
     "react-bootstrap": "^0.30.2"
   },
   "dependencies": {
-    "glob": "^7.0.5",
+    "glob": "^7.0.6",
     "lodash": "^4.15.0"
   },
   "files": [
