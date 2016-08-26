@@ -42,15 +42,6 @@
     "lodash": "^4.15.0"
   },
   "files": [
-    "lib/config.js",
-    "lib/importModule.js",
-    "lib/index.js",
-    "lib/Map.js",
-    "lib/MapCache.js",
-    "lib/mapping.js",
-    "lib/ModuleCache.js",
-    "lib/Package.js",
-    "lib/Store.js",
-    "lib/util.js"
+    "lib"
   ]
 }
