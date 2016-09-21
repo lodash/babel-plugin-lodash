@@ -1,6 +1,6 @@
 # babel-plugin-lodash v3.2.9
 
-A simple transform to cherry-pick Lodash modules so you don’t have to.
+A simple transform to cherry-pick the Lodash modules you only need.
 
 Combine with [lodash-webpack-plugin](https://www.npmjs.com/package/lodash-webpack-plugin)
 for even smaller cherry-picked builds!
