@@ -1,18 +1,31 @@
 language: node_js
 sudo: false
 node_js:
-  - "4"
-  - "6"
+  - 4
+  - 6
+
 cache:
   directories:
     - $HOME/.npm
+    - $HOME/.yarn-cache
+
 git:
   depth: 10
+
 branches:
   only:
     - master
+
 before_install:
-  - "nvm use $TRAVIS_NODE_VERSION"
-  - "npm set loglevel error"
-  - "npm set progress false"
-  - "npm i -g npm@\"^2.0.0\""
+  # Use exact Node version.
+  - nvm use $TRAVIS_NODE_VERSION
+
+  # Setup package managers.
+  - npm set loglevel error
+  - npm set progress false
+  - npm i -g yarn
+  - yarn -V
+
+install:
+  # Install packages.
+  - yarn
