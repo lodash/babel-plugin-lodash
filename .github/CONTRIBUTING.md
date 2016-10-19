@@ -1,22 +1,23 @@
 # Contributing to babel-plugin-lodash
 
-Contributions are always welcome. Before contributing please
-[search the issue tracker](https://github.com/lodash/babel-plugin-lodash/issues);
-your issue may have already been discussed or fixed in `master`. To contribute,
-[fork](https://help.github.com/articles/fork-a-repo/) babel-plugin-lodash, commit
-your changes, & [send a pull request](https://help.github.com/articles/using-pull-requests/).
+Contributions are always welcome. Before contributing please read the
+[code of conduct](https://js.foundation/conduct/) &
+[search the issue tracker](https://github.com/lodash/babel-plugin-lodash/issues); your issue
+may have already been discussed or fixed in `master`. To contribute,
+[fork](https://help.github.com/articles/fork-a-repo/) Lodash, commit your changes,
+& [send a pull request](https://help.github.com/articles/using-pull-requests/).
 
 ## Pull Requests
 
 Before running the unit tests you’ll need to install, `npm i`,
 [development dependencies](https://docs.npmjs.com/files/package.json#devdependencies).
-Run unit tests from the command-line via `node test/test`.
+Run unit tests from the command-line via `npm test`.
 
 ## Contributor License Agreement
 
-babel-plugin-lodash is a member of the [jQuery Foundation](https://jquery.org/).
-As such, we request that all contributors sign the jQuery Foundation
-[contributor license agreement (CLA)](https://contribute.jquery.org/CLA/).
+babel-plugin-lodash is a member of the [JS Foundation](https://js.foundation/).
+As such, we request that all contributors sign the JS Foundation
+[contributor license agreement (CLA)](https://js.foundation/CLA/).
 
 For more information about CLAs, please check out Alex Russell’s excellent post,
 [“Why Do I Need to Sign This?”](https://infrequently.org/2008/06/why-do-i-need-to-sign-this/).
