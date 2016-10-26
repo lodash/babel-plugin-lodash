@@ -13,8 +13,8 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 var o1 = { 'a': 1 };
 var o2 = { 'b': 2, 'c': 3 };
 var o3 = _extends({}, o1, o2);
-var foo = o3.b;
 
-var bar = _objectWithoutProperties(o3, ['b']);
+var foo = o3.b,
+    bar = _objectWithoutProperties(o3, ['b']);
 
 (0, _keys3.default)(bar);
