@@ -7,8 +7,8 @@ node_js:
 
 cache:
   directories:
-    - $HOME/.npm
-    - $HOME/.yarn-cache
+    - ~/.npm
+    - ~/.yarn-cache
 
 git:
   depth: 10
