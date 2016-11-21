@@ -50,13 +50,13 @@ export default function lodash({ types }) {
       const { ids } = _.assign(mapping, config(state.opts));
       const { file } = path.hub;
 
-      if (_.isEmpty(ids)) {
-        return;
-      }
       // Clear tracked method imports.
       importModule.cache.clear();
       store.clear();
 
+      if (_.isEmpty(ids)) {
+        return;
+      }
       // Populate module paths per package.
       _.each(ids, id => {
         store.set(id);
