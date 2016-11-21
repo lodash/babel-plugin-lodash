@@ -54,9 +54,6 @@ export default function lodash({ types }) {
       importModule.cache.clear();
       store.clear();
 
-      if (_.isEmpty(ids)) {
-        return;
-      }
       // Populate module paths per package.
       _.each(ids, id => {
         store.set(id);
