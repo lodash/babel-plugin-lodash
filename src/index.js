@@ -48,10 +48,10 @@ export default function lodash({ types }) {
   const visitor = {
     Program(path, state) {
       const { ids } = _.assign(mapping, config(state.opts));
-      const file = path.hub.file;
+      const { file } = path.hub;
 
       if (_.isEmpty(ids)) {
-        throw new Error('Cannot find module');
+        return;
       }
       // Clear tracked method imports.
       importModule.cache.clear();
