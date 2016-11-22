@@ -44,5 +44,10 @@
   },
   "files": [
     "lib"
-  ]
+  ],
+  "greenkeeper": {
+    "ignore": [
+      "babel-plugin-lodash"
+    ]
+  }
 }
