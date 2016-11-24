@@ -17,7 +17,7 @@
     "test": "mocha --check-leaks --compilers js:babel-register"
   },
   "devDependencies": {
-    "async": "^2.1.2",
+    "async": "^2.1.4",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
     "babel-plugin-add-module-exports": "~0.2.1",
@@ -36,7 +36,7 @@
     "lodash-es": "^4.17.2",
     "mocha": "^3.1.2",
     "ramda": "^0.22.1",
-    "react-bootstrap": "^0.30.6"
+    "react-bootstrap": "^0.30.7"
   },
   "dependencies": {
     "glob": "^7.1.1",
