@@ -99,6 +99,6 @@ preset to preserve ES2015 style imports.
 ## Limitations
 
 * You must use ES2015 imports to load Lodash
-* Babel < 6 & Node.js < 0.12 aren’t supported
+* Babel < 6 & Node.js < 4 aren’t supported
 * Chain sequences aren’t supported. See [this blog post](https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba) for alternatives.
 * Modularized [method packages](https://www.npmjs.com/browse/keyword/lodash-modularized) aren’t supported
