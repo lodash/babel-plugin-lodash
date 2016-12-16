@@ -76,9 +76,9 @@ export default function lodash({ types }) {
           const binding = file.scope.getBinding(local);
           const { importKind = 'value' } = binding.path.parent;
 
-          // Skip type annotation specifiers.
+          // Skip type annotation imports.
           if (importKind != 'value') {
-            return;
+            return false;
           }
           const isChain = isLodash && imported == 'chain';
 
