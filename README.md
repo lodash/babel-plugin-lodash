@@ -9,7 +9,7 @@ for even smaller cherry-picked builds!
 
 ```shell
 $ npm i --save lodash
-$ npm i --save-dev babel-plugin-lodash babel-cli babel-preset-es2015
+$ npm i --save-dev babel-plugin-lodash babel-cli babel-preset-env
 ```
 
 ## Example
@@ -46,7 +46,7 @@ Set plugin options using an array of `[pluginName, optionsObject]`.
 ```json
 {
   "plugins": [["lodash", { "id": "lodash-compat", "cwd": "some/path" }]],
-  "presets": ["es2015"]
+  "presets": [["env", { "targets": { "node": 4 } }]]
 }
 ```
 
@@ -54,7 +54,7 @@ The `options.id` can be an array of ids.
 ```json
 {
   "plugins": [["lodash", { "id": ["async", "lodash-bound"] }]],
-  "presets": ["es2015"]
+  "presets": [["env", { "targets": { "node": 4 } }]]
 }
 ```
 
@@ -67,7 +67,7 @@ $ babel --plugins lodash --presets es2015 script.js
 ```js
 require('babel-core').transform('code', {
   'plugins': ['lodash'],
-  'presets': ['es2015']
+  'presets': [['env', { 'targets': { 'node': 4 } }]]
 });
 ```
 
@@ -80,7 +80,7 @@ require('babel-core').transform('code', {
     'exclude': /node_modules/,
     'query': {
       'plugins': ['lodash'],
-      'presets': ['es2015']
+      'presets': [['env', { 'targets': { 'node': 4 } }]]
     }
   }]
 }

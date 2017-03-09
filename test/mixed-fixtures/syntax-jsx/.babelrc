@@ -3,6 +3,6 @@
     "syntax-jsx"
   ],
   "presets": [
-    "es2015"
+    ["env", { "targets": { "node": 4 } }]
   ]
 }
