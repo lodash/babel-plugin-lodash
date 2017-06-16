@@ -3,12 +3,13 @@ import { isModuleDeclaration } from '@babel/types'
 
 import config from './config'
 import importModule from './importModule'
+import resolveChainCall from './resolveChainCall'
 import mapping from './mapping'
 import Store from './Store'
 
-/** The error message used when chain sequences are detected. */
-const CHAIN_ERROR = [
-  'Lodash chain sequences are not supported by babel-plugin-lodash.',
+/** The error message used when implicit chain sequences are detected. */
+const IMPLICIT_CHAIN_ERROR = [
+  'Implicit Lodash chain sequences are not supported by babel-plugin-lodash.',
   'Consider substituting chain sequences with composition patterns.',
   'See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba'
 ].join('\n')
@@ -153,28 +154,29 @@ export default function lodash({ types }) {
             const { type } = node
 
             if (imported && imported !== 'default') {
-              if (isChain && refPath.parentPath.isCallExpression()) {
-                throw refPath.buildCodeFrameError(CHAIN_ERROR)
+              if (isLodash && imported === 'chain' && parentPath.isCallExpression()) {
+                resolveChainCall(pkgStore, parentPath)
               }
-              const { name } = importModule(pkgStore, imported, refPath)
-              refPath.replaceWith({ type, name })
+              else {
+                const { name } = importModule(pkgStore, imported, refPath)
+                refPath.replaceWith({ type, name })
+              }
             }
             else if (parentPath.isMemberExpression()) {
               const key = refPath.parent.property.name
 
-              if (isLodash &&
-                  key === 'chain' &&
-                  parentPath.parentPath.isCallExpression()) {
-                throw refPath.buildCodeFrameError(CHAIN_ERROR)
+              if (isLodash && key === 'chain' && parentPath.parentPath.isCallExpression()) {
+                resolveChainCall(pkgStore, parentPath.parentPath)
               }
-
-              const { name } = importModule(pkgStore, key, refPath)
-              parentPath.replaceWith({ type, name })
+              else {
+                const { name } = importModule(pkgStore, key, refPath)
+                parentPath.replaceWith({ type, name })
+              }
             }
             else if (isLodash) {
               const callee = getCallee(refPath)
               if (callee && callee.name === local) {
-                throw refPath.buildCodeFrameError(CHAIN_ERROR)
+                throw refPath.buildCodeFrameError(IMPLICIT_CHAIN_ERROR)
               }
               refPath.replaceWith(callee
                 ? types.memberExpression(callee, identifiers.PLACEHOLDER)
