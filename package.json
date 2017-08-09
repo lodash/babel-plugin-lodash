@@ -17,6 +17,7 @@
     "test": "mocha --check-leaks --compilers js:babel-register"
   },
   "devDependencies": {
+    "@storybook/addon-links": "^3.2.0",
     "async": "^2.4.1",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
@@ -40,7 +41,8 @@
   },
   "dependencies": {
     "glob": "^7.1.1",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "require-package-name": "^2.0.1"
   },
   "files": [
     "lib"

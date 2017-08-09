@@ -29,7 +29,7 @@ describe('cherry-picked modular builds', function() {
     it(`should work with ${ testName }`, () => {
       const expected = fs.readFileSync(expectedPath, 'utf8');
       const actual = transformFileSync(actualPath, {
-        'plugins': [[plugin, { 'id': lodashId }]]
+        'plugins': [[plugin, { 'id': [lodashId, '@storybook/addon-links'] }]]
       }).code;
 
       assert.strictEqual(_.trim(actual), _.trim(expected));
