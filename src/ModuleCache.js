@@ -37,24 +37,21 @@ export default class ModuleCache extends MapCache {
   }
 
   static resolve(id, from=process.cwd()) {
-    try {
-      const dirs = path.dirname(Module._resolveFilename(id, _.assign(new Module, {
-        'paths': Module._nodeModulePaths(from)
-      }))).split(path.sep);
+    const dirs = path.dirname(Module._resolveFilename(id, _.assign(new Module, {
+      'paths': Module._nodeModulePaths(from)
+    }))).split(path.sep);
 
-      let { length } = dirs;
-      while (length--) {
-        const dirSub  = dirs.slice(0, length + 1);
-        const dirPath = dirSub.join('/');
-        const pkgPath = path.join(dirPath, 'package.json');
+    let { length } = dirs;
+    while (length--) {
+      const dirSub  = dirs.slice(0, length + 1);
+      const dirPath = dirSub.join('/');
+      const pkgPath = path.join(dirPath, 'package.json');
 
-        if ((length && dirs[length - 1] == 'node_modules') ||
-            (fs.existsSync(pkgPath) && require(pkgPath).name == id)) {
-          return dirPath;
-        }
+      if ((length && dirs[length - 1] == 'node_modules') ||
+          (fs.existsSync(pkgPath) && require(pkgPath).name == id)) {
+        return dirPath;
       }
-      return dirs.join('/');
-    } catch (e) {}
-    return '';
+    }
+    return dirs.join('/');
   }
 };
