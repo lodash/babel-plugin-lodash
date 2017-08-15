@@ -93,8 +93,7 @@ require('babel-core').transform('code', {
 This plugin produces ES2015 imports by default. The
 [transform-es2015-modules-commonjs](https://www.npmjs.com/package/babel-plugin-transform-es2015-modules-commonjs)
 plugin, which is included in the Babel [es2015](http://babeljs.io/docs/plugins/preset-es2015/)
-preset, transforms ES2015 `import` statements to CommonJS. Omit it from your
-preset to preserve ES2015 style imports.
+preset, transforms ES2015 `import` statements to CommonJS. Configure your preset as `[["es2015"], {"modules": false}]` to preserve ES2015 style imports.
 
 ## Limitations
 
