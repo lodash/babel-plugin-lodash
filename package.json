@@ -34,9 +34,11 @@
     "babel-register": "^6.24.1",
     "babel-types": "^6.26.0",
     "chai": "^4.0.2",
+    "date-fns": "^1.28.5",
     "lodash-bound": "^1.1.2",
     "lodash-compat": "^3.10.2",
     "lodash-es": "^4.17.4",
+    "material-ui": "^0.18.3",
     "mocha": "^3.4.2",
     "ramda": "^0.24.1",
     "react-bootstrap": "^0.31.0"

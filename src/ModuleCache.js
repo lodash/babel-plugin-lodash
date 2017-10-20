@@ -28,6 +28,13 @@ export default class ModuleCache extends MapCache {
     _.each(dirPaths, dirPath => {
       const base = path.relative(moduleRoot, dirPath);
       const filePaths = glob.sync(path.join(dirPath, '*.js'));
+      if (base && _.includes(filePaths, path.join(dirPath, 'index.js'))) {
+        const indexEntry = path.parse(base);
+        const parentMap = this.get(indexEntry.dir);
+        if (parentMap && !parentMap.get(indexEntry.base.toLowerCase())) {
+          parentMap.set(indexEntry.base.toLowerCase(), indexEntry.base);
+        }
+      }
       const pairs = _.map(filePaths, filePath => {
         const name = path.basename(filePath, '.js');
         return [name.toLowerCase(), name];

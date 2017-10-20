@@ -180,7 +180,7 @@ export default function lodash({ types }) {
     },
 
     ImportDeclaration(path) {
-      if (store.get(path.node.source.value)) {
+      if (path.node.source.loc && store.get(path.node.source.value)) {
         // Remove old import.
         path.remove();
       }

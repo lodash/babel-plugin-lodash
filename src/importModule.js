@@ -6,11 +6,12 @@ import mapping from './mapping';
 
 function resolvePath(pkgStore, name, path) {
   let { base, id } = pkgStore;
-  const lower = name.toLowerCase();
   const module = mapping.modules.get(id);
-
-  if (!module.get(base).has(lower)) {
-    base = base ? '' : module.findKey(map => map.has(lower));
+  const nameCases = [name.toLowerCase(), _.kebabCase(name), _.snakeCase(name)];
+  let realName = _.find(nameCases, n => module.get(base).has(n));
+  
+  if (!realName) {
+    base = base ? '' : module.findKey(map => realName = _.find(nameCases, n => map.has(n)));
     if (!base) {
       throw path.buildCodeFrameError([
         `The '${ id }' method \`${ name }\` is not a known module.`,
@@ -18,7 +19,7 @@ function resolvePath(pkgStore, name, path) {
       ].join('\n'));
     }
   }
-  return id + '/' + (base ? base + '/' : '') + module.get(base).get(lower);
+  return id + '/' + (base ? base + '/' : '') + module.get(base).get(realName);
 }
 
 function importModule(pkgStore, name, path) {
