@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { addDefault } from "babel-helper-module-imports";
 import mapping from './mapping';
 
 /*----------------------------------------------------------------------------*/
@@ -21,7 +22,7 @@ function resolvePath(pkgStore, name, path) {
 }
 
 function importModule(pkgStore, name, path) {
-  return path.hub.file.addImport(resolvePath(pkgStore, name, path), 'default', name);
+  return addDefault(path, resolvePath(pkgStore, name, path), { nameHint: name });
 }
 
 export default _.memoize(importModule, (pkgStore, name) => (pkgStore.path + '/' + name).toLowerCase());
