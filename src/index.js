@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import { isModuleDeclaration } from 'babel-types';
+
 import config from './config';
 import importModule from './importModule';
 import mapping from './mapping';
@@ -62,8 +64,69 @@ export default function lodash({ types }) {
         });
       });
 
+      const imports = [];
+
+      let isModule = false;
+
+      for (const node of file.ast.program.body) {
+        if (isModuleDeclaration(node)) {
+          isModule = true;
+          break;
+        }
+      }
+
+      if (isModule) {
+        file.path.traverse({
+          ImportDeclaration: {
+            exit(path) {
+              const { node } = path;
+
+              const imported = [];
+              const specifiers = [];
+
+              imports.push({
+                source: node.source.value,
+                imported,
+                specifiers,
+              })
+
+              for (const specifier of path.get("specifiers")) {
+                const local = specifier.node.local.name;
+
+                if (specifier.isImportDefaultSpecifier()) {
+                  imported.push("default");
+                  specifiers.push({
+                    kind: "named",
+                    imported: "default",
+                    local,
+                  });
+                }
+
+                if (specifier.isImportSpecifier()) {
+                  const importedName = specifier.node.imported.name;
+                  imported.push(importedName);
+                  specifiers.push({
+                    kind: "named",
+                    imported: importedName,
+                    local
+                  });
+                }
+
+                if (specifier.isImportNamespaceSpecifier()) {
+                  imported.push("*");
+                  specifiers.push({
+                    kind: "namespace",
+                    local,
+                  });
+                }
+              }
+            }
+          },
+        });
+      }
+
       // Replace old members with their method imports.
-      _.each(file.metadata.modules.imports, module => {
+      _.each(imports, module => {
         const pkgStore = store.get(module.source);
         if (!pkgStore) {
           return;
