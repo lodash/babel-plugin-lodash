@@ -38,7 +38,7 @@ _map([1, 2, 3], addOne);
 ```json
 {
   "plugins": ["lodash"],
-  "presets": ["es2015"]
+  "presets": [["env", { "targets": { "node": 4 } }]]
 }
 ```
 
