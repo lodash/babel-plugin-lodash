@@ -1,11 +1,8 @@
-'use strict';
+"use strict";
 
-var _noop2 = require('lodash/noop');
-
-var _noop3 = _interopRequireDefault(_noop2);
+var _noop2 = _interopRequireDefault(require("lodash/noop"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var array = [undefined, undefined, _noop3.default, _noop3.default, _noop3.default, _noop3.default];
-
-(0, _noop3.default)(_noop3.default.placeholder, _noop3.default.placeholder, _noop3.default, _noop3.default, _noop3.default, _noop3.default);
+var array = [undefined, undefined, _noop2.default, _noop2.default, _noop2.default, _noop2.default];
+(0, _noop2.default)(_noop.placeholder, _noop.placeholder, _noop2.default, _noop2.default, _noop2.default, _noop2.default);

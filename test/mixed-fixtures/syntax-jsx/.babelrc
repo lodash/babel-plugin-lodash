@@ -1,8 +1,8 @@
 {
   "plugins": [
-    "syntax-jsx"
+    "@babel/syntax-jsx"
   ],
   "presets": [
-    ["env", { "targets": { "node": 4 } }]
+    ["@babel/env", { "targets": { "node": 4 } }]
   ]
 }

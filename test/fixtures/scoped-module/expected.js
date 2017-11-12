@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
-var _register2 = require('@storybook/addon-links/register');
-
-var _register3 = _interopRequireDefault(_register2);
+var _register2 = _interopRequireDefault(require("@storybook/addon-links/register"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _register3.default;
+var _default = _register2.default;
+exports.default = _default;

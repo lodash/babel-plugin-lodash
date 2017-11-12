@@ -1,24 +1,16 @@
-'use strict';
+"use strict";
 
-var _reject2 = require('lodash-es/reject');
+var _reject2 = _interopRequireDefault(require("lodash-es/reject"));
 
-var _reject3 = _interopRequireDefault(_reject2);
+var _add2 = _interopRequireDefault(require("lodash-es/add"));
 
-var _add2 = require('lodash-es/add');
+var _take2 = _interopRequireDefault(require("lodash-es/take"));
 
-var _add3 = _interopRequireDefault(_add2);
-
-var _take2 = require('lodash-es/take');
-
-var _take3 = _interopRequireDefault(_take2);
-
-var _map2 = require('lodash-es/map');
-
-var _map3 = _interopRequireDefault(_map2);
+var _map2 = _interopRequireDefault(require("lodash-es/map"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var result = (0, _map3.default)([], function (n) {
-  return (0, _add3.default)(1, n);
+var result = (0, _map2.default)([], function (n) {
+  return (0, _add2.default)(1, n);
 });
-(0, _take3.default)((0, _reject3.default)(result), 1);
+(0, _take2.default)((0, _reject2.default)(result), 1);

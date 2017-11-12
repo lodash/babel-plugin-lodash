@@ -1,6 +1,6 @@
 {
   "presets": [
-    ["env", { "targets": { "node": 4 } }],
-    "react"
+    ["@babel/env", { "targets": { "node": 4 } }],
+    "@babel/react"
   ]
 }

@@ -1,26 +1,21 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.formatters = undefined;
+exports.formatters = void 0;
 
-var _snakeCase2 = require('lodash-compat/string/snakeCase');
+var _snakeCase2 = _interopRequireDefault(require("lodash-compat/string/snakeCase"));
 
-var _snakeCase3 = _interopRequireDefault(_snakeCase2);
+var _kebabCase2 = _interopRequireDefault(require("lodash-compat/string/kebabCase"));
 
-var _kebabCase2 = require('lodash-compat/string/kebabCase');
-
-var _kebabCase3 = _interopRequireDefault(_kebabCase2);
-
-var _camelCase2 = require('lodash-compat/string/camelCase');
-
-var _camelCase3 = _interopRequireDefault(_camelCase2);
+var _camelCase2 = _interopRequireDefault(require("lodash-compat/string/camelCase"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var formatters = exports.formatters = {
-  camelCase: _camelCase3.default,
-  'kebabCase': _kebabCase3.default,
-  'snakeCase': _snakeCase3.default
+var formatters = {
+  camelCase: _camelCase2.default,
+  'kebabCase': _kebabCase2.default,
+  'snakeCase': _snakeCase2.default
 };
+exports.formatters = formatters;

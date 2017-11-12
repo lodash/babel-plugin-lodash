@@ -4,7 +4,7 @@ import fs from 'fs'
 import glob from 'glob'
 import path from 'path'
 import plugin from '../src/index'
-import { transformFileSync } from 'babel-core'
+import { transformFileSync } from '@babel/core'
 
 function getLodashId(testPath) {
   const postfix = /\b(?:compat|es)\b/.exec(testPath)
@@ -48,7 +48,6 @@ describe('cherry-picked modular builds', function() {
       }))
 
       assert.ok(_.isError(error))
-      assert.ok(_.isString(_.get(error, 'codeFrame')))
     })
   })
 

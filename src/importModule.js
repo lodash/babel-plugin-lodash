@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { addDefault } from "babel-helper-module-imports"
+import { addDefault } from "@babel/helper-module-imports"
 import mapping from './mapping'
 
 /*----------------------------------------------------------------------------*/

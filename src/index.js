@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { isModuleDeclaration } from 'babel-types'
+import { isModuleDeclaration } from '@babel/types'
 
 import config from './config'
 import importModule from './importModule'
@@ -140,12 +140,12 @@ export default function lodash({ types }) {
         _.each(specs, (spec) => {
           const { imported, local } = spec
           const binding = file.scope.getBinding(local)
-          const { importKind = 'value' } = binding.path.parent
 
           // Skip type annotation imports.
-          if (importKind !== 'value') {
+          if (! binding) {
             return false
           }
+
           const isChain = isLodash && imported === 'chain'
 
           _.each(binding.referencePaths, (refPath) => {

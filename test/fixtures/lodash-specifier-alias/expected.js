@@ -1,9 +1,7 @@
-'use strict';
+"use strict";
 
-var _map2 = require('lodash/map');
-
-var _map3 = _interopRequireDefault(_map2);
+var _map2 = _interopRequireDefault(require("lodash/map"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-(0, _map3.default)([]);
+(0, _map2.default)([]);

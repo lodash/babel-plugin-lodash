@@ -1,19 +1,14 @@
-'use strict';
+"use strict";
 
-var _map2 = require('lodash/map');
+var _map2 = _interopRequireDefault(require("lodash/map"));
 
-var _map3 = _interopRequireDefault(_map2);
+var _filter2 = _interopRequireDefault(require("lodash/filter"));
 
-var _filter2 = require('lodash/filter');
-
-var _filter3 = _interopRequireDefault(_filter2);
-
-var _convert = require('lodash-fp/convert');
-
-var _convert2 = _interopRequireDefault(_convert);
+var _convert = _interopRequireDefault(require("lodash-fp/convert"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var fp = (0, _convert2.default)({
-  filter: _filter3.default, map: _map3.default
+var fp = (0, _convert.default)({
+  filter: _filter2.default,
+  map: _map2.default
 });

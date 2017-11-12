@@ -1,9 +1,7 @@
-'use strict';
+"use strict";
 
-var _bind2 = require('lodash/bind');
-
-var _bind3 = _interopRequireDefault(_bind2);
+var _bind2 = _interopRequireDefault(require("lodash/bind"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_bind3.default.placeholder = {};
+_bind2.default.placeholder = {};
