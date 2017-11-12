@@ -1,7 +1,8 @@
 language: node_js
 sudo: false
 node_js:
-  - 7
+  - 9
+  - 8
   - 6
   - 4
 
@@ -15,10 +16,3 @@ git:
 branches:
   only:
     - master
-
-before_install:
-  - nvm use $TRAVIS_NODE_VERSION
-  - npm i -g npm@^5
-
-install:
-  - npm i
