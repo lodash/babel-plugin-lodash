@@ -21,7 +21,6 @@
     "async": "^2.6.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
-    "babel-helper-module-imports": "^7.0.0-beta.3",
     "babel-plugin-add-module-exports": "~0.2.1",
     "babel-plugin-lodash": "3.3.0",
     "babel-plugin-syntax-flow": "^6.18.0",
@@ -42,6 +41,7 @@
     "react-bootstrap": "^0.31.5"
   },
   "dependencies": {
+    "babel-helper-module-imports": "^7.0.0-beta.3",
     "glob": "^7.1.1",
     "lodash": "^4.17.4",
     "require-package-name": "^2.0.1"
