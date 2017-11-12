@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash'
 
 /*----------------------------------------------------------------------------*/
 
@@ -11,5 +11,5 @@ import _ from 'lodash';
  * @returns {string} Returns the normalized package path.
  */
 export function normalizePath(pkgPath) {
-  return _.toString(pkgPath).replace(/\\/g, '/');
-};
+  return _.toString(pkgPath).replace(/\\/g, '/')
+}

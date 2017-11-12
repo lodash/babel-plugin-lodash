@@ -16,20 +16,20 @@ $ npm i --save-dev babel-plugin-lodash babel-cli babel-preset-env
 
 Transforms
 ```js
-import _ from 'lodash';
-import { add } from 'lodash/fp';
+import _ from 'lodash'
+import { add } from 'lodash/fp'
 
-const addOne = add(1);
-_.map([1, 2, 3], addOne);
+const addOne = add(1)
+_.map([1, 2, 3], addOne)
 ```
 
 roughly to
 ```js
-import _add from 'lodash/fp/add';
-import _map from 'lodash/map';
+import _add from 'lodash/fp/add'
+import _map from 'lodash/map'
 
-const addOne = _add(1);
-_map([1, 2, 3], addOne);
+const addOne = _add(1)
+_map([1, 2, 3], addOne)
 ```
 
 ## Usage
@@ -68,7 +68,7 @@ $ babel --plugins lodash --presets es2015 script.js
 require('babel-core').transform('code', {
   'plugins': ['lodash'],
   'presets': [['env', { 'targets': { 'node': 4 } }]]
-});
+})
 ```
 
 ###### webpack.config.js
