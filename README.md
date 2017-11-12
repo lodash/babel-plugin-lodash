@@ -38,7 +38,7 @@ _map([1, 2, 3], addOne)
 ```json
 {
   "plugins": ["lodash"],
-  "presets": ["es2015"]
+  "presets": [["@babel/env", { "targets": { "node": 6 } }]]
 }
 ```
 
@@ -46,7 +46,7 @@ Set plugin options using an array of `[pluginName, optionsObject]`.
 ```json
 {
   "plugins": [["lodash", { "id": "lodash-compat", "cwd": "some/path" }]],
-  "presets": [["env", { "targets": { "node": 4 } }]]
+  "presets": [["@babel/env", { "targets": { "node": 6 } }]]
 }
 ```
 
@@ -54,7 +54,7 @@ The `options.id` can be an array of ids.
 ```json
 {
   "plugins": [["lodash", { "id": ["async", "lodash-bound"] }]],
-  "presets": [["env", { "targets": { "node": 4 } }]]
+  "presets": [["@babel/env", { "targets": { "node": 6 } }]]
 }
 ```
 
@@ -67,7 +67,7 @@ $ babel --plugins lodash --presets es2015 script.js
 ```js
 require('babel-core').transform('code', {
   'plugins': ['lodash'],
-  'presets': [['env', { 'targets': { 'node': 4 } }]]
+  'presets': [['@babel/env', { 'targets': { 'node': 6 } }]]
 })
 ```
 
@@ -80,7 +80,7 @@ require('babel-core').transform('code', {
     'exclude': /node_modules/,
     'query': {
       'plugins': ['lodash'],
-      'presets': [['env', { 'targets': { 'node': 4 } }]]
+      'presets': [['@babel/env', { 'targets': { 'node': 6 } }]]
     }
   }]
 }
