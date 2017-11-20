@@ -1,4 +1,5 @@
-import * as types from "babel-types"
+import { callExpression, identifier } from '@babel/types'
+
 import importModule from './importModule'
 
 /** The error message used when unterminated chain sequences are detected. */
@@ -28,7 +29,7 @@ export default function resolveChainCall(pkgStore, chainCallPath) {
     }
     else {
       const { name } = importModule(pkgStore, nextMemberName, nextCallPath)
-      nestedCallArgument = types.callExpression(types.identifier(name), [nestedCallArgument, ...nextCallPath.node.arguments])
+      nestedCallArgument = callExpression(identifier(name), [nestedCallArgument, ...nextCallPath.node.arguments])
       nextMemberPath.parentPath.replaceWith(nestedCallArgument)
     }
   }
