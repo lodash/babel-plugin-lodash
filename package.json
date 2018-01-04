@@ -37,7 +37,7 @@
     "lodash-es": "^4.17.4",
     "mocha": "^4.0.1",
     "ramda": "^0.25.0",
-    "react-bootstrap": "^0.31.5"
+    "react-bootstrap": "^0.32.0"
   },
   "dependencies": {
     "@babel/helper-module-imports": "^7.0.0-beta.32",
