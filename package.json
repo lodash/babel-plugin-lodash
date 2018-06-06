@@ -9,7 +9,7 @@
   "author": "Graeme Yeates <megawac@gmail.com> (https://github.com/megawac)",
   "contributors": [
     "Graeme Yeates <megawac@gmail.com> (https://github.com/megawac)",
-    "John-David Dalton <john.david.dalton@gmail.com> (http://allyoucanleet.com/)"
+    "John-David Dalton <john.david.dalton@gmail.com>"
   ],
   "scripts": {
     "build": "babel src --out-dir lib || true",
