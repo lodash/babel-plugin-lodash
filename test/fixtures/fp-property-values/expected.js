@@ -13,7 +13,7 @@ var _camelCase2 = _interopRequireDefault(require("lodash/fp/camelCase"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var formatters = {
+const formatters = {
   camelCase: _camelCase2.default,
   'kebabCase': _kebabCase2.default,
   'snakeCase': _snakeCase2.default

@@ -1,6 +1,12 @@
 {
+  "plugins": [
+    "@babel/plugin-proposal-function-bind"
+  ],
   "presets": [
-    ["@babel/env", { "targets": { "node": 4 } }],
-    "@babel/stage-0"
+    ["@babel/env", {
+      "targets": {
+        "node": 6
+      }
+    }]
   ]
 }

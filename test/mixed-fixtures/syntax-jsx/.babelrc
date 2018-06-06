@@ -3,6 +3,11 @@
     "@babel/syntax-jsx"
   ],
   "presets": [
-    ["@babel/env", { "targets": { "node": 4 } }]
+    ["@babel/env", {
+      "targets": {
+        "node": 6
+      }
+    }]
   ]
 }
+

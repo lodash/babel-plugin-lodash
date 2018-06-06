@@ -18,10 +18,8 @@ var _map4 = _interopRequireDefault(require("lodash/map"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mapper = (0, _map3.default)((0, _add3.default)(1));
-var result = mapper([]);
+const mapper = (0, _map3.default)((0, _add3.default)(1));
+const result = mapper([]);
 (0, _take3.default)(1, (0, _reject3.default)(Boolean, result));
-var result2 = (0, _map4.default)([], function (n) {
-  return (0, _add4.default)(1, n);
-});
+const result2 = (0, _map4.default)([], n => (0, _add4.default)(1, n));
 (0, _take4.default)((0, _reject4.default)(result2), 1);

@@ -4,6 +4,11 @@
     "lodash"
   ],
   "presets": [
-    ["@babel/env", { "targets": { "node": 4 } }]
+    ["@babel/env", {
+      "loose": true,
+      "targets": {
+        "node": 6
+      }
+    }]
   ]
 }

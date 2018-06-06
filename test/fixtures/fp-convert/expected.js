@@ -8,7 +8,7 @@ var _convert = _interopRequireDefault(require("lodash-fp/convert"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var fp = (0, _convert.default)({
+const fp = (0, _convert.default)({
   filter: _filter2.default,
   map: _map2.default
 });
