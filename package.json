@@ -28,7 +28,7 @@
     "@babel/preset-react": "^7.0.0-beta.49",
     "@babel/preset-stage-0": "^7.0.0-beta.49",
     "@babel/register": "^7.0.0-beta.49",
-    "@storybook/addon-links": "^3.4.6",
+    "@storybook/addon-links": "^3.4.7",
     "async": "^2.6.1",
     "babel-plugin-add-module-exports": "~0.2.1",
     "babel-plugin-lodash": "3.3.2",
