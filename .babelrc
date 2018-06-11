@@ -7,7 +7,7 @@
     ["@babel/env", {
       "loose": true,
       "targets": {
-        "node": 6
+        "node": 4
       }
     }]
   ]
