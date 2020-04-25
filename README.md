@@ -86,6 +86,10 @@ require('babel-core').transform('code', {
 }
 ```
 
+## Codemod
+
+There is a [codemod](https://github.com/huchenme/lodash-codemods#named-import) available to help you convert all of your cherry-pick imports to a combined named import.
+
 ## FAQ
 
 > Can this plugin produce ES2015 imports rather than CommonJS imports?
