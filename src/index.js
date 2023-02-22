@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { isModuleDeclaration } from '@babel/types'
+import { isImportOrExportDeclaration } from '@babel/types'
 
 import config from './config'
 import importModule from './importModule'
@@ -72,7 +72,7 @@ export default function lodash({ types }) {
       let isModule = false
 
       for (const node of file.ast.program.body) {
-        if (isModuleDeclaration(node)) {
+        if (isImportOrExportDeclaration(node)) {
           isModule = true
           break
         }
