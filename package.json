@@ -1,8 +1,13 @@
 {
-  "name": "babel-plugin-lodash",
+  "name": "@sigmacomputing/babel-plugin-lodash",
   "version": "3.3.4",
   "description": "Modular Lodash builds without the hassle.",
-  "keywords": "babel-plugin, cherry-pick, lodash, modules",
+  "keywords": [
+    "babel-plugin",
+    "cherry-pick",
+    "lodash",
+    "modules"
+  ],
   "repository": "lodash/babel-plugin-lodash",
   "license": "MIT",
   "main": "lib/index.js",
